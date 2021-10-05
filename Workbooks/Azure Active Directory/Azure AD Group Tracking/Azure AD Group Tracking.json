@@ -1,0 +1,970 @@
+{
+    "version": "Notebook/1.0",
+    "items": [
+      {
+        "type": 9,
+        "content": {
+          "version": "KqlParameterItem/1.0",
+          "parameters": [
+            {
+              "id": "1f74ed9a-e3ed-498d-bd5b-f68f3836a117",
+              "version": "KqlParameterItem/1.0",
+              "name": "Subscription",
+              "label": "Subscriptions",
+              "type": 6,
+              "isRequired": true,
+              "multiSelect": true,
+              "quote": "'",
+              "delimiter": ",",
+              "query": "Resources\r\n| where type =~ \"microsoft.operationalinsights/workspaces\"\r\n| summarize Count = count() by subscriptionId\r\n| order by Count desc\r\n| extend Rank = row_number()\r\n| project value = subscriptionId, label = subscriptionId, selected = Rank == 1",
+              "crossComponentResources": [
+                "value::selected"
+              ],
+              "value": [
+              ],
+              "typeSettings": {
+                "additionalResourceOptions": [],
+                "showDefault": false
+              },
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
+            },
+            {
+              "id": "173f251f-558e-415f-b5ca-f25cfa01f6ee",
+              "version": "KqlParameterItem/1.0",
+              "name": "Workspace",
+              "type": 5,
+              "isRequired": true,
+              "multiSelect": true,
+              "quote": "'",
+              "delimiter": ",",
+              "query": "where type =~ \"microsoft.operationalinsights/workspaces\"\r\n| project id",
+              "crossComponentResources": [
+                "{Subscription}"
+              ],
+              "value": [
+              ],
+              "typeSettings": {
+                "additionalResourceOptions": [],
+                "showDefault": false
+              },
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
+            },
+            {
+              "id": "c0e1db28-a9e3-4f0d-b94d-a138d42b1cde",
+              "version": "KqlParameterItem/1.0",
+              "name": "TimeRange",
+              "type": 4,
+              "isGlobal": true,
+              "value": {
+                "durationMs": 2419200000
+              },
+              "typeSettings": {
+                "selectableValues": [
+                  {
+                    "durationMs": 300000
+                  },
+                  {
+                    "durationMs": 900000
+                  },
+                  {
+                    "durationMs": 1800000
+                  },
+                  {
+                    "durationMs": 3600000
+                  },
+                  {
+                    "durationMs": 14400000
+                  },
+                  {
+                    "durationMs": 43200000
+                  },
+                  {
+                    "durationMs": 86400000
+                  },
+                  {
+                    "durationMs": 172800000
+                  },
+                  {
+                    "durationMs": 259200000
+                  },
+                  {
+                    "durationMs": 604800000
+                  },
+                  {
+                    "durationMs": 1209600000
+                  },
+                  {
+                    "durationMs": 2419200000
+                  },
+                  {
+                    "durationMs": 2592000000
+                  }
+                ],
+                "allowCustom": true
+              }
+            },
+            {
+              "id": "662c4900-ffcf-4bc3-903d-472a1cc6e9e9",
+              "version": "KqlParameterItem/1.0",
+              "name": "Help",
+              "label": "Show Help",
+              "type": 10,
+              "description": "This will show some help information, in order to better use this workbook",
+              "isRequired": true,
+              "typeSettings": {
+                "additionalResourceOptions": [],
+                "showDefault": false
+              },
+              "jsonData": "[{ \"value\": \"Yes\", \"label\": \"Yes\"},\r\n {\"value\": \"No\", \"label\": \"No\", \"selected\":true },\r\n {\"value\": \"Change Log\", \"label\": \"Change Log\"}]"
+            }
+          ],
+          "style": "above",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces"
+        },
+        "name": "parameters - 0"
+      },
+      {
+        "type": 1,
+        "content": {
+          "json": "Groups shown are based on data ingested into Log Analytics. This is not an explicit list of all groups that reside in Azure Active Directory, but those that have had properties modified in the **{TimeRange:label}**\r\n\r\nThis workbook only supports detailed drill and analysis of the following activities\r\n- Add member to group\r\n- Remove member from group\r\n- Add group\r\n- Remove group\r\n\r\nMore feature my be added in future versions",
+          "style": "info"
+        },
+        "conditionalVisibility": {
+          "parameterName": "Help",
+          "comparison": "isEqualTo",
+          "value": "Yes"
+        },
+        "name": "Help 1"
+      },
+      {
+        "type": 1,
+        "content": {
+          "json": "## Azure Active Directory Group Tracking\r\n### Change Log\r\nUse this report to analyze the the sizes of the different tables and Latency in your workspace and agents.  This report checks the overall workspace health.\r\n\r\n|Version|Description|Date|Editor|\r\n|---|---|---|---|\r\n|v1.0.0| Initial Release |October 2021| Alistair Ross\r\n\r\n\r\n\r\n \r\n\r\n\r\n\r\n"
+        },
+        "conditionalVisibility": {
+          "parameterName": "Help",
+          "comparison": "isEqualTo",
+          "value": "Change Log"
+        },
+        "name": "text - Change Log"
+      },
+      {
+        "type": 9,
+        "content": {
+          "version": "KqlParameterItem/1.0",
+          "crossComponentResources": [
+            "{Workspace}"
+          ],
+          "parameters": [
+            {
+              "id": "854d1cb5-76f0-4475-b959-0d4a5723426a",
+              "version": "KqlParameterItem/1.0",
+              "name": "AADGroup",
+              "label": "AAD Group",
+              "type": 2,
+              "isRequired": true,
+              "multiSelect": true,
+              "quote": "'",
+              "delimiter": ",",
+              "query": "AuditLogs\r\n| where Category == \"GroupManagement\"\r\n| mv-expand TargetResources\r\n| where array_length(TargetResources.modifiedProperties) > 0\r\n| mv-expand bagexpansion=bag modified= TargetResources.modifiedProperties\r\n| extend oldValue =\"\", newValue =\"\"\r\n| evaluate bag_unpack(modified, columnsConflict='replace_source')\r\n| where displayName == \"Group.DisplayName\"\r\n| extend label = case(\r\n    ActivityDisplayName == \"Remove member from group\", oldValue,\r\n    newValue\r\n    )\r\n| distinct label\r\n| extend label = replace_string(label,'\"','')\r\n| order by label asc ",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "typeSettings": {
+                "additionalResourceOptions": [
+                  "value::all"
+                ],
+                "selectAllValue": "*",
+                "showDefault": false
+              },
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "defaultValue": "value::all",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            {
+              "id": "081d3340-7c85-427a-9a55-f65778d21a5a",
+              "version": "KqlParameterItem/1.0",
+              "name": "Activity",
+              "type": 2,
+              "isRequired": true,
+              "multiSelect": true,
+              "quote": "'",
+              "delimiter": ",",
+              "query": "let SupportedActivites = dynamic([\"Add member to group\",\"Remove member from group\",\"Add group\",\"Delete group\"]);\r\nAuditLogs\r\n| where Category == \"GroupManagement\"\r\n| where ActivityDisplayName in (SupportedActivites)\r\n| summarize count() by ActivityDisplayName\r\n| extend label = strcat(ActivityDisplayName,\" (\",count_,\")\")\r\n| project value = ActivityDisplayName, label",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "typeSettings": {
+                "additionalResourceOptions": [
+                  "value::all"
+                ],
+                "selectAllValue": "",
+                "showDefault": false
+              },
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "timeContextFromParameter": "TimeRange",
+              "defaultValue": "value::all",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            {
+              "id": "32583333-6da3-4f2a-9adf-5ac670a0efd4",
+              "version": "KqlParameterItem/1.0",
+              "name": "TimeGranularity",
+              "type": 1,
+              "isRequired": true,
+              "query": "let StartTime = datetime(\"{TimeRange:startISO}\");\r\nlet EndTime = datetime(\"{TimeRange:endISO}\");\r\nlet diff = toscalar(print datetime_diff(\"day\", EndTime, StartTime));\r\nprint TimeGranularity = case (\r\n    diff <= 7, \"1h\",\r\n    \"1d\"\r\n)",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "isHiddenWhenLocked": true,
+              "timeContext": {
+                "durationMs": 1209600000
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            }
+          ],
+          "style": "pills",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces"
+        },
+        "name": "parameters - 1"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "let StartTime = datetime(\"{TimeRange:startISO}\");\r\nlet EndTime = datetime(\"{TimeRange:endISO}\");\r\nlet GroupActivity = materialize ( \r\n    AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where ActivityDisplayName in ({Activity})\r\n    | project TimeGenerated, ActivityDisplayName\r\n        | extend Ordered = case(\r\n        ActivityDisplayName == \"Add member to group\", 0,\r\n        ActivityDisplayName == \"Remove member from group\", 1,\r\n        ActivityDisplayName == \"Add group\", 2,\r\n        ActivityDisplayName == \"Remove group\", 3,\r\n        4\r\n        )\r\n        | extend ActivityDisplayName = case (\r\n            Ordered == 4, \"Other\", ActivityDisplayName\r\n        )\r\n    );\r\nGroupActivity\r\n| summarize Count = count() by ActivityDisplayName, Ordered\r\n| join kind= inner ( \r\n    GroupActivity \r\n    | make-series TimeSeries = count() default = 0  on TimeGenerated in range(StartTime, EndTime, {TimeGranularity}) by ActivityDisplayName\r\n)\r\non ActivityDisplayName\r\n| order by Ordered asc\r\n",
+          "size": 4,
+          "timeContext": {
+            "durationMs": 2419200000
+          },
+          "timeContextFromParameter": "TimeRange",
+          "exportFieldName": "ActivityDisplayName",
+          "exportParameterName": "SelectedActivity",
+          "exportDefaultValue": "All",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces",
+          "crossComponentResources": [
+            "{Workspace}"
+          ],
+          "visualization": "tiles",
+          "tileSettings": {
+            "titleContent": {
+              "columnMatch": "ActivityDisplayName",
+              "formatter": 1
+            },
+            "leftContent": {
+              "columnMatch": "Count",
+              "formatter": 12,
+              "formatOptions": {
+                "palette": "auto"
+              },
+              "numberFormat": {
+                "unit": 17,
+                "options": {
+                  "style": "decimal",
+                  "maximumFractionDigits": 2,
+                  "maximumSignificantDigits": 3
+                }
+              }
+            },
+            "rightContent": {
+              "columnMatch": "ActivityDisplayName",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Add member to group",
+                    "representation": "AddTeamMember",
+                    "text": ""
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Remove member from group",
+                    "representation": "Delete",
+                    "text": ""
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Add group",
+                    "representation": "Add",
+                    "text": ""
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Delete group",
+                    "representation": "Subtract",
+                    "text": ""
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "1",
+                    "text": ""
+                  }
+                ]
+              }
+            },
+            "secondaryContent": {
+              "columnMatch": "TimeSeries",
+              "formatter": 9,
+              "formatOptions": {
+                "palette": "blue"
+              }
+            },
+            "showBorder": false
+          }
+        },
+        "name": "query - 3"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "\r\nlet StartTime = datetime(\"{TimeRange:startISO}\");\r\nlet EndTime = datetime(\"{TimeRange:endISO}\");\r\nAuditLogs\r\n| where Category == \"GroupManagement\"\r\n| where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n| where ActivityDisplayName in ({Activity})\r\n| make-series TimeSeries = count() default = 0  on TimeGenerated in range(StartTime, EndTime, {TimeGranularity}) by ActivityDisplayName",
+          "size": 0,
+          "timeContext": {
+            "durationMs": 2419200000
+          },
+          "timeContextFromParameter": "TimeRange",
+          "timeBrushParameterName": "TimeRange",
+          "timeBrushExportOnlyWhenBrushed": true,
+          "exportFieldName": "series",
+          "exportParameterName": "SelectedActivity",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces",
+          "crossComponentResources": [
+            "{Workspace}"
+          ],
+          "visualization": "timechart",
+          "chartSettings": {
+            "showLegend": true
+          }
+        },
+        "name": "query - 6"
+      },
+      {
+        "type": 9,
+        "content": {
+          "version": "KqlParameterItem/1.0",
+          "crossComponentResources": [
+            "{Workspace}"
+          ],
+          "parameters": [
+            {
+              "id": "39c75650-f439-4633-8199-4f88fd31cbba",
+              "version": "KqlParameterItem/1.0",
+              "name": "HighVolume",
+              "type": 1,
+              "isRequired": true,
+              "query": "AuditLogs\r\n| where Category == \"GroupManagement\"\r\n| where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n| summarize Count = count()\r\n| extend HighVolume = iif(Count >= 500, \"true\", \"false\")\r\n| project HighVolume",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "isHiddenWhenLocked": true,
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            {
+              "id": "b146dfa3-d832-462d-bdc9-5d0a13c25b57",
+              "version": "KqlParameterItem/1.0",
+              "name": "Volume",
+              "type": 1,
+              "isRequired": true,
+              "query": "AuditLogs\r\n| where Category == \"GroupManagement\"\r\n| where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n| summarize Count = count()\r\n",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "isHiddenWhenLocked": true,
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            }
+          ],
+          "style": "pills",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces"
+        },
+        "name": "parameters - 9"
+      },
+      {
+        "type": 1,
+        "content": {
+          "json": "Are you sure you want to render **{Volume}** objects. This may cause performance issues when loading. Recommend filtering your Time Range, Activities or groups down first to below 500 objects. \r\n\r\n- The maximum number of objects than can be shown is 10,000",
+          "style": "warning"
+        },
+        "conditionalVisibility": {
+          "parameterName": "HighVolume",
+          "comparison": "isEqualTo",
+          "value": "true"
+        },
+        "name": "text - 11"
+      },
+      {
+        "type": 9,
+        "content": {
+          "version": "KqlParameterItem/1.0",
+          "crossComponentResources": [
+            "{Workspace}"
+          ],
+          "parameters": [
+            {
+              "id": "a72011cd-22ed-4bb1-b947-5080fa1037da",
+              "version": "KqlParameterItem/1.0",
+              "name": "ShowHighVolume",
+              "label": "Show High Volume",
+              "type": 10,
+              "isRequired": true,
+              "query": "let output = datatable(value:bool, label:string, selected:bool)[\r\n    true,\"Yes\", false,\r\n    false, \"No\", true\r\n];\r\noutput\r\n| extend selected = case(({HighVolume} == false and label == \"Yes\"), true,\r\n                        ({HighVolume} == false and label == \"No\"), false, \r\n                        selected\r\n)\r\n",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "value": "true",
+              "typeSettings": {
+                "additionalResourceOptions": [],
+                "showDefault": false
+              },
+              "timeContext": {
+                "durationMs": 0
+              },
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            }
+          ],
+          "style": "pills",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces"
+        },
+        "conditionalVisibility": {
+          "parameterName": "HighVolume",
+          "comparison": "isEqualTo",
+          "value": "true"
+        },
+        "name": "parameters - 10"
+      },
+      {
+        "type": 11,
+        "content": {
+          "version": "LinkItem/1.0",
+          "style": "tabs",
+          "links": [
+            {
+              "id": "943d79f5-f09c-4c95-aef0-e5d3ca97fb3d",
+              "cellValue": "ResultsBy",
+              "linkTarget": "parameter",
+              "linkLabel": "Results By Group",
+              "subTarget": "Group",
+              "style": "link"
+            },
+            {
+              "id": "2c6ddb86-ee8a-408d-80cf-30ff0361397f",
+              "cellValue": "ResultsBy",
+              "linkTarget": "parameter",
+              "linkLabel": "Results By Time Generated",
+              "subTarget": "Chronology",
+              "style": "link"
+            }
+          ]
+        },
+        "name": "links - 12"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 1,
+              "content": {
+                "json": "# Results by Group"
+              },
+              "name": "text - 1"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "let AddMembertoGroup = AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n    | where ActivityDisplayName == \"Add member to group\"\r\n    | extend Group = tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].newValue))),\r\n        GroupObjectId = tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[0].newValue))),\r\n        Object = tostring(TargetResources[0].userPrincipalName),\r\n        ObjectId = tostring(TargetResources[0].id),\r\n        ObjectType = tostring(TargetResources[0].type)\r\n    | project\r\n        TenantId,\r\n        ActivityDisplayName,\r\n        TimeGenerated, \r\n        Object, \r\n        ObjectId,\r\n        ObjectType,\r\n        InitiatedBy,\r\n        Result,\r\n        TargetResources,\r\n        Group,\r\n        GroupObjectId;\r\n// Remove Member \r\nlet RemoveMembertoGroup = AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n    | where ActivityDisplayName == \"Remove member from group\"\r\n    | extend Group = tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].oldValue))),\r\n        GroupObjectId = tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[0].oldValue))),\r\n        Object = tostring(TargetResources[0].userPrincipalName),\r\n         ObjectId = tostring(TargetResources[0].id),\r\n        ObjectType = tostring(TargetResources[0].type)\r\n    | project\r\n        TenantId,\r\n        ActivityDisplayName,\r\n        TimeGenerated,\r\n        Object, \r\n        ObjectType,\r\n        InitiatedBy,\r\n        Result,\r\n        TargetResources,\r\n        Group,\r\n        GroupObjectId;\r\n// Add Group  \r\nlet AddGroup = AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n    | where ActivityDisplayName == \"Add group\"\r\n    | extend Group = tostring(TargetResources[0].displayName),\r\n        GroupObjectId =tostring(TargetResources[0].id)\r\n    | project\r\n        TenantId,\r\n        ActivityDisplayName,\r\n        TimeGenerated,\r\n        InitiatedBy,\r\n        Result,\r\n        TargetResources,\r\n        Group,\r\n        GroupObjectId;\r\n// Delete Group  \r\nlet DeleteGroup = AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n    | where ActivityDisplayName == \"Delete group\"\r\n    | extend Group = tostring(TargetResources[0].displayName),\r\n        GroupObjectId =tostring(TargetResources[0].id)\r\n    | extend DetailedInformation = \"More Info\"\r\n    | project\r\n        TenantId,\r\n        ActivityDisplayName,\r\n        TimeGenerated,\r\n        InitiatedBy,\r\n        Result,\r\n        TargetResources,\r\n        Group,\r\n        GroupObjectId;\r\n// Join the tables together\r\nunion isfuzzy=true AddMembertoGroup, RemoveMembertoGroup, AddGroup, DeleteGroup\r\n| extend InitiatedByType = case(isnotempty(InitiatedBy.app), \"app\", \"user\")\r\n| extend InitiatedByName = case( \r\n    InitiatedByType == \"app\", InitiatedBy.app.displayName,\r\n    InitiatedByType == \"user\", InitiatedBy.user.userPrincipalName,\r\n    \"Error - Unknown\"\r\n    )\r\n| extend InitiatedById = case( \r\n    InitiatedByType == \"app\", InitiatedBy.app.servicePrincipalId,\r\n    InitiatedByType == \"user\", InitiatedBy.user.id,\r\n    \"Error - Unknown\"\r\n    )\r\n| extend DetailedInformation = \"More Info\"\r\n| extend GroupUrl = strcat(\"https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupDetailsMenuBlade/Overview/groupId/\",GroupObjectId)\r\n| extend ObjectUrl = strcat(\"https://portal.azure.com/#blade/Microsoft_AAD_IAM/UserDetailsMenuBlade/Profile/userId/\",ObjectId)\r\n| project\r\n    TimeGenerated,\r\n    TenantId,\r\n    Group,\r\n    GroupObjectId,\r\n    GroupUrl,\r\n    ActivityDisplayName,\r\n    Object,\r\n    ObjectId,\r\n    ObjectType,\r\n    ObjectUrl,\r\n    InitiatedBy,\r\n    InitiatedByType,\r\n    InitiatedByName,\r\n    InitiatedById,\r\n    Result,\r\n    TargetResources,\r\n    DetailedInformation\r\n| order by Group asc, TimeGenerated desc\r\n",
+                "size": 3,
+                "showAnalytics": true,
+                "timeContext": {
+                  "durationMs": 2419200000
+                },
+                "timeContextFromParameter": "TimeRange",
+                "showExportToExcel": true,
+                "exportToExcelOptions": "all",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "crossComponentResources": [
+                  "{Workspace}"
+                ],
+                "gridSettings": {
+                  "formatters": [
+                    {
+                      "columnMatch": "$gen_group",
+                      "formatter": 18,
+                      "formatOptions": {
+                        "linkColumn": "GroupUrl",
+                        "linkTarget": "Url",
+                        "thresholdsOptions": "icons",
+                        "thresholdsGrid": [
+                          {
+                            "operator": "Default",
+                            "thresholdValue": null,
+                            "representation": "PersonWithFriend",
+                            "text": "{0}{1}"
+                          }
+                        ]
+                      },
+                      "tooltipFormat": {
+                        "tooltip": "Selecting this link will open a new tab and take you to the AAD Group. If you are redirected to the home portal, you may lack the required permissions"
+                      }
+                    },
+                    {
+                      "columnMatch": "TimeGenerated",
+                      "formatter": 6,
+                      "dateFormat": {
+                        "showUtcTime": null,
+                        "formatName": "shortDateTimePattern"
+                      }
+                    },
+                    {
+                      "columnMatch": "TenantId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "Group",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "GroupObjectId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ActivityDisplayName",
+                      "formatter": 18,
+                      "formatOptions": {
+                        "thresholdsOptions": "icons",
+                        "thresholdsGrid": [
+                          {
+                            "operator": "==",
+                            "thresholdValue": "Add group",
+                            "representation": "Add",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "==",
+                            "thresholdValue": "Delete group",
+                            "representation": "Subtract",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "==",
+                            "thresholdValue": "Add member to group",
+                            "representation": "AddTeamMember",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "==",
+                            "thresholdValue": "Remove member from group",
+                            "representation": "Delete",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "Default",
+                            "thresholdValue": null,
+                            "representation": null,
+                            "text": "{0}{1}"
+                          }
+                        ],
+                        "customColumnWidthSetting": "32.5ch"
+                      }
+                    },
+                    {
+                      "columnMatch": "Object",
+                      "formatter": 1,
+                      "formatOptions": {
+                        "linkColumn": "ObjectUrl",
+                        "linkTarget": "Url"
+                      },
+                      "tooltipFormat": {
+                        "tooltip": "Selecting this link will open a new tab and take you to the AAD User. If you are redirected to the home portal, you may lack the required permissions"
+                      }
+                    },
+                    {
+                      "columnMatch": "ObjectId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ObjectType",
+                      "formatter": 18,
+                      "formatOptions": {
+                        "thresholdsOptions": "icons",
+                        "thresholdsGrid": [
+                          {
+                            "operator": "==",
+                            "thresholdValue": "User",
+                            "representation": "Person",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "==",
+                            "thresholdValue": "Group",
+                            "representation": "PersonWithFriend",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "Default",
+                            "thresholdValue": null,
+                            "representation": "Blank",
+                            "text": "{0}{1}"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "columnMatch": "ObjectUrl",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatedBy",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatedByName",
+                      "formatter": 1,
+                      "formatOptions": {
+                        "linkColumn": "InitiatedBy",
+                        "linkTarget": "CellDetails",
+                        "linkIsContextBlade": true
+                      }
+                    },
+                    {
+                      "columnMatch": "InitiatedById",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "Result",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "TargetResources",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "DetailedInformation",
+                      "formatter": 18,
+                      "formatOptions": {
+                        "linkTarget": "GenericDetails",
+                        "linkIsContextBlade": true,
+                        "thresholdsOptions": "icons",
+                        "thresholdsGrid": [
+                          {
+                            "operator": "Default",
+                            "thresholdValue": null,
+                            "representation": "1",
+                            "text": "{0}{1}"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "rowLimit": 10000,
+                  "filter": true,
+                  "hierarchySettings": {
+                    "treeType": 1,
+                    "groupBy": [
+                      "Group"
+                    ],
+                    "expandTopLevel": true,
+                    "finalBy": "Group"
+                  }
+                }
+              },
+              "name": "Grid View - Results By Group"
+            }
+          ]
+        },
+        "conditionalVisibilities": [
+          {
+            "parameterName": "ResultsBy",
+            "comparison": "isEqualTo",
+            "value": "Group"
+          },
+          {
+            "parameterName": "ShowHighVolume",
+            "comparison": "isEqualTo",
+            "value": "true"
+          }
+        ],
+        "name": "Group - Results by Group"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 1,
+              "content": {
+                "json": "# Results By Time Generated"
+              },
+              "name": "Text - Group By Chronology Title"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "let AddMembertoGroup = AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n    | where ActivityDisplayName == \"Add member to group\"\r\n    | extend Group = tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].newValue))),\r\n        GroupObjectId = tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[0].newValue))),\r\n        Object = tostring(TargetResources[0].userPrincipalName),\r\n        ObjectId = tostring(TargetResources[0].id),\r\n        ObjectType = tostring(TargetResources[0].type)\r\n    | project\r\n        TenantId,\r\n        ActivityDisplayName,\r\n        TimeGenerated, \r\n        Object, \r\n        ObjectId,\r\n        ObjectType,\r\n        InitiatedBy,\r\n        Result,\r\n        TargetResources,\r\n        Group,\r\n        GroupObjectId;\r\n// Remove Member \r\nlet RemoveMembertoGroup = AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n    | where ActivityDisplayName == \"Remove member from group\"\r\n    | extend Group = tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].oldValue))),\r\n        GroupObjectId = tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[0].oldValue))),\r\n        Object = tostring(TargetResources[0].userPrincipalName),\r\n         ObjectId = tostring(TargetResources[0].id),\r\n        ObjectType = tostring(TargetResources[0].type)\r\n    | project\r\n        TenantId,\r\n        ActivityDisplayName,\r\n        TimeGenerated,\r\n        Object, \r\n        ObjectType,\r\n        InitiatedBy,\r\n        Result,\r\n        TargetResources,\r\n        Group,\r\n        GroupObjectId;\r\n// Add Group  \r\nlet AddGroup = AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n    | where ActivityDisplayName == \"Add group\"\r\n    | extend Group = tostring(TargetResources[0].displayName),\r\n        GroupObjectId =tostring(TargetResources[0].id)\r\n    | project\r\n        TenantId,\r\n        ActivityDisplayName,\r\n        TimeGenerated,\r\n        InitiatedBy,\r\n        Result,\r\n        TargetResources,\r\n        Group,\r\n        GroupObjectId;\r\n// Delete Group  \r\nlet DeleteGroup = AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where ActivityDisplayName == \"{SelectedActivity}\" or \"{SelectedActivity}\" == \"All\"\r\n    | where ActivityDisplayName == \"Delete group\"\r\n    | extend Group = tostring(TargetResources[0].displayName),\r\n        GroupObjectId =tostring(TargetResources[0].id)\r\n    | extend DetailedInformation = \"More Info\"\r\n    | project\r\n        TenantId,\r\n        ActivityDisplayName,\r\n        TimeGenerated,\r\n        InitiatedBy,\r\n        Result,\r\n        TargetResources,\r\n        Group,\r\n        GroupObjectId;\r\n// Join the tables together\r\nunion isfuzzy=true AddMembertoGroup, RemoveMembertoGroup, AddGroup, DeleteGroup\r\n| extend InitiatedByType = case(isnotempty(InitiatedBy.app), \"app\", \"user\")\r\n| extend InitiatedByName = case( \r\n    InitiatedByType == \"app\", InitiatedBy.app.displayName,\r\n    InitiatedByType == \"user\", InitiatedBy.user.userPrincipalName,\r\n    \"Error - Unknown\"\r\n    )\r\n| extend InitiatedById = case( \r\n    InitiatedByType == \"app\", InitiatedBy.app.servicePrincipalId,\r\n    InitiatedByType == \"user\", InitiatedBy.user.id,\r\n    \"Error - Unknown\"\r\n    )\r\n| extend DetailedInformation = \"More Info\"\r\n| extend GroupUrl = strcat(\"https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupDetailsMenuBlade/Overview/groupId/\",GroupObjectId)\r\n| extend ObjectUrl = strcat(\"https://portal.azure.com/#blade/Microsoft_AAD_IAM/UserDetailsMenuBlade/Profile/userId/\",ObjectId)\r\n| project\r\n    TimeGenerated,\r\n    TenantId,\r\n    Group,\r\n    GroupObjectId,\r\n    GroupUrl,\r\n    ActivityDisplayName,\r\n    Object,\r\n    ObjectId,\r\n    ObjectType,\r\n    ObjectUrl,\r\n    InitiatedBy,\r\n    InitiatedByType,\r\n    InitiatedByName,\r\n    InitiatedById,\r\n    Result,\r\n    TargetResources,\r\n    DetailedInformation\r\n| order by TimeGenerated desc\r\n",
+                "size": 3,
+                "showAnalytics": true,
+                "timeContext": {
+                  "durationMs": 2419200000
+                },
+                "timeContextFromParameter": "TimeRange",
+                "showExportToExcel": true,
+                "exportToExcelOptions": "all",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "crossComponentResources": [
+                  "{Workspace}"
+                ],
+                "gridSettings": {
+                  "formatters": [
+                    {
+                      "columnMatch": "TimeGenerated",
+                      "formatter": 6,
+                      "dateFormat": {
+                        "showUtcTime": null,
+                        "formatName": "shortDateTimePattern"
+                      }
+                    },
+                    {
+                      "columnMatch": "TenantId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "Group",
+                      "formatter": 18,
+                      "formatOptions": {
+                        "linkColumn": "GroupUrl",
+                        "linkTarget": "Url",
+                        "thresholdsOptions": "icons",
+                        "thresholdsGrid": [
+                          {
+                            "operator": "Default",
+                            "thresholdValue": null,
+                            "representation": "PersonWithFriend",
+                            "text": "{0}{1}"
+                          }
+                        ],
+                        "customColumnWidthSetting": "25.2857ch"
+                      },
+                      "tooltipFormat": {
+                        "tooltip": "Selecting this link will open a new tab and take you to the AAD Group. If you are redirected to the home portal, you may lack the required permissions"
+                      }
+                    },
+                    {
+                      "columnMatch": "GroupObjectId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "GroupUrl",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ActivityDisplayName",
+                      "formatter": 18,
+                      "formatOptions": {
+                        "thresholdsOptions": "icons",
+                        "thresholdsGrid": [
+                          {
+                            "operator": "==",
+                            "thresholdValue": "Add group",
+                            "representation": "Add",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "==",
+                            "thresholdValue": "Delete group",
+                            "representation": "Subtract",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "==",
+                            "thresholdValue": "Add member to group",
+                            "representation": "AddTeamMember",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "==",
+                            "thresholdValue": "Remove member from group",
+                            "representation": "Delete",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "Default",
+                            "thresholdValue": null,
+                            "representation": null,
+                            "text": "{0}{1}"
+                          }
+                        ],
+                        "customColumnWidthSetting": "32.5ch"
+                      }
+                    },
+                    {
+                      "columnMatch": "Object",
+                      "formatter": 1,
+                      "formatOptions": {
+                        "linkColumn": "ObjectUrl",
+                        "linkTarget": "Url"
+                      },
+                      "tooltipFormat": {
+                        "tooltip": "Selecting this link will open a new tab and take you to the AAD User. If you are redirected to the home portal, you may lack the required permissions"
+                      }
+                    },
+                    {
+                      "columnMatch": "ObjectId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ObjectType",
+                      "formatter": 18,
+                      "formatOptions": {
+                        "thresholdsOptions": "icons",
+                        "thresholdsGrid": [
+                          {
+                            "operator": "==",
+                            "thresholdValue": "User",
+                            "representation": "Person",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "==",
+                            "thresholdValue": "Group",
+                            "representation": "PersonWithFriend",
+                            "text": "{0}{1}"
+                          },
+                          {
+                            "operator": "Default",
+                            "thresholdValue": null,
+                            "representation": "Blank",
+                            "text": "{0}{1}"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "columnMatch": "ObjectUrl",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatedBy",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatedByName",
+                      "formatter": 1,
+                      "formatOptions": {
+                        "linkColumn": "InitiatedBy",
+                        "linkTarget": "CellDetails",
+                        "linkIsContextBlade": true
+                      }
+                    },
+                    {
+                      "columnMatch": "InitiatedById",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "Result",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "TargetResources",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "DetailedInformation",
+                      "formatter": 18,
+                      "formatOptions": {
+                        "linkTarget": "GenericDetails",
+                        "linkIsContextBlade": true,
+                        "thresholdsOptions": "icons",
+                        "thresholdsGrid": [
+                          {
+                            "operator": "Default",
+                            "thresholdValue": null,
+                            "representation": "1",
+                            "text": "{0}{1}"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "columnMatch": "-- Group By --",
+                      "formatter": 18,
+                      "formatOptions": {
+                        "thresholdsOptions": "icons",
+                        "thresholdsGrid": [
+                          {
+                            "operator": "Default",
+                            "thresholdValue": null,
+                            "representation": "PersonWithFriend",
+                            "text": "{0}{1}"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "rowLimit": 10000,
+                  "filter": true
+                }
+              },
+              "name": "Grid View - Results By Group"
+            }
+          ]
+        },
+        "conditionalVisibilities": [
+          {
+            "parameterName": "ResultsBy",
+            "comparison": "isEqualTo",
+            "value": "Chronology"
+          },
+          {
+            "parameterName": "ShowHighVolume",
+            "comparison": "isEqualTo",
+            "value": "true"
+          }
+        ],
+        "name": "Group - Results by Chronology"
+      }
+    ],
+    "fallbackResourceIds": [
+      "Azure Monitor"
+    ],
+    "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+  }
