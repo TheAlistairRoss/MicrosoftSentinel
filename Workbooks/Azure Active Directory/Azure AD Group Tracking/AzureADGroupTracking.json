@@ -306,6 +306,18 @@
         ],
         "parameters": [
           {
+            "id": "44ea1499-2049-44fa-b038-982ac3458e05",
+            "version": "KqlParameterItem/1.0",
+            "name": "GroupStartsWith",
+            "label": "Group Starts With",
+            "type": 1,
+            "description": "Case Insensitive string which the group name begins with",
+            "timeContext": {
+              "durationMs": 2592000000
+            },
+            "timeContextFromParameter": "TimeRange"
+          },
+          {
             "id": "854d1cb5-76f0-4475-b959-0d4a5723426a",
             "version": "KqlParameterItem/1.0",
             "name": "SelectedGroup",
@@ -316,27 +328,25 @@
             "multiSelect": true,
             "quote": "'",
             "delimiter": ",",
-            "query": "AuditLogs\r\n| where Category == \"GroupManagement\"\r\n// extract the Group displayName first for filtering\r\n| where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n| extend Group = case(\r\n    ActivityDisplayName in (\"Add member to group\",\"Add owner to group\"), tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].newValue))), \r\n    ActivityDisplayName == \"Remove member from group\", tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].oldValue))), \r\n    ActivityDisplayName in (\"Add group\",\"Delete group\",\"Update group\",\"Set group license\",\"Start applying group based license to users\",\"Finish applying group based license to users\"), tostring(TargetResources[0].displayName), \r\n    ActivityDisplayName == \"Add app role assignment to group\", tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[4].newValue))), \r\n    ActivityDisplayName == \"Remove app role assignment to group\", tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[4].oldValue))), \r\n    \"UnknownActivityType\"\r\n    )\r\n| summarize ActivityCount = count() by Group\r\n| project value = Group, label = strcat(Group,\" (\",ActivityCount,\")\")\r\n| order by value asc",
+            "query": "AuditLogs\r\n| where Category == \"GroupManagement\"\r\n// extract the Group displayName first for filtering\r\n| where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n| extend Group = case(\r\n    ActivityDisplayName in (\"Add member to group\",\"Add owner to group\"), tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].newValue))), \r\n    ActivityDisplayName == \"Remove member from group\", tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].oldValue))), \r\n    ActivityDisplayName in (\"Add group\",\"Delete group\",\"Update group\",\"Set group license\",\"Start applying group based license to users\",\"Finish applying group based license to users\"), tostring(TargetResources[0].displayName), \r\n    ActivityDisplayName == \"Add app role assignment to group\", tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[4].newValue))), \r\n    ActivityDisplayName == \"Remove app role assignment to group\", tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[4].oldValue))), \r\n    \"UnknownActivityType\"\r\n    )\r\n| where  Group startswith \"{GroupStartsWith}\"\r\n| summarize ActivityCount = count() by Group\r\n| project value = Group, label = strcat(Group,\" (\",ActivityCount,\")\")\r\n| order by value asc",
             "crossComponentResources": [
               "{Workspace}"
             ],
+            "value": [
+              "All Users",
+              "ContosoVendorAccess",
+              "IoTEngineering"
+            ],
             "typeSettings": {
-              "additionalResourceOptions": [
-                "value::all"
-              ],
-              "selectAllValue": "*",
+              "additionalResourceOptions": [],
               "showDefault": false
             },
             "timeContext": {
-              "durationMs": 172800000
+              "durationMs": 0
             },
             "timeContextFromParameter": "TimeRange",
-            "defaultValue": "value::all",
             "queryType": 0,
-            "resourceType": "microsoft.operationalinsights/workspaces",
-            "value": [
-              "PartnerGuestAccess"
-            ]
+            "resourceType": "microsoft.operationalinsights/workspaces"
           },
           {
             "id": "081d3340-7c85-427a-9a55-f65778d21a5a",
@@ -348,7 +358,7 @@
             "multiSelect": true,
             "quote": "'",
             "delimiter": ",",
-            "query": "AuditLogs\r\n| where Category == \"GroupManagement\"\r\n// extract the Group displayName first for filtering\r\n| where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n| extend Group = case(\r\n    ActivityDisplayName in (\"Add member to group\",\"Add owner to group\"), tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].newValue))), \r\n    ActivityDisplayName == \"Remove member from group\", tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].oldValue))), \r\n    ActivityDisplayName in (\"Add group\",\"Delete group\",\"Update group\",\"Set group license\",\"Start applying group based license to users\",\"Finish applying group based license to users\"), tostring(TargetResources[0].displayName), \r\n    ActivityDisplayName == \"Add app role assignment to group\", tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[4].newValue))), \r\n    ActivityDisplayName == \"Remove app role assignment to group\", tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[4].oldValue))), \r\n    \"UnknownActivityType\"\r\n    )\r\n| where \"{SelectedGroup}\" == \"'*'\" or Group in ({SelectedGroup})\r\n| summarize count() by ActivityDisplayName\r\n| extend label = strcat(ActivityDisplayName,\" (\",count_,\")\")\r\n| project value = ActivityDisplayName, label\r\n| order by label asc\r\n ",
+            "query": "AuditLogs\r\n| where Category == \"GroupManagement\"\r\n// extract the Group displayName first for filtering\r\n| where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n{GroupName}\r\n| where \"{SelectedGroup}\" == \"'*'\" or Group in ({SelectedGroup})\r\n| summarize count() by ActivityDisplayName\r\n| extend label = strcat(ActivityDisplayName,\" (\",count_,\")\")\r\n| project value = ActivityDisplayName, label\r\n| order by label asc\r\n ",
             "crossComponentResources": [
               "{Workspace}"
             ],
@@ -360,7 +370,7 @@
               "showDefault": false
             },
             "timeContext": {
-              "durationMs": 172800000
+              "durationMs": 2592000000
             },
             "timeContextFromParameter": "TimeRange",
             "defaultValue": "value::all",
@@ -378,7 +388,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "let Activities = datatable(ActivityDisplayName: string, Ordered: int) [\r\n    \"Add member to group\", 0,\r\n    \"Remove member from group\", 1,\r\n    \"Add owner to group\", 2,\r\n    \"Remove owner from group\", 3,\r\n    \"Add group\", 4,\r\n    \"Delete group\", 5,\r\n    \"Update group\", 6,\r\n    \"Set group license\", 7,\r\n    \"Start applying group based license to users\", 8,\r\n    \"Finish applying group based license to users\", 9,\r\n    \"Add app role assignment to group\", 10,\r\n    \"Remove app role assignment from group\", 11,\r\n    \"Add a deletion-marked app role assignment grant to group as part of link removal\", 12\r\n];\r\nlet StartTime = datetime(\"{TimeRange:startISO}\");\r\nlet EndTime = datetime(\"{TimeRange:endISO}\");\r\nlet TimeGrain = {TimeRange:grain};\r\nlet ZeroTimeSeries = repeat(0,array_length(range(StartTime,EndTime,TimeGrain)));\r\nlet GroupActivity = materialize ( \r\n    AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    {GroupName}\r\n    | where \"{SelectedGroup}\" == \"'*'\" or Group in ({SelectedGroup})\r\n    | where \"{SelectedActivity}\" == \"'*'\" or ActivityDisplayName in ({SelectedActivity})\r\n    | project TimeGenerated, ActivityDisplayName);\r\nGroupActivity\r\n| summarize Count = count() by ActivityDisplayName\r\n| join kind= inner ( \r\n    GroupActivity \r\n    | make-series TimeSeries = count() default = 0  on TimeGenerated in range(StartTime, EndTime, TimeGrain) by ActivityDisplayName\r\n    | project TimeSeries, ActivityDisplayName\r\n    )\r\n    on ActivityDisplayName\r\n| join kind = fullouter (Activities)\r\n    on ActivityDisplayName\r\n| extend Count = iif(isempty(Count),0,Count)\r\n| extend TimeSeries = iif(isempty(TimeSeries),ZeroTimeSeries,TimeSeries)\r\n| project ActivityDisplayName = ActivityDisplayName2, Count, TimeSeries, Ordered\r\n| order by Ordered asc nulls last\r\n\r\n\r\n",
+        "query": "let StartTime = datetime(\"{TimeRange:startISO}\");\r\nlet EndTime = datetime(\"{TimeRange:endISO}\");\r\nlet TimeGrain = {TimeRange:grain};\r\nlet ZeroTimeSeries = repeat(0,array_length(range(StartTime,EndTime,TimeGrain)));\r\nlet GroupActivity = materialize ( \r\n    AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    {GroupName}\r\n    | where \"{SelectedGroup}\" == \"'*'\" or Group in ({SelectedGroup})\r\n    | where \"{SelectedActivity}\" == \"'*'\" or ActivityDisplayName in ({SelectedActivity})\r\n    | project TimeGenerated, ActivityDisplayName);\r\nGroupActivity\r\n| summarize Count = count() by ActivityDisplayName\r\n| join kind= inner ( \r\n    GroupActivity \r\n    | make-series TimeSeries = count() default = 0  on TimeGenerated in range(StartTime, EndTime, TimeGrain) by ActivityDisplayName\r\n    | project TimeSeries, ActivityDisplayName\r\n    )\r\n    on ActivityDisplayName\r\n| extend Count = iif(isempty(Count),0,Count)\r\n| extend TimeSeries = iif(isempty(TimeSeries),ZeroTimeSeries,TimeSeries)\r\n| project ActivityDisplayName, Count, TimeSeries\r\n| order by Count desc nulls last\r\n\r\n\r\n",
         "size": 1,
         "timeContext": {
           "durationMs": 0
@@ -407,99 +417,6 @@
                 "style": "decimal",
                 "maximumSignificantDigits": 3
               }
-            }
-          },
-          "rightContent": {
-            "columnMatch": "ActivityDisplayName",
-            "formatter": 18,
-            "formatOptions": {
-              "thresholdsOptions": "icons",
-              "thresholdsGrid": [
-                {
-                  "operator": "==",
-                  "thresholdValue": "Add member to group",
-                  "representation": "AddTeamMember",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Remove member from group",
-                  "representation": "Delete",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Add group",
-                  "representation": "Add",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Delete group",
-                  "representation": "Subtract",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Start applying group based license to users",
-                  "representation": "Start",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Finish applying group based license to users",
-                  "representation": "Stop",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Set group license",
-                  "representation": "Edit",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Update group",
-                  "representation": "Properties",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Add app role assignment to group",
-                  "representation": "AddTile",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Remove app role assignment from group",
-                  "representation": "Canceled",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Add owner to group",
-                  "representation": "Star",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Remove owner from group",
-                  "representation": "Favorite",
-                  "text": ""
-                },
-                {
-                  "operator": "==",
-                  "thresholdValue": "Add a deletion-marked app role assignment grant to group as part of link removal",
-                  "representation": "Link",
-                  "text": ""
-                },
-                {
-                  "operator": "Default",
-                  "thresholdValue": null,
-                  "representation": "question",
-                  "text": ""
-                }
-              ]
             }
           },
           "secondaryContent": {
@@ -610,13 +527,50 @@
             "name": "text - Help Activities Grid Overview"
           },
           {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "parameters": [
+                {
+                  "id": "846f2732-aa94-47e2-b19c-2a76401b29d6",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "OverviewPage",
+                  "label": "Page",
+                  "type": 2,
+                  "isRequired": true,
+                  "query": "let pageSize = {LimitGridRowsTo};\r\nlet GroupManagementLogs = toscalar(AuditLogs\r\n| where Category == \"GroupManagement\"\r\n// extract the Group displayName first for filtering\r\n| where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n{GroupName}\r\n| where \"{SelectedGroup}\" == \"'*'\" or Group in ({SelectedGroup})\r\n| where \"{SelectedActivity}\" == \"'*'\" or ActivityDisplayName in ({SelectedActivity})\r\n| summarize count() by Group, ActivityDisplayName\r\n| count);\r\nlet NumberofPages = (GroupManagementLogs / pageSize) + (iif( (GroupManagementLogs % pageSize) > 0, 1, 0));\r\nprint value = range(1,NumberofPages,1)\r\n| mv-expand value\r\n| extend value = iif(isnotempty(value),value,0)\r\n| extend label = value\r\n| serialize\r\n| extend selected = iif(row_number() in (0,1), true, false)",
+                  "crossComponentResources": [
+                    "{Workspace}"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 0
+                  },
+                  "timeContextFromParameter": "TimeRange",
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces"
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "parameters - 5"
+          },
+          {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let StartTime = datetime(\"{TimeRange:startISO}\");\r\nlet EndTime = datetime(\"{TimeRange:endISO}\");\r\nlet TimeGrain = {TimeRange:grain};\r\nlet GroupLogs = materialize (AuditLogs\r\n| where Category == \"GroupManagement\"\r\n// extract the Group displayName first for filtering\r\n| where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n{GroupName}\r\n| where \"{SelectedGroup}\" == \"'*'\" or Group in ({SelectedGroup})\r\n| where \"{SelectedActivity}\" == \"'*'\" or ActivityDisplayName in ({SelectedActivity})\r\n    | extend AADTenandtIdGroupAndActivity = strcat(AADTenantId,\"_\",Group,\"_\",ActivityDisplayName)\r\n    | project TimeGenerated, Group, ActivityDisplayName, AADTenantId, AADTenandtIdGroupAndActivity, Result\r\n    );\r\nlet GroupLogsAggregation = GroupLogs\r\n    | make-series TimeSeries = count() default = 0 on TimeGenerated in range(StartTime, EndTime, TimeGrain) by AADTenandtIdGroupAndActivity\r\n    | project-away TimeGenerated\r\n    | extend Count = array_sum(TimeSeries);\r\nlet GroupLogsResults = GroupLogs\r\n    | evaluate pivot(Result, count(), AADTenandtIdGroupAndActivity)\r\n    | extend Success = column_ifexists(\"success\",0)\r\n    | extend Failure = column_ifexists(\"failure\",0)\r\n    | project AADTenandtIdGroupAndActivity, Success, Failure\r\n    ;\r\nlet GroupTotalCount = GroupLogsAggregation\r\n| summarize GroupCount = sum(Count) by AADTenandtIdGroupAndActivity;\r\nGroupTotalCount\r\n| join kind=innerunique (\r\n    GroupLogsAggregation\r\n    )\r\n    on AADTenandtIdGroupAndActivity\r\n| join kind = innerunique (\r\n    GroupLogsResults\r\n    )\r\n    on AADTenandtIdGroupAndActivity\r\n| join kind = innerunique (\r\n    GroupLogs\r\n    | summarize arg_max(TimeGenerated, *) by AADTenandtIdGroupAndActivity\r\n    ) \r\non AADTenandtIdGroupAndActivity\r\n| extend GroupAndActivity = strcat(Group, \"-\", ActivityDisplayName)\r\n| project\r\n    Group,\r\n    ActivityDisplayName,\r\n    AADTenantId,\r\n    Count,\r\n    Result =\"\",\r\n    Success,\r\n    Failure,\r\n    TimeSeries,\r\n    GroupAndActivity,\r\n    GroupCount\r\n| order by GroupCount desc, Count desc\r\n| project-away GroupCount\r\n\r\n\r\n\r\n",
+              "query": "let selectedPageNumber = {OverviewPage};\r\nlet pageSize = {LimitGridRowsTo};\r\nlet StartTime = datetime(\"{TimeRange:startISO}\");\r\nlet EndTime = datetime(\"{TimeRange:endISO}\");\r\nlet TimeGrain = {TimeRange:grain};\r\nlet GroupLogs = materialize (AuditLogs\r\n| where Category == \"GroupManagement\"\r\n// extract the Group displayName first for filtering\r\n| where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n{GroupName}\r\n| where \"{SelectedGroup}\" == \"'*'\" or Group in ({SelectedGroup})\r\n| where \"{SelectedActivity}\" == \"'*'\" or ActivityDisplayName in ({SelectedActivity})\r\n    | extend AADTenandtIdGroupAndActivity = strcat(AADTenantId,\"_\",Group,\"_\",ActivityDisplayName)\r\n    | project TimeGenerated, Group, ActivityDisplayName, AADTenantId, AADTenandtIdGroupAndActivity, Result\r\n    );\r\nlet GroupLogsAggregation = GroupLogs\r\n    | make-series TimeSeries = count() default = 0 on TimeGenerated in range(StartTime, EndTime, TimeGrain) by AADTenandtIdGroupAndActivity\r\n    | project-away TimeGenerated\r\n    | extend Count = array_sum(TimeSeries);\r\nlet GroupLogsResults = GroupLogs\r\n    | evaluate pivot(Result, count(), AADTenandtIdGroupAndActivity)\r\n    | extend Success = column_ifexists(\"success\",0)\r\n    | extend Failure = column_ifexists(\"failure\",0)\r\n    | project AADTenandtIdGroupAndActivity, Success, Failure\r\n    ;\r\nlet GroupTotalCount = GroupLogsAggregation\r\n| summarize GroupCount = sum(Count) by AADTenandtIdGroupAndActivity;\r\nGroupTotalCount\r\n| join kind=innerunique (\r\n    GroupLogsAggregation\r\n    )\r\n    on AADTenandtIdGroupAndActivity\r\n| join kind = innerunique (\r\n    GroupLogsResults\r\n    )\r\n    on AADTenandtIdGroupAndActivity\r\n| join kind = innerunique (\r\n    GroupLogs\r\n    | summarize arg_max(TimeGenerated, *) by AADTenandtIdGroupAndActivity\r\n    ) \r\non AADTenandtIdGroupAndActivity\r\n| extend GroupAndActivity = strcat(Group, \"-\", ActivityDisplayName)\r\n| project\r\n    Group,\r\n    ActivityDisplayName,\r\n    AADTenantId,\r\n    Count,\r\n    Result =\"\",\r\n    Success,\r\n    Failure,\r\n    TimeSeries,\r\n    GroupAndActivity,\r\n    GroupCount\r\n| order by GroupCount desc, Count desc\r\n| project-away GroupCount\r\n| serialize \r\n| extend pageStart = pageSize * (selectedPageNumber - 1)\r\n| extend pageEnd = pageSize * (selectedPageNumber)\r\n| where row_number() > pageStart and row_number() <= pageEnd\r\n| project-away pageStart, pageEnd\r\n\r\n\r\n\r\n",
               "size": 0,
               "timeContext": {
-                "durationMs": 2592000000
+                "durationMs": 0
               },
               "timeContextFromParameter": "TimeRange",
               "exportMultipleValues": true,
@@ -2289,14 +2243,14 @@
       "content": {
         "version": "NotebookGroup/1.0",
         "groupType": "editable",
-        "title": "Group - Results by Licencing",
+        "title": "Group - Results by Licensing",
         "items": [
           {
             "type": 1,
             "content": {
-              "json": "# Results for Licencing Changes"
+              "json": "# Results for Licensing Changes"
             },
-            "name": "Text - Results for Licencing"
+            "name": "Text - Results for Licensing"
           },
           {
             "type": 9,
@@ -2309,7 +2263,7 @@
                 {
                   "id": "cf0c4720-00af-45b7-9c93-00ccb098a01a",
                   "version": "KqlParameterItem/1.0",
-                  "name": "LicencingActivitiesList",
+                  "name": "LicensingActivitiesList",
                   "type": 2,
                   "multiSelect": true,
                   "quote": "'",
@@ -2335,7 +2289,7 @@
                   "label": "Page",
                   "type": 2,
                   "isRequired": true,
-                  "query": "let pageSize = {LimitGridRowsTo};\r\nlet GroupLogs = toscalar(AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n    | where ActivityDisplayName in ({LicencingActivitiesList})\r\n    | where \"{SelectedActivity}\" == \"'*'\" or ActivityDisplayName in ({SelectedActivity})\r\n    {GroupName}\r\n    | where \"'*'\" == \"{SelectedGroup}\" or Group in ({SelectedGroup})\r\n    | count);\r\nlet NumberofPages = (GroupLogs / pageSize) + (iif( (GroupLogs % pageSize) > 0, 1, 0));\r\nprint value = range(1,NumberofPages,1)\r\n| mv-expand value\r\n| extend value = iif(isnotempty(value),value,0)\r\n| extend label = value\r\n| serialize\r\n| extend selected = iif(row_number() in (0,1), true, false)\r\n",
+                  "query": "let pageSize = {LimitGridRowsTo};\r\nlet GroupLogs = toscalar(AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n    | where ActivityDisplayName in ({LicensingActivitiesList})\r\n    | where \"{SelectedActivity}\" == \"'*'\" or ActivityDisplayName in ({SelectedActivity})\r\n    {GroupName}\r\n    | where \"'*'\" == \"{SelectedGroup}\" or Group in ({SelectedGroup})\r\n    | count);\r\nlet NumberofPages = (GroupLogs / pageSize) + (iif( (GroupLogs % pageSize) > 0, 1, 0));\r\nprint value = range(1,NumberofPages,1)\r\n| mv-expand value\r\n| extend value = iif(isnotempty(value),value,0)\r\n| extend label = value\r\n| serialize\r\n| extend selected = iif(row_number() in (0,1), true, false)\r\n",
                   "crossComponentResources": [
                     "{Workspace}"
                   ],
@@ -2355,13 +2309,13 @@
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces"
             },
-            "name": "parameters - Results for Licencing"
+            "name": "parameters - Results for Licensing"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let selectedPageNumber = {LicensingOverviewPageNumber};\r\nlet pageSize = {LimitGridRowsTo};\r\nlet GroupLogs = AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n    | project-away\r\n        ResourceId,\r\n        OperationVersion,\r\n        Category,\r\n        ResultSignature,\r\n        Resource,\r\n        ResourceGroup,\r\n        Level,\r\n        SourceSystem,\r\n        TenantId \r\n    | where ActivityDisplayName in ({LicencingActivitiesList})\r\n    | where \"{SelectedActivity}\" == \"'*'\" or ActivityDisplayName in ({SelectedActivity})\r\n    {GroupName}\r\n    | where \"'*'\" == \"{SelectedGroup}\" or Group in ({SelectedGroup});\r\nlet GroupDetails = \r\n    GroupLogs\r\n    | extend GroupId = tostring(TargetResources[0].id)\r\n    {InitiatedBy}\r\n    | extend Info = \"More Details\"\r\n    | extend GroupUrl = strcat(\"https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupDetailsMenuBlade/Overview/groupId/\", GroupId);   \r\n//Get Sku Lists \r\nlet AggregatedGroupDetails = \r\n    GroupLogs\r\n    | project ActivityDisplayName, CorrelationId, TargetResources, Id\r\n    | mv-expand ModifiedProperties = TargetResources[0].modifiedProperties[0]\r\n    | evaluate bag_unpack(ModifiedProperties)\r\n    //| where isempty(displayName)\r\n    | extend oldValue = column_ifexists(\"oldValue\", \"\")\r\n    | extend newValue = column_ifexists(\"newValue\", \"\")\r\n    | mv-expand parse_json(newValue), parse_json(oldValue)\r\n    | parse oldValue with * \"SkuName=\" OldSkuValue \", AccountId=\" Drop \r\n    | parse newValue with * \"SkuName=\" NewSkuValue \", AccountId=\" Drop \r\n    | project-away Drop, oldValue, newValue\r\n    //\r\n    | extend Message = iif(ActivityDisplayName == \"Finish applying group based license to users\", \r\n        tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].newValue))),\r\n        \"\")\r\n   \r\n    | parse Message with * \"licenses: \" Success: int * \"failed: \" Failed: int *\r\n    | extend Success = iif(isempty(Success),0,Success)\r\n    | extend Failed = iif(isempty(Failed),0,Failed)\r\n    | summarize\r\n        OldSkuValue = make_list_if(OldSkuValue, isnotempty(OldSkuValue)),\r\n        NewSkuValue = make_list_if(NewSkuValue, isnotempty(NewSkuValue))\r\n        by Id, Success, Failed;\r\nAggregatedGroupDetails\r\n| join kind=inner (GroupDetails) on Id\r\n| project\r\n    TimeGenerated,\r\n    Group,\r\n    GroupId,\r\n    GroupUrl,\r\n    ActivityDisplayName,\r\n    Result,\r\n    ResultType, \r\n    ResultDescription, \r\n    ResultReason,\r\n    Info,\r\n    ['Success/Failed'] = \"\",\r\n    Success, \r\n    Failed,\r\n    InitiatedBy,\r\n    InitiatedByType,\r\n    InitiatedByName,\r\n    InitiatedById,\r\n    TargetResources,\r\n    OldSkuValue,\r\n    NewSkuValue,\r\n    CorrelationId,\r\n    AADTenantId,\r\n    Id\r\n| order by  TimeGenerated desc\r\n| serialize \r\n| extend pageStart = pageSize * (selectedPageNumber - 1)\r\n| extend pageEnd = pageSize * (selectedPageNumber)\r\n| where row_number() > pageStart and row_number() <= pageEnd\r\n| project-away pageStart, pageEnd",
+              "query": "let selectedPageNumber = {LicensingOverviewPageNumber};\r\nlet pageSize = {LimitGridRowsTo};\r\nlet GroupLogs = AuditLogs\r\n    | where Category == \"GroupManagement\"\r\n    | where \"{SelectedAADTenantId}\" == \"'*'\" or AADTenantId in ({SelectedAADTenantId})\r\n    | project-away\r\n        ResourceId,\r\n        OperationVersion,\r\n        Category,\r\n        ResultSignature,\r\n        Resource,\r\n        ResourceGroup,\r\n        Level,\r\n        SourceSystem,\r\n        TenantId \r\n    | where ActivityDisplayName in ({LicensingActivitiesList})\r\n    | where \"{SelectedActivity}\" == \"'*'\" or ActivityDisplayName in ({SelectedActivity})\r\n    {GroupName}\r\n    | where \"'*'\" == \"{SelectedGroup}\" or Group in ({SelectedGroup});\r\nlet GroupDetails = \r\n    GroupLogs\r\n    | extend GroupId = tostring(TargetResources[0].id)\r\n    {InitiatedBy}\r\n    | extend Info = \"More Details\"\r\n    | extend GroupUrl = strcat(\"https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupDetailsMenuBlade/Overview/groupId/\", GroupId);   \r\n//Get Sku Lists \r\nlet AggregatedGroupDetails = \r\n    GroupLogs\r\n    | project ActivityDisplayName, CorrelationId, TargetResources, Id\r\n    | mv-expand ModifiedProperties = TargetResources[0].modifiedProperties[0]\r\n    | evaluate bag_unpack(ModifiedProperties)\r\n    //| where isempty(displayName)\r\n    | extend oldValue = column_ifexists(\"oldValue\", \"\")\r\n    | extend newValue = column_ifexists(\"newValue\", \"\")\r\n    | mv-expand parse_json(newValue), parse_json(oldValue)\r\n    | parse oldValue with * \"SkuName=\" OldSkuValue \", AccountId=\" Drop \r\n    | parse newValue with * \"SkuName=\" NewSkuValue \", AccountId=\" Drop \r\n    | project-away Drop, oldValue, newValue\r\n    //\r\n    | extend Message = iif(ActivityDisplayName == \"Finish applying group based license to users\", \r\n        tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].newValue))),\r\n        \"\")\r\n   \r\n    | parse Message with * \"licenses: \" Success: int * \"failed: \" Failed: int *\r\n    | extend Success = iif(isempty(Success),0,Success)\r\n    | extend Failed = iif(isempty(Failed),0,Failed)\r\n    | summarize\r\n        OldSkuValue = make_list_if(OldSkuValue, isnotempty(OldSkuValue)),\r\n        NewSkuValue = make_list_if(NewSkuValue, isnotempty(NewSkuValue))\r\n        by Id, Success, Failed;\r\nAggregatedGroupDetails\r\n| join kind=inner (GroupDetails) on Id\r\n| project\r\n    TimeGenerated,\r\n    Group,\r\n    GroupId,\r\n    GroupUrl,\r\n    ActivityDisplayName,\r\n    Result,\r\n    ResultType, \r\n    ResultDescription, \r\n    ResultReason,\r\n    Info,\r\n    ['Success/Failed'] = \"\",\r\n    Success, \r\n    Failed,\r\n    InitiatedBy,\r\n    InitiatedByType,\r\n    InitiatedByName,\r\n    InitiatedById,\r\n    TargetResources,\r\n    OldSkuValue,\r\n    NewSkuValue,\r\n    CorrelationId,\r\n    AADTenantId,\r\n    Id\r\n| order by  TimeGenerated desc\r\n| serialize \r\n| extend pageStart = pageSize * (selectedPageNumber - 1)\r\n| extend pageEnd = pageSize * (selectedPageNumber)\r\n| where row_number() > pageStart and row_number() <= pageEnd\r\n| project-away pageStart, pageEnd",
               "size": 1,
               "showAnalytics": true,
               "timeContext": {
@@ -2636,7 +2590,129 @@
               "comparison": "isNotEqualTo",
               "value": "0"
             },
-            "name": "query - Results for Licencing Overview"
+            "name": "query - Results for Licensing Overview"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "let filteredLogs = AuditLogs\r\n    | where CorrelationId == \"{selectedCorrelationId}\";\r\nlet firstLog = toscalar(filteredLogs\r\n    | summarize min(TimeGenerated));\r\nlet lastLog = toscalar(filteredLogs\r\n    | summarize max(TimeGenerated));\r\nlet CompletedTime = toscalar(filteredLogs\r\n    | where OperationName == \"Finish applying group based license to users\"\r\n    | project TimeGenerated);\r\nfilteredLogs\r\n    | extend userPrincipalName = tostring(TargetResources[0].userPrincipalName)\r\n    | summarize TimeGenerated = max(TimeGenerated) by userPrincipalName\r\n    | make-series Count = count() default = 0 on TimeGenerated in range (firstLog, lastLog, 1m)\r\n    | extend Stats = series_stats_dynamic(Count)\r\n    | project  \r\n        TimeStarted = firstLog,\r\n        CompletedTime = CompletedTime ,\r\n        TimeTaken = case(isnotempty(CompletedTime),\r\n            datetime_diff(\"Second\", CompletedTime, firstLog),\r\n            datetime_diff(\"Second\", now(), firstLog)\r\n        ),\r\n        TotalCompleted = Stats.sum, \r\n        AverageEventPerMinute = round(toint(Stats.avg))\r\n\r\n\r\n\r\n\r\n",
+                    "size": 4,
+                    "timeContext": {
+                      "durationMs": 2592000000
+                    },
+                    "timeContextFromParameter": "TimeRange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "crossComponentResources": [
+                      "{Workspace}"
+                    ],
+                    "visualization": "table",
+                    "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "TimeStarted",
+                          "formatter": 6
+                        },
+                        {
+                          "columnMatch": "CompletedTime",
+                          "formatter": 6
+                        },
+                        {
+                          "columnMatch": "TimeTaken",
+                          "formatter": 1,
+                          "numberFormat": {
+                            "unit": 24,
+                            "options": {
+                              "style": "decimal"
+                            }
+                          }
+                        },
+                        {
+                          "columnMatch": "TotalCompleted",
+                          "formatter": 1,
+                          "numberFormat": {
+                            "unit": 17,
+                            "options": {
+                              "style": "decimal"
+                            }
+                          }
+                        },
+                        {
+                          "columnMatch": "AverageEventPerMinute",
+                          "formatter": 1,
+                          "numberFormat": {
+                            "unit": 17,
+                            "options": {
+                              "style": "decimal"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "tileSettings": {
+                      "titleContent": {
+                        "columnMatch": "title",
+                        "formatter": 1
+                      },
+                      "leftContent": {
+                        "columnMatch": "left",
+                        "formatter": 6,
+                        "numberFormat": {
+                          "unit": 17,
+                          "options": {
+                            "style": "decimal",
+                            "maximumFractionDigits": 2,
+                            "maximumSignificantDigits": 3
+                          }
+                        },
+                        "dateFormat": {
+                          "formatName": "shortDateTimePattern"
+                        }
+                      },
+                      "secondaryContent": {
+                        "columnMatch": "right",
+                        "formatter": 12,
+                        "formatOptions": {
+                          "palette": "blue"
+                        }
+                      },
+                      "showBorder": false
+                    }
+                  },
+                  "name": "query - 8"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "let filteredLogs = AuditLogs\r\n    | where CorrelationId == \"{selectedCorrelationId}\"; \r\nlet startTime = toscalar(filteredLogs\r\n    | summarize min(TimeGenerated));\r\nlet endTime = toscalar(filteredLogs\r\n    | summarize max(TimeGenerated));\r\nfilteredLogs\r\n| extend userPrincipalName = tostring(TargetResources[0].userPrincipalName)\r\n| summarize arg_max(TimeGenerated, Result) by userPrincipalName\r\n| make-series Count = count() default = 0 on TimeGenerated in range (startTime, endTime, 1m) by Result\r\n\r\n",
+                    "size": 0,
+                    "timeContext": {
+                      "durationMs": 2592000000
+                    },
+                    "timeContextFromParameter": "TimeRange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "crossComponentResources": [
+                      "{Workspace}"
+                    ],
+                    "visualization": "barchart"
+                  },
+                  "name": "query - 7"
+                }
+              ]
+            },
+            "name": "group - 10",
+            "styleSettings": {
+              "showBorder": true
+            }
           },
           {
             "type": 1,
@@ -2690,7 +2766,7 @@
               "parameterName": "selectedCorrelationId",
               "comparison": "isNotEqualTo"
             },
-            "name": "parameters - Results for Licencing"
+            "name": "parameters - Results for Licensing"
           },
           {
             "type": 3,
@@ -2834,7 +2910,7 @@
                 "value": "0"
               }
             ],
-            "name": "query - Results for Licencing per User"
+            "name": "query - Results for Licensing per User"
           },
           {
             "type": 1,
@@ -2856,7 +2932,7 @@
         "comparison": "isEqualTo",
         "value": "Licensing"
       },
-      "name": "Group - Results for Licencing"
+      "name": "Group - Results for Licensing"
     },
     {
       "type": 12,
