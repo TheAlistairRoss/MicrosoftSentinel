@@ -13,7 +13,7 @@ Before working on this lab, the following helps:<br>
 
 The following lab is based on the original Lab written by **Brian Delaney**, Principal PFE  **Jon Shectman**, Associate Architect.
 
-This has been update by **Alistair Ross**, CSA-E to focus on Analysts tasks
+This has been update / redesigned by **[Alistair Ross](https://github.com/TheAlistairRoss)**, Cloud Solution Architect - Engineering and [Anne Igbekele](https://github.com/anne-efi), Cloud Solution Architect - Engineering to focus on tasks performed Threat Management tasks performed by Analysts.
 
 ## Get Started 
 <a href="./LAB00/README.MD" target="_blank">Lab00 - Setup</a>
