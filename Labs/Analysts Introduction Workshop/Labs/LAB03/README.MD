@@ -12,7 +12,7 @@ Before we explore the logs. We need to have a hypothesis in mind. At this initia
 
 1. From within the Microsoft Sentinel blade, under Threat management, select **Incidents**.
 
-![alt text](/./LAB01/screenshots/MicrosoftSentinel-MenuIncidents.png)<br><br>
+![alt text](../LAB01/screenshots/MicrosoftSentinel-MenuIncidents.png)<br><br>
 
 2. Locate your incident *standard**XX** – Failed Logon* (where “XX” is the number you have been assigned at the start of class).
 
@@ -20,11 +20,11 @@ Before we explore the logs. We need to have a hypothesis in mind. At this initia
 
 4. Click on your incident, then review the details in the right hand pane. Click **View full details** 
 
-![alt text](/./LAB01/screenshots/)<br><br>
+![alt text](screenshots/Incident-ViewFullDetails.png)<br><br>
 
 5. Click the **Entities** tab and take a note of the entities, you will need this in the next task. In this example there should be an account and an IP Address
 
-![alt text](/./LAB01/screenshots/SentinelIncident-EntitiesTab.png)<br><br>
+![alt text](../LAB01/screenshots/SentinelIncident-EntitiesTab.png)<br><br>
 
 6. Navigate back to the Microsoft Sentinel Incidents by selecting the **X** in the upper right hand corner.
 
