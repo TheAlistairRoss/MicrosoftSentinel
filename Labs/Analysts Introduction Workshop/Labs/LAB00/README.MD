@@ -8,7 +8,7 @@ After completing this lab, you will be able to:
 
 #### Scenario
 
-In this technical workshop, attendees will analyze log data from a pre-populated Sentinel workspace. You will not need (and won’t be able to use) your own Azure tenant or subscription. User names and passwords will be provided throughout. Please log on exactly as detailed, including the number that you have been assigned. **Failure to do so will result in potential problems for other lab participants.**
+In this technical workshop, attendees will analyze log data from a pre-populated Sentinel workspace. You will not need (and won’t be able to use) your own Azure tenant or subscription. Usernames and passwords will be provided throughout. Please log on exactly as detailed, including the number that you have been assigned. **Failure to do so will result in potential problems for other lab participants.**
 
 The Sentinel workspace(s) that you will be working with have been configured with multiple data sources, including Office 365, Azure Active Directory (AD) Sign-in logs, Azure AD Audit logs, and Windows Security Event logs. All Data connectors have been configured to forward all relevant data to the sample Sentinel workspace(s) you’ll be working with. Several vulnerabilities have also been configured in these data source environments.
 
@@ -19,7 +19,7 @@ In this technical workshop, you will not need to access any IaaS or any other ma
 To access the azure lab, you will navigate to: https://portal.azure.com<br>
 You will then logon with the following account:
 Admin**XX**@sentinellab.xyz, where “XX” is the number you have been assigned at the start of class.<br>
-For example, if I was assigned number 47, my username would be user**47**@sentinellab.xyz<br>
+For example, if I was assigned number 47, my username would be Admin**47**@sentinellab.xyz<br>
 Username: **AdminXX@sentinellab.xyz**<br>
 Password: **Assigned by instructor**
 
@@ -30,7 +30,7 @@ Password: **Assigned by instructor**
 # Exercise 1: Navigate to Microsoft Sentinel and add as a favourite.
 In this exercise, you will be logging into the Microsoft Azure portal, and setting up your environment by making sure you are in the correct tenant and subscription, adding Microsoft Sentinel as a favourite within the navigation pane and opening Microsoft Sentinel.<br>
 
-**Task 1: Log on to Azure and Navigate to Sentinel**<br>
+**Task 1: Log into Azure and Navigate to Sentinel**<br>
 In this task, you will log into the Azure portal and navigate to Sentinel.
 
 1.	In a browser, navigate to https://portal.azure.com.
@@ -46,27 +46,27 @@ Password: **Assigned by instructor**
 ![alt text](screenshots/AzurePortal-DirectoryAndSubscriptions.png)<br><br>
 
 
-3. Select the Azure Portal menu button in the upper left hand corner of the screen, then click **All services**
+4. Select the Azure Portal menu button in the upper left hand corner of the screen, then click **All services**
 
 ![alt text](screenshots/AzurePortal-SelectAllServices.png)<br><br>
 
-4. Type **Sentinel** in the **Filter services** search box, then select the star icon by Microsoft Sentinel(So it has a solid fill).
+5. Type **Sentinel** in the **Filter services** search box, then select the star icon by Microsoft Sentinel(So it has a solid fill).
 
 ![alt text](screenshots/AzurePortal-AllServicesSelectSentinel.png)<br><br>
 
-5. Now click the Azure Portal menu button again in the upper left hand corner of the screen. You will now see Microsoft Sentinel at the bottom of the menu. You can hover your mouse over the vertical ellipses on the right hand side of Microsoft Sentinel and drag it to your desired location
+6. Now click the Azure Portal menu button again in the upper left hand corner of the screen. You will now see Microsoft Sentinel at the bottom of the menu. You can hover your mouse over the vertical ellipses on the right hand side of Microsoft Sentinel and drag it to your desired location
 
 ![alt text](screenshots/AzurePortal-MoveSentinelFavourite.png)<br><br>
 
-6. Now click **Microsoft Sentinel** from the Azure Portal Navigation Pane.
+7. Now click **Microsoft Sentinel** from the Azure Portal Navigation Pane.
 
-7.	Click **briandel**, which is the name of the Sentinel Workspace.
+8.	Click **briandel**, which is the name of the Sentinel Workspace.
 
 ![alt text](screenshots/AzurePortal-SentinelResourceBlade.png)<br><br>
 
-8. Minimise the any previous portal blades by pressing the double arrows in the upper right hand corner of the blade on the left
+9. Minimise any previous portal blades by pressing the double arrows in the upper right hand corner of the blade on the left
 
-![alt text](screenshots/MicrosoftSentinel-CollapseResourceBlade.PNG)<br><br>
+![alt text](screenshots/MicrosoftSentinel-CollapseResourceBlade.png)<br><br>
 
 
 ### Continue with the next lab
