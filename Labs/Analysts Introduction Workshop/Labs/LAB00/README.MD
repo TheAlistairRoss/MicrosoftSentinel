@@ -23,15 +23,16 @@ For example, if I was assigned number 47, my username would be user**47**@sentin
 Username: **AdminXX@sentinellab.xyz**<br>
 Password: **Assigned by instructor**
 
-**This is the account you will use except where otherwise specified (as in Exercise 2).**
-
 **Important Note**: Because data changes rapidly, throughout this lab your results may be slightly different than the examples given throughout this lab guide. The guide is meant to be illustrative; slight differences in data are not a problem.
 
 **Important Note 2**: All exercises in this lab should be completed using an InPrivate (Edge) or Incognito (Chrome) browser session. This will ensure that your Microsoft or other credentials do not interfere.
+
 # Exercise 1: Navigate to Microsoft Sentinel and add as a favourite.
 In this exercise, you will be logging into the Microsoft Azure portal, and setting up your environment by making sure you are in the correct tenant and subscription, adding Microsoft Sentinel as a favourite within the navigation pane and opening Microsoft Sentinel.<br>
+
 **Task 1: Log on to Azure and Navigate to Sentinel**<br>
 In this task, you will log into the Azure portal and navigate to Sentinel.
+
 1.	In a browser, navigate to https://portal.azure.com.
 
 2.	Enter the account information:
