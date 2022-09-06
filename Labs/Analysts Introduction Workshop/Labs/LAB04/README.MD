@@ -7,7 +7,7 @@ Once an investigation into an incident has been completed and the issue is resol
 
 1. From within the Microsoft Sentinel blade, under Threat management, select **Incidents**.
 
-![alt text](/./LAB01/screenshots/MicrosoftSentinel-MenuIncidents.png)<br><br>
+![alt text](../LAB01/screenshots/MicrosoftSentinel-MenuIncidents.png)<br><br>
 
 2. Locate your incident *standard**XX** – Failed Logon* (where “XX” is the number you have been assigned at the start of class).
 
