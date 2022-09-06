@@ -1,6 +1,6 @@
-## Lab 01: Review and Manage Incident in Microsoft Sentinel
+## Lab 01: Review and Manage Incidents in Microsoft Sentinel
 
-As an analyst, your primary goal will be responding to and investigating incidents created within Microsoft Sentinel. In this section we will review an incident that has occurred. We will assign the incident to yourself and go through the details that are provided with the incident, drilling down into the events and investigation.<br>
+As an analyst, your primary goal will be responding to and investigating incidents created within Microsoft Sentinel. In this section we will review an incident that has occurred. You will assign the incident to yourself and go through the details that are provided within the incident, drilling down into the events and investigation.<br>
 
 > **NOTE:** The analytic rules and incidents should be pre-populated by your instructor.
 #
@@ -19,7 +19,7 @@ As an analyst, your primary goal will be responding to and investigating inciden
 
 ![alt text](screenshots/SentinelIncident-AssignToMe.png)<br><br>
 
-5. Change the incident status to new, by selecting **status**, clicking **Active**, then click **Apply**.
+5. Change the incident status to Active, by selecting **status**, clicking **Active**, then click **Apply**.
 
 ![alt text](screenshots/SentinelIncident-ChangeIncidentStatus.png)<br><br>
 
@@ -46,11 +46,11 @@ As an analyst, your primary goal will be responding to and investigating inciden
 
 ![alt text](screenshots/SentinelIncident-SystemAlertLogs.png)<br><br>
 
-13. Click **Similar incidents (Preview)**. This tab will show you the top 20 incident that could be consider similar and the reason why.
+13. Click **Similar incidents (Preview)**. This tab will show you the top 20 incidents that could be consider similar and the reason why.
 
 ![alt text](screenshots/SentinelIncident-SimilarIncidents.png)<br><br>
 
-14. Click **Alerts**. The *Alert ID* guid will take you to the previously seen logs results. This time click a value under the *Events* column.
+14. Click **Alerts**. The *Alert ID* GUID will take you to the previously seen log results. This time click a value under the *Events* column.
 
 ![alt text](screenshots/SentinelIncident-Alerts.png)<br><br>
 
@@ -64,7 +64,7 @@ As an analyst, your primary goal will be responding to and investigating inciden
 
 17. Click the **X** in the upper right hand corner to return to the Incident Alerts.
 
-18. Click **Bookmarks**. There should be no bookmarks at this stage, but this is where you will see bookmarked logs from your investigations within the logs. 
+18. Click **Bookmarks**. There should be no bookmarks at this stage, but this is where you will see bookmarked logs from your investigations within the logs. An example of a bookmark can be seen in the image below.
 
 > **NOTE:** Do not worry that there are no bookmarks at this stage, they will be populated later
 
@@ -86,9 +86,9 @@ As an analyst, your primary goal will be responding to and investigating inciden
 ![alt text](screenshots/UEBA-User.png)<br><br>
 
 24. Click the **X** in the upper right hand corner to return to the Entities.
-> **Note:** If you have drilled down into any other views, you may need to press the **X** more than once to navigate back to Entities. Alternativly, navigate back to the incident from the Incident Menu.
+> **Note:** If you have drilled down into any other views, you may need to press the **X** more than once to navigate back to Entities. Alternatively, navigate back to the incident from the Incident Menu.
 
-25. Click **Comments**. You will see you previously added comment. In this interface, you can add some further text, and format the comments using the text editor toolbar. Once done, click **Comment**.
+25. Click **Comments**. You will see your previously added comment. In this interface, you can add some further text, and format the comments using the text editor toolbar. Once done, click **Comment**.
 
 ![alt text](screenshots/SentinelIncident-CommentsTab.png)<br><br>
 
@@ -114,7 +114,7 @@ As an analyst, your primary goal will be responding to and investigating inciden
 ![alt text](screenshots/SentinelIncident-InvestigateButton.png)<br><br>
 
 
-7. Click and hold one of the circular on the screen. Drag it to another location.
+7. Click and hold one of the circles on the screen. Drag it to another location.
 
 8. Click  **Undo** to reset the movement. 
 
@@ -128,17 +128,17 @@ As an analyst, your primary goal will be responding to and investigating inciden
 
 ![alt text](screenshots/SentinelInvestigation-Insights.png)<br><br>
 
-11. Click **TimeLine**. This will show you any incidents and bookmarks displayed on screen, in chronological order.
+11. Click **Timeline**. This will show you any incidents and bookmarks displayed on screen, in chronological order.
 
 ![alt text](screenshots/SentinelInvestigation-Timeline.png)<br><br>
 
-12. Click **Entities**. This will display all entities, currently display on screen.
+12. Click **Entities**. This will display all entities currently displayed on screen.
 
 13. Right-click the **User entity**, click **More** and then click any of the events listed that are not greyed out, such as *Office activity IPs for this account*.
 
 ![alt text](screenshots/SentinelInvestigation-SelectRelatedData.png)<br><br>
 
-14. Repeat step 14 for the other events and other entities. Review the relationships, entities and incidents that appear as you expand the investigation.
+14. Repeat step 13 for the other events and other entities. Review the relationships, entities and incidents that appear as you expand the investigation.
 > **Note:** If the objects do not fit on the screen, you can zoom in and out, plus fit to screen on the right hand size. Move the objects around by dragging them to best fit the layout for you.
 
 15. Once done, click the **X** in the upper right hand corner to return to the Incident Menu.
