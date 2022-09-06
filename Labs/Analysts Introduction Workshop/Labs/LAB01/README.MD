@@ -35,7 +35,7 @@ As an analyst, your primary goal will be responding to and investigating inciden
 
 9. The timeline tab should already be selected, if not click **Timeline** and review the details within the Timeline.
 
-![alt text](screenshots/SentinelIncident-AddSimpleComment.png)<br><br>
+![alt text](screenshots/SentinelIncident-Timeline.png)<br><br>
 
 10. Click the **System alert ID** for an alert named *standard**XX** – Failed Logon* (where “XX” is the number you have been assigned at the start of class). This will take you to the alert details within Logs.
 
