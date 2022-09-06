@@ -16,5 +16,5 @@ The following lab is based on the original Lab written by **Brian Delaney**, Pri
 This has been update by **Alistair Ross**, CSA-E to focus on Analysts tasks
 
 ## Get Started 
-<a href="/Labs/LAB00/README.MD" target="_blank">Lab00 - Setup</a>
+<a href="/LAB00/README.MD" target="_blank">Lab00 - Setup</a>
 
