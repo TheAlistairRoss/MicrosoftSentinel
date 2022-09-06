@@ -1,6 +1,6 @@
 ## LAB 03 - Explore Logs using KQL
 
-All logs within Microsoft Sentinel are queried and accessed using Kusto Query Language, whether that is via a workbook, GUI, API or directly. In this excercise we will explore for events within the logs and enrich and exisiting incident with book<br>
+All logs within Microsoft Sentinel are queried and accessed using Kusto Query Language, whether that is via a workbook, GUI, API or directly. In this exercise we will explore events within the logs and enrich and exisiting incident with book<br>
 
 > **NOTE:** The analytic rules, incidents and logs should be should be pre-populated by your instructor.
 #
@@ -30,7 +30,7 @@ Before we explore the logs. We need to have a hypothesis in mind. At this initia
 
 ## Task 2: Getting started with Search
 
-Because we do not know where this data could be relating to the IP Address, we need to ask the question.
+Because we do not know where this data relating to the IP Address could be, we need to ask the question.
 
 > Where and what data is within Microsoft Sentinel that has Incident IP Address?
 
@@ -74,7 +74,7 @@ search "X.X.X.X" // Replace X.X.X.X with the IP Address from your entity
 | distinct $table
 ```
 
-7. Now lets ammend the arguments of the search to return the results from one table. Type / paste and run the following query. You will see that all of the logs have this IP Address in at least one column.
+7. Now lets amend the arguments of the search to return the results from one table. Type / paste and run the following query. You will see that all of the logs have this IP Address in at least one column.
 
  ```kusto
  search in (SigninLogs) "X.X.X.X" // Replace X.X.X.X with the IP Address from your entity
@@ -97,7 +97,7 @@ Before you go any further, it is important to have a basic understanding of the 
 
 ![alt text](screenshots/LogAnalytics-TablesUISelectDocsLinkSigninLogs.png)<br><br>
  
-5. This will take the docs.microsoft.com page. Each built in table should have a detailed description of the columns, though older tables may have not been updated. Click **Other Tables** to the left and view their schema and descriptions. Once done, return to the previous window / tab in the Azure Portal.
+5. This will take you to the docs.microsoft.com page. Each built-in table should have a detailed description of the columns, though older tables may not be up to date. Click **Other Tables** to the left and view their schema and descriptions. Once done, return to the previous window / tab in the Azure Portal.
 
 6. In the query pane, type or paste the following:
 ```kusto
@@ -112,10 +112,10 @@ In this example we have used the [print](https://docs.microsoft.com/en-us/azure/
 print Message = "Hello world"
 ```
 
-8. On the next new line, immediatly after the previous (no line spaceing) type the pipe symbol, then a space. Intellisense should start automatically and start suggesting possible values for this position in the query. 
+8. On the next new line, immediately after the previous (no line spacing) type the pipe symbol, then a space. Intellisense should start automatically and start suggesting possible values for this position in the query. 
 > **NOTE:** If Intellisense has not started, or you have clicked / typed somewhere else, just click **CTRL**+ **SPACE** simultaneously on your keyboard.
  
-9. For some operators, like *where* you can select an arrow which will display the information for this operatr from docs.microsoft.com. 
+9. For some operators, like *where* you can select an arrow which will display the information for this operator from docs.microsoft.com. 
 
 ![alt text](screenshots/LogAnalytics-Intellisense.png)<br><br>
 
@@ -127,7 +127,7 @@ print Message = "Hello world"
 ``` 
 11. As *startswith* is a case-insensitive operator, it will evaluate the first character "h" and "H" as the same, and therefore return the result. Experiment with other operators and review the documentation to understand how to use all these operators. https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/datatypes-string-operators#operators-on-strings
 
-12. You will find that numerical data types ([int](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/int),[long](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/long) [real](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/real), [decimal](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/decimal)) and [datetime](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/datetime) types have the same operators. Type:
+12. You will find that numerical data types ([int](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/int), [long](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/long) [real](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/real), [decimal](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/decimal)) and [datetime](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/datetime) types have the same operators. Type:
 
 ```kusto
 print Number = 123
@@ -143,7 +143,7 @@ print Number = 123
 13. The easiest way to perform actions against  datetime types, is comparing them against a timespan value. In this example, we are doing a few things.
     1. Creating a Tabular statement with the column called **TimeGenerated**
     2. Getting the datetime of right now using [**now()**](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/nowfunction).
-    3. Then using a timespan value and arthmatic operator, going backwards by one day using **- 1d**.
+    3. Then using a timespan value and arithmetic operator, going backwards by one day using **- 1d**.
     4. Using the **Where** operator, we are ensuring the data is from within the last seven days, but this time using the [**ago()**](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/agofunction) function, with a timespan operator
 
 >**NOTE:** Both **now - 1d** and **ago(1d)** will produce the same results.
@@ -184,13 +184,13 @@ SigninLogs
 | where TimeGenerated > ago(7d)
 | where ResultType == 0
 ```
-> **NOTE:** This query gives the *where operators seperated by a pipe is the same as:
+> **NOTE:** This query gives the *where operators separated by a pipe is the same as:
 > ```kusto
 > SigninLogs
 > | where TimeGenerated > ago(7d) and ResultType == 0
 > ```
 
-3. Now we want to see the number of successful signin by IPAddress, though it would still be usefull to see other columns as well. We can achieve this using the query langugage and the UI. 
+3. Now we want to see the number of successful sign-ins by IPAddress, though it would still be usefull to see other columns as well. We can achieve this using the query language and the UI. 
 
 ```kusto
 SigninLogs
@@ -261,7 +261,7 @@ SigninLogs
 ```
 ## Task 5: Bookmark and Investigate
 
-Within Log Analytics, through the context of Microsoft Sentinel, you can bookmark results and add them to new or existing Incidents. We will add the results of our last query and add it to your incident.
+Within Log Analytics, through the context of Microsoft Sentinel, you can bookmark results and add them to new or existing Incidents. You can now bookmark the results of the last query and add it to your incident.
 
 1. Within Log Analytics, run the following query:
 
@@ -283,13 +283,13 @@ SigninLogs
 
 3. Change the **Bookmark Name** to *"adminXX investigation"* (where “XX” is the number you have been assigned at the start of class). 
 
-4. Change the Entity mapping fopr the account and IP address (Click **Add new entity** to add more entities):
+4. Change the Entity mapping for the account and IP address (Click **Add new entity** to add more entities):
     | Entity type | Identifier | Value |
     | - | - | - |
     | Account | FullName | UserPrincipalName |
     | IP | Address | IPAddress | 
 
-5. Add **Notes** commenting on your investigation. For example *"Sucessful sign-ins related to IP X.X.X.X"* 
+5. Add **Notes** commenting on your investigation. For example *"Successful sign-ins related to IP X.X.X.X"* 
 
 6. Click *Create*
 
@@ -306,7 +306,7 @@ SigninLogs
 
 ![alt text](screenshots/Hunting-AddBookmarkToIncident.png)<br><br>
 
-11. You will now see in the Bookmarks tab, that your bookmark now has a Severity and Incident name.
+11. You will now see in the Bookmarks tab that your bookmark now has a Severity and Incident name.
 
 12. Click the **Investigate** button. You can now see your bookmark added to the investigation and linked to the incident in the graph via the IP Address entity. 
 
