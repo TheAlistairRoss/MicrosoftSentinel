@@ -1,6 +1,6 @@
 ## LAB 04 - Close Incidents and Community
 
-Once an investigation into an incident has completed and the issue is resolved, the incident requires closing. This is a relatively simple task and sometimes forgotten. Closing incidents aids SOC analytics and built-in machine learning which provides tuning recommendations.
+Once an investigation into an incident has been completed and the issue is resolved, the incident requires closing. This is a relatively simple task and sometimes forgotten. Closing incidents aids SOC analytics and built-in machine learning which provides tuning recommendations.
 
 
 ## Task 1: Close your Incident
@@ -34,7 +34,7 @@ Once an investigation into an incident has completed and the issue is resolved, 
 
 > **Note:** This also can be found by searching for Sentinel Ninja Training.
 
-2. This site contains the extensive list of training materials for Microsoft Sentinel. It is worth going through this site and pick out key trainings for your role.
+2. This site contains the extensive list of training materials for Microsoft Sentinel. It is worth going through this site and picking out key trainings for your role.
 
 ![alt text](screenshots/Ninja%20Training.png)<br><br>
 
