@@ -318,4 +318,4 @@ SigninLogs
 
 ### Continue with the next lab
 
-<a href="../LAB03/README.MD" target="_blank">LAB 04 - Close Incidents and Community</a>
+<a href="../LAB04/README.MD" target="_blank">LAB 04 - Close Incidents and Community</a>
