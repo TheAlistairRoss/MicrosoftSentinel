@@ -1,0 +1,49 @@
+OperationName,Comments,Tested,Object,RoleName,RoleId
+Add eligible member to role,,true,[0],"[0,1,""newValue""]","[0,0,""newValue""]"
+Add eligible member to role in PIM completed (permanent),,true,[2],[0],[0]
+Add eligible member to role in PIM completed (timebound),,false,[2],[0],[0]
+Add eligible member to role in PIM requested (permanent),,true,[2],[0],[0]
+Add eligible member to role in PIM requested (renew),,false,[2],[0],[0]
+Add eligible member to role in PIM requested (timebound),,false,[2],[0],[0]
+Add EligibleRoleAssignement to RoleDefinition,,false,[],[],[]
+Add member to role,,true,[0],"[0,1,""newValue""]","[0,0,""newValue""]"
+Add member to role canceled (PIM activation),,false,[],[],[]
+Add member to role completed (PIM activation),,true,[2],[0],[0]
+Add member to role in PIM completed (permanent),,true,[2],[0],[0]
+Add member to role in PIM completed (timebound),,true,[2],[0],[0]
+Add member to role in PIM requested (permanent),,true,[2],[0],[0]
+Add member to role in PIM requested (renew),,false,[2],[0],[0]
+Add member to role in PIM requested (timebound),,true,[0],[0],[0]
+Add member to role outside of PIM (permanent),,true,[2],[0],[0]
+Add member to role request approved (PIM activation),,true,[2],[2],[0]
+Add member to role request denied (PIM activation),,false,[],[],[]
+Add member to role requested (PIM activation),,false,[2],[0],[0]
+Add role assignment to role definition,,false,[],"[0,5,""newValue""]","[0,4,""newValue""]"
+Add role definition,,false,[],[0],[0]
+Add scoped member to role,,false,[0],"[0,1,""newValue""]","[0,0,""newValue""]"
+Offboarded resource from PIM,No Object Details,true,[2],[0],[0]
+Onboarded resource to PIM,,false,[],[],[]
+PIM activation request expired,,false,[],[],[]
+Process request,,false,[],[],[]
+Process role update request,,true,[2],[0],[0]
+Remove eligible member from role,,true,[0],"[0,1,""oldValue""]","[0,0,""oldValue""]"
+Remove eligible member from role in PIM completed (permanent),,true,[2],[0],[0]
+Remove eligible member from role in PIM completed (timebound),,false,[2],[0],[0]
+Remove eligible member from role in PIM requested (permanent),,true,[2],[0],[0]
+Remove eligible member from role in PIM requested (timebound),,false,[2],[0],[0]
+Remove EligibleRoleAssignement from RoleDefinition,,false,[],"[0,4,""oldValue""]","[0,3,""oldValue""]"
+Remove member from role,,true,[0],"[0,1,""oldValue""]","[0,0,""oldValue""]"
+Remove member from role (PIM activation expired),,true,[3],[0],[0]
+Remove member from role completed (PIM deactivate),,false,[2],[0],[0]
+Remove member from role in PIM completed (permanent),,true,[2],[0],[0]
+Remove member from role in PIM completed (timebound),,true,[2],[0],[0]
+Remove member from role in PIM requested (permanent),,true,[2],[0],[0]
+Remove member from role in PIM requested (timebound),,true,[2],[0],[0]
+Remove member from role requested (PIM deactivate),,false,[2],[0],[0]
+Remove permanent direct role assignment,,true,[2],[0],[0]
+Remove permanent eligible role assignment,,false,[2],[0],[0]
+Remove role assignment from role definition,,false,[0],"[0,5,""oldValue""]","[0,4,""oldValue""]"
+Update eligible member in PIM canceled (extend),,false,[],[],[]
+Update eligible member in PIM requested (extend),,false,[2],[0],[0]
+Update role,,false,[],[0],[0]
+Update role setting in PIM,,false,[],[0],[0]

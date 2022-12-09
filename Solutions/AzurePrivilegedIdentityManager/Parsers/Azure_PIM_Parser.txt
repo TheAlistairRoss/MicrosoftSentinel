@@ -1,0 +1,95 @@
+let _AzurePIMOperationsMappings = dynamic(
+    {
+		"Add eligible member to role": {"RoleId":[0,0,"newValue"],"Object":[0],"RoleName":[0,1,"newValue"]},
+		"Add eligible member to role in PIM completed (permanent)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add eligible member to role in PIM completed (timebound)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add eligible member to role in PIM requested (permanent)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add eligible member to role in PIM requested (renew)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add eligible member to role in PIM requested (timebound)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add EligibleRoleAssignement to RoleDefinition": {"RoleId":[],"Object":[],"RoleName":[]},
+		"Add member to role": {"RoleId":[0,0,"newValue"],"Object":[0],"RoleName":[0,1,"newValue"]},
+		"Add member to role canceled (PIM activation)": {"RoleId":[],"Object":[],"RoleName":[]},
+		"Add member to role completed (PIM activation)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add member to role in PIM completed (permanent)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add member to role in PIM completed (timebound)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add member to role in PIM requested (permanent)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add member to role in PIM requested (renew)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add member to role in PIM requested (timebound)": {"RoleId":[0],"Object":[0],"RoleName":[0]},
+		"Add member to role outside of PIM (permanent)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add member to role request approved (PIM activation)": {"RoleId":[0],"Object":[2],"RoleName":[2]},
+		"Add member to role request denied (PIM activation)": {"RoleId":[],"Object":[],"RoleName":[]},
+		"Add member to role requested (PIM activation)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Add role assignment to role definition": {"RoleId":[0,4,"newValue"],"Object":[],"RoleName":[0,5,"newValue"]},
+		"Add role definition": {"RoleId":[0],"Object":[],"RoleName":[0]},
+		"Add scoped member to role": {"RoleId":[0,0,"newValue"],"Object":[0],"RoleName":[0,1,"newValue"]},
+		"Offboarded resource from PIM": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Onboarded resource to PIM": {"RoleId":[],"Object":[],"RoleName":[]},
+		"PIM activation request expired": {"RoleId":[],"Object":[],"RoleName":[]},
+		"Process request": {"RoleId":[],"Object":[],"RoleName":[]},
+		"Process role update request": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove eligible member from role": {"RoleId":[0,0,"oldValue"],"Object":[0],"RoleName":[0,1,"oldValue"]},
+		"Remove eligible member from role in PIM completed (permanent)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove eligible member from role in PIM completed (timebound)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove eligible member from role in PIM requested (permanent)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove eligible member from role in PIM requested (timebound)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove EligibleRoleAssignement from RoleDefinition": {"RoleId":[0,3,"oldValue"],"Object":[],"RoleName":[0,4,"oldValue"]},
+		"Remove member from role": {"RoleId":[0,0,"oldValue"],"Object":[0],"RoleName":[0,1,"oldValue"]},
+		"Remove member from role (PIM activation expired)": {"RoleId":[0],"Object":[3],"RoleName":[0]},
+		"Remove member from role completed (PIM deactivate)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove member from role in PIM completed (permanent)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove member from role in PIM completed (timebound)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove member from role in PIM requested (permanent)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove member from role in PIM requested (timebound)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove member from role requested (PIM deactivate)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove permanent direct role assignment": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove permanent eligible role assignment": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Remove role assignment from role definition": {"RoleId":[0,4,"oldValue"],"Object":[0],"RoleName":[0,5,"oldValue"]},
+		"Update eligible member in PIM canceled (extend)": {"RoleId":[],"Object":[],"RoleName":[]},
+		"Update eligible member in PIM requested (extend)": {"RoleId":[0],"Object":[2],"RoleName":[0]},
+		"Update role": {"RoleId":[0],"Object":[],"RoleName":[0]},
+		"Update role setting in PIM": {"RoleId":[0],"Object":[],"RoleName":[0]}
+    }
+); 
+let _AzurePIMEvents = (){
+    AuditLogs
+    | where Category == "RoleManagement"
+    | where OperationName in (bag_keys(_AzurePIMOperationsMappings))
+    | extend ObjectIndexSet = _AzurePIMOperationsMappings.[OperationName].Object
+    | extend RoleNameIndexSet = _AzurePIMOperationsMappings.[OperationName].RoleName
+    | extend RoleIdIndexSet = _AzurePIMOperationsMappings.[OperationName].RoleId
+    | extend ObjectId = tostring(TargetResources[toint(ObjectIndexSet[0])].id)
+    | extend Object = case(
+        (array_length(ObjectIndexSet) <= 0), "", 
+        array_length(ObjectIndexSet) == 1, case(
+            isnotempty(tostring(TargetResources[toint(ObjectIndexSet[0])].userPrincipalName)), tostring(TargetResources[toint(ObjectIndexSet[0])].userPrincipalName),
+            tostring(TargetResources[toint(ObjectIndexSet[0])].displayName)
+        ),
+        "Unknown Mapping"
+    )
+    | extend Object = case((Object startswith replace_string(ObjectId,"-","")), substring(Object, strlen(replace_string(ObjectId,"-",""))), Object)
+    | extend ObjectType = tostring(TargetResources[toint(ObjectIndexSet[0])].type)
+    | extend Role = case(
+        array_length(RoleNameIndexSet) == 1, trim(@'^\"|\"$', tostring(TargetResources[toint(RoleNameIndexSet[0])].displayName)),
+        array_length(RoleNameIndexSet) == 3, trim(@'^\"|\"$', tostring(TargetResources[toint(RoleNameIndexSet[0])].modifiedProperties.[toint(RoleNameIndexSet[1])].[tostring(RoleNameIndexSet[2])])),
+        "Unknown Mapping"
+        )
+    | extend RoleId = case(
+        array_length(RoleIdIndexSet) == 1, trim(@'^\"|\"$', tostring(TargetResources[toint(RoleIdIndexSet[0])].id)),
+        array_length(RoleIdIndexSet) == 3, trim(@'^\"|\"$', tostring(TargetResources[toint(RoleIdIndexSet[0])].modifiedProperties.[toint(RoleIdIndexSet[1])].[tostring(RoleIdIndexSet[2])])),
+        "Unknown Mapping"
+    )
+    | extend InitiatedByType = tostring(bag_keys(parse_json(InitiatedBy))[0])
+    | extend InitiatedByObject = case(
+        (InitiatedByType == "user"), case(
+            isnotempty(tostring(parse_json(InitiatedBy.user.userPrincipalName))), tostring(parse_json(InitiatedBy.user.userPrincipalName)), 
+            tostring(parse_json(InitiatedBy.user.displayName))
+        ),
+        (InitiatedByType == "app"), tostring(parse_json(InitiatedBy.app.displayName)),
+        "Unknown Mapping"
+    )
+    | extend InitiatedByObjectId = case(
+        (InitiatedByType == "user"), tostring(parse_json(InitiatedBy.user.id)),
+        (InitiatedByType == "app"), tostring(parse_json(InitiatedBy.app.servicePrincipalId)),
+        "Unknown Mapping"
+    )
+};
