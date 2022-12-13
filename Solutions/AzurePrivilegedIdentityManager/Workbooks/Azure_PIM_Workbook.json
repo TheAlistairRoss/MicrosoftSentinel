@@ -274,6 +274,22 @@
             "linkLabel": "Azure AD Roles",
             "subTarget": "AzureADRoles",
             "style": "link"
+          },
+          {
+            "id": "c6ba4b4f-23c1-4d44-968f-46dd7cd54ac2",
+            "cellValue": "TabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Alerts",
+            "subTarget": "Alerts",
+            "style": "link"
+          },
+          {
+            "id": "2faa82b4-89aa-4975-bd0a-c98a6992c328",
+            "cellValue": "TabSelection",
+            "linkTarget": "parameter",
+            "linkLabel": "Requests",
+            "subTarget": "Requests",
+            "style": "link"
           }
         ]
       },
@@ -994,6 +1010,34 @@
         "value": "AzureADRoles"
       },
       "name": "group - Tab- Azure AD Roles"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": []
+      },
+      "conditionalVisibility": {
+        "parameterName": "TabSelection",
+        "comparison": "isEqualTo",
+        "value": "Alerts"
+      },
+      "name": "group - Tab- Alerts"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": []
+      },
+      "conditionalVisibility": {
+        "parameterName": "TabSelection",
+        "comparison": "isEqualTo",
+        "value": "Requests"
+      },
+      "name": "group - Tab- Requests"
     }
   ],
   "fallbackResourceIds": [
