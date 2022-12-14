@@ -5,9 +5,15 @@ Set-Location "Solutions\AzurePrivilegedIdentityManager\"
 $FilePath = '.build\Mappings\Azure_PIM_Mappings_TargetResources.csv'
 $OutputPath = 'Parsers\Azure_PIM_Parser.txt'
 
+# Constants
+$ParserARMTemplatePath = ".\.build\Templates\resources\Microsoft.OperationalInsights\workspaces\savedSearches.json"
+$ParserARMTemplate = ".\.build\Templates\resources\Microsoft.OperationalInsights\workspaces\savedSearches.json"
+$RGDeploymentARMTemplate = ".\.build\Templates\Deployments\ResourceGroupDeployment.json"
 
 
-Try {
+
+
+try {
     $CSV = Import-CSV -Path $FilePath -ErrorAction Stop
 }
 catch {
@@ -32,21 +38,60 @@ foreach ($Row in $CSV) {
     $Index ++
 }
 
-$_Let_AzurePIMOperationsMappings = @'
-let _AzurePIMOperationsMappings = dynamic(
+
+# Build Operations Mapping parser resource
+$AzurePIMOperationsMappings_Parser_Alias = "_AzurePIMOperationsMappings"
+$AzurePIMOperationsMappings_Parser = @'
+let 
+'@ + $AzurePIMOperationsMappings_Parser_Alias + @'
+ = dynamic(
     {
 
 '@ + 
 $ActivitiesMapping + @'
     }
 ); 
-let _AzurePIMEvents = (){
+'@
+
+$AzurePIMOperationsMappings_Resource = Get-Content -Path $ParserARMTemplatePath 
+| ConvertFrom-Json -Depth 5
+
+
+$AzurePIMOperationsMappings_Resource | Add-Member -NotePropertyMembers @{
+    name = "Azure Privileged Identity Manager Parsed Events"
+    dependsOn = @(
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace'))]"
+    )
+    properties = @{
+        displayName = "Azure Privileged Identity Manager Parsed Events"
+        category = "Log Management"
+        functionAlias = $AzurePIMOperationsMappings_Parser_Alias
+        query = $AzurePIMOperationsMappings_Parser
+        version = "0.1"
+    }
+} -Force
+
+
+#
+$AzurePIMEvents_Parser_Alias = "_AzurePIMEvents"
+$AzurePIMEvents_Parser = @'
+let
+'@ + $AzurePIMEvents_Parser_Alias + @'
+ = (){
     AuditLogs
     | where Category == "RoleManagement"
-    | where OperationName in (bag_keys(_AzurePIMOperationsMappings))
-    | extend ObjectIndexSet = _AzurePIMOperationsMappings.[OperationName].Object
-    | extend RoleNameIndexSet = _AzurePIMOperationsMappings.[OperationName].RoleName
-    | extend RoleIdIndexSet = _AzurePIMOperationsMappings.[OperationName].RoleId
+    | where OperationName in (bag_keys('@
+'@ + $AzurePIMOperationsMappings_Parser_Alias + @'
+))
+    | extend ObjectIndexSet = 
+'@ + $AzurePIMOperationsMappings_Parser_Alias + @'
+.[OperationName].Object
+    | extend RoleNameIndexSet = 
+'@ + $AzurePIMOperationsMappings_Parser_Alias + @'
+    .[OperationName].RoleName
+    | extend RoleIdIndexSet = 
+'@ + $AzurePIMOperationsMappings_Parser_Alias + @'
+    .[OperationName].RoleId
     | extend ObjectId = tostring(TargetResources[toint(ObjectIndexSet[0])].id)
     | extend Object = case(
         (array_length(ObjectIndexSet) <= 0), "", 
@@ -85,6 +130,22 @@ let _AzurePIMEvents = (){
 };
 '@
 
-$_Let_AzurePIMOperationsMappings | Out-File -FilePath $OutputPath -Force
+$AzurePIMEvents_Resource | Add-Member -NotePropertyMembers @{
+    name = "Azure Privileged Identity Manager Parsed Events"
+    dependsOn = @(
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace'))]"
+    )
+    properties = @{
+        displayName = "Azure Privileged Identity Manager Parsed Events"
+        category = "Log Management"
+        functionAlias = $AzurePIMOperationsMappings_Parser_Alias
+        query = $AzurePIMOperationsMappings_Parser
+        version = "0.1"
+    }
+} -Force
+
+
+
+
 
 
