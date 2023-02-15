@@ -19,7 +19,7 @@ ParserQuery: |-
   | join kind=inner  (
       AzurePIMOperationsMappings
       )
-      on OperationName, Category
+      on OperationName
   // Extract the object details
   | extend ObjectId = case(
       Category == "ResourceManagement", trim(@'^\"|\"$', tostring(TargetResources[toint(ObjectIndexSet[0])].modifiedProperties.[toint(ObjectIndexSet[1])].[tostring(ObjectIndexSet[2])])),

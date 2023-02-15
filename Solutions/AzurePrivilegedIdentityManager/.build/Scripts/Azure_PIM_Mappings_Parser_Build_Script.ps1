@@ -71,7 +71,7 @@ function New-ParserTemplate {
 $ActivitiesMapping = ""
 $Index = 1
 foreach ($Row in $CSV) {
-    $Activity = "`"$($Row.OperationName)`",`"$($Row.Category)`", dynamic($($Row.RoleIdIndexSet)), dynamic($($Row.ObjectIndexSet)), dynamic($($Row.RoleNameIndexSet)), `"$($Row.OperationDescription)`""
+    $Activity = "`"$($Row.OperationName)`", dynamic($($Row.RoleIdIndexSet)), dynamic($($Row.ObjectIndexSet)), dynamic($($Row.RoleNameIndexSet)), `"$($Row.OperationDescription)`""
     if ($Index -eq $CSV.Count) {
         $ActivityOutput = "`t$Activity`r`n"
     }
@@ -88,7 +88,7 @@ foreach ($Row in $CSV) {
 $ParserQuery = @'
 // This Parser is a work in progress by Alistair Ross (aliross@microsoft.com)
 // Feel free to contribute at https://github.com/TheAlistairRoss/MicrosoftSentinel/tree/main/Solutions/AzurePrivilegedIdentityManager
-datatable (OperationName: string, Category: string, RoleIdIndexSet: dynamic, ObjectIndexSet: dynamic, RoleNameIndexSet: dynamic, OperationDescription: string) [
+datatable (OperationName: string, RoleIdIndexSet: dynamic, ObjectIndexSet: dynamic, RoleNameIndexSet: dynamic, OperationDescription: string) [
 
 '@ + 
 $ActivitiesMapping + @'
