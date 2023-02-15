@@ -1,7 +1,7 @@
 Parser:
   Title: Azure PIM Operations Mapping
-  Version: "1.1"
-  LastUpdated: Feb 10 2023
+  Version: "1.2"
+  LastUpdated: Feb 15 2023
 Product:
   Name: Azure Priviliged Identity Manager
 Description: This parser provides a datatable with the known Azure Priviliged Identity Manager operations from the Azure Active Directory AuditLog table.
@@ -11,6 +11,8 @@ ParserParams:
   Type: bool
   Default: "false"
 ParserQuery: |-
+  // This Parser is a work in progress by Alistair Ross (aliross@microsoft.com)
+  // Feel free to contribute at https://github.com/TheAlistairRoss/MicrosoftSentinel/tree/main/Solutions/AzurePrivilegedIdentityManager
   datatable (OperationName: string, Category: string, RoleIdIndexSet: dynamic, ObjectIndexSet: dynamic, RoleNameIndexSet: dynamic, OperationDescription: string) [
   	"Add eligible member to role","RoleManagement", dynamic([0,0,"newValue"]), dynamic([0]), dynamic([0,1,"newValue"]), "Test Description 1",
   	"Add eligible member to role in PIM completed (permanent)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 2",
@@ -34,8 +36,8 @@ ParserQuery: |-
   	"Add role assignment to role definition","RoleManagement", dynamic([0,4,"newValue"]), dynamic([]), dynamic([0,5,"newValue"]), "Test Description 20",
   	"Add role definition","RoleManagement", dynamic([0]), dynamic([]), dynamic([0]), "Test Description 21",
   	"Add scoped member to role","RoleManagement", dynamic([0,0,"newValue"]), dynamic([0]), dynamic([0,1,"newValue"]), "Test Description 22",
-  	"Offboarded resource from PIM","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 23",
-  	"Onboarded resource to PIM","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 24",
+  	"Offboarded resource from PIM","RoleManagement", dynamic([]), dynamic([]), dynamic([0,1,"newValue"]), "Test Description 23",
+  	"Onboarded resource to PIM","RoleManagement", dynamic([]), dynamic([]), dynamic([0,1,"newValue"]), "Test Description 24",
   	"PIM activation request expired","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 25",
   	"Process request","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 26",
   	"Process role update request","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 27",
@@ -64,7 +66,7 @@ ParserQuery: |-
   	"Resolve PIM alert","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 50",
   	"Triggered PIM alert","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 51",
   	"Onboarded resource to PIM","ResourceManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 52",
-  	"Offboarded resource from PIM","ResourceManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 53",
+  	"Offboarded resource from PIM","ResourceManagement", dynamic([]), dynamic([]), dynamic([0,1,"newValue"]), "Test Description 53",
   	"Triggered PIM alert","ResourceManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 54",
   	"Resolve PIM alert","ResourceManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 55"
   ]
