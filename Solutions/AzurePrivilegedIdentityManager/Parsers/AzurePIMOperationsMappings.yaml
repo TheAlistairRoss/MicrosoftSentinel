@@ -1,0 +1,70 @@
+Parser:
+  Title: Azure PIM Operations Mapping
+  Version: "1.1"
+  LastUpdated: Feb 10 2023
+Product:
+  Name: Azure Priviliged Identity Manager
+Description: This parser provides a datatable with the known Azure Priviliged Identity Manager operations from the Azure Active Directory AuditLog table.
+ParserName: AzurePIMOperationsMappings
+ParserParams:
+  Name: disabled
+  Type: bool
+  Default: "false"
+ParserQuery: |-
+  datatable (OperationName: string, Category: string, RoleIdIndexSet: dynamic, ObjectIndexSet: dynamic, RoleNameIndexSet: dynamic, OperationDescription: string) [
+  	"Add eligible member to role","RoleManagement", dynamic([0,0,"newValue"]), dynamic([0]), dynamic([0,1,"newValue"]), "Test Description 1",
+  	"Add eligible member to role in PIM completed (permanent)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 2",
+  	"Add eligible member to role in PIM completed (timebound)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 3",
+  	"Add eligible member to role in PIM requested (permanent)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 4",
+  	"Add eligible member to role in PIM requested (renew)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 5",
+  	"Add eligible member to role in PIM requested (timebound)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 6",
+  	"Add EligibleRoleAssignement to RoleDefinition","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 7",
+  	"Add member to role","RoleManagement", dynamic([0,0,"newValue"]), dynamic([0]), dynamic([0,1,"newValue"]), "Test Description 8",
+  	"Add member to role canceled (PIM activation)","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 9",
+  	"Add member to role completed (PIM activation)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 10",
+  	"Add member to role in PIM completed (permanent)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 11",
+  	"Add member to role in PIM completed (timebound)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 12",
+  	"Add member to role in PIM requested (permanent)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 13",
+  	"Add member to role in PIM requested (renew)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 14",
+  	"Add member to role in PIM requested (timebound)","RoleManagement", dynamic([0]), dynamic([0]), dynamic([0]), "Test Description 15",
+  	"Add member to role outside of PIM (permanent)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 16",
+  	"Add member to role request approved (PIM activation)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([2]), "Test Description 17",
+  	"Add member to role request denied (PIM activation)","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 18",
+  	"Add member to role requested (PIM activation)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 19",
+  	"Add role assignment to role definition","RoleManagement", dynamic([0,4,"newValue"]), dynamic([]), dynamic([0,5,"newValue"]), "Test Description 20",
+  	"Add role definition","RoleManagement", dynamic([0]), dynamic([]), dynamic([0]), "Test Description 21",
+  	"Add scoped member to role","RoleManagement", dynamic([0,0,"newValue"]), dynamic([0]), dynamic([0,1,"newValue"]), "Test Description 22",
+  	"Offboarded resource from PIM","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 23",
+  	"Onboarded resource to PIM","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 24",
+  	"PIM activation request expired","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 25",
+  	"Process request","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 26",
+  	"Process role update request","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 27",
+  	"Remove eligible member from role","RoleManagement", dynamic([0,0,"oldValue"]), dynamic([0]), dynamic([0,1,"oldValue"]), "Test Description 28",
+  	"Remove eligible member from role in PIM completed (permanent)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 29",
+  	"Remove eligible member from role in PIM completed (timebound)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 30",
+  	"Remove eligible member from role in PIM requested (permanent)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 31",
+  	"Remove eligible member from role in PIM requested (timebound)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 32",
+  	"Remove EligibleRoleAssignement from RoleDefinition","RoleManagement", dynamic([0,3,"oldValue"]), dynamic([]), dynamic([0,4,"oldValue"]), "Test Description 33",
+  	"Remove member from role","RoleManagement", dynamic([0,0,"oldValue"]), dynamic([0]), dynamic([0,1,"oldValue"]), "Test Description 34",
+  	"Remove member from role (PIM activation expired)","RoleManagement", dynamic([0]), dynamic([3]), dynamic([0]), "Test Description 35",
+  	"Remove member from role completed (PIM deactivate)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 36",
+  	"Remove member from role in PIM completed (permanent)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 37",
+  	"Remove member from role in PIM completed (timebound)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 38",
+  	"Remove member from role in PIM requested (permanent)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 39",
+  	"Remove member from role in PIM requested (timebound)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 40",
+  	"Remove member from role requested (PIM deactivate)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 41",
+  	"Remove permanent direct role assignment","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 42",
+  	"Remove permanent eligible role assignment","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 43",
+  	"Remove role assignment from role definition","RoleManagement", dynamic([0,4,"oldValue"]), dynamic([0]), dynamic([0,5,"oldValue"]), "Test Description 44",
+  	"Update eligible member in PIM canceled (extend)","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 45",
+  	"Update eligible member in PIM requested (extend)","RoleManagement", dynamic([0]), dynamic([2]), dynamic([0]), "Test Description 46",
+  	"Update role","RoleManagement", dynamic([0]), dynamic([]), dynamic([0]), "Test Description 47",
+  	"Update role setting in PIM","RoleManagement", dynamic([0]), dynamic([]), dynamic([0]), "Test Description 48",
+  	"Disable PIM alert","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 49",
+  	"Resolve PIM alert","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 50",
+  	"Triggered PIM alert","RoleManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 51",
+  	"Onboarded resource to PIM","ResourceManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 52",
+  	"Offboarded resource from PIM","ResourceManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 53",
+  	"Triggered PIM alert","ResourceManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 54",
+  	"Resolve PIM alert","ResourceManagement", dynamic([]), dynamic([]), dynamic([]), "Test Description 55"
+  ]

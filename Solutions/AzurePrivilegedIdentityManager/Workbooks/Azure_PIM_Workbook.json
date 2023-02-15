@@ -12,9 +12,6 @@
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
-        "crossComponentResources": [
-          "{Subscriptions}"
-        ],
         "parameters": [
           {
             "id": "255c5943-cfbe-4434-a7b2-9614b8d65b5f",
@@ -77,7 +74,8 @@
               "durationMs": 86400000
             },
             "value": {
-              "durationMs": 5184000000
+              "durationMs": 31536000000,
+              "endTime": "2023-02-15T11:35:00.000Z"
             }
           },
           {
@@ -100,7 +98,10 @@
             },
             "defaultValue": "value::all",
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": [
+              "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f"
+            ]
           },
           {
             "id": "d766ea1e-e7cb-4c21-9544-ced5c7aeef8d",
@@ -117,7 +118,8 @@
               "showDefault": false
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourceGroups/SOC/providers/Microsoft.OperationalInsights/workspaces/CyberSecuritySOC"
           },
           {
             "id": "e7fe4e9e-f94c-49ef-aae3-f93bc7cb6cf5",
@@ -130,15 +132,31 @@
               "additionalResourceOptions": [],
               "showDefault": false
             },
-            "jsonData": "[\r\n    {\"value\":true, \"label\": \"Yes\", \"selected\": true},\r\n    {\"value\":false, \"label\": \"No\", \"selected\": false}\r\n]",
+            "jsonData": "[\r\n    {\"value\":\"true\", \"label\": \"Yes\", \"selected\": true},\r\n    {\"value\":\"false\", \"label\": \"No\", \"selected\": false}\r\n]",
+            "timeContext": {
+              "durationMs": 86400000
+            }
+          },
+          {
+            "id": "e7fe4e9e-f94c-49ef-aae3-f93bc7cb6cf5",
+            "version": "KqlParameterItem/1.0",
+            "name": "ShowSystemEvents",
+            "label": "Shwo Events initiated by PIM",
+            "type": 10,
+            "isRequired": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "jsonData": "[\r\n    {\"value\":\"true\", \"label\": \"Yes\", \"selected\": true},\r\n    {\"value\":\"false\", \"label\": \"No\", \"selected\": false}\r\n]",
             "timeContext": {
               "durationMs": 86400000
             }
           }
         ],
         "style": "pills",
-        "queryType": 1,
-        "resourceType": "microsoft.resourcegraph/resources"
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "name": "parameters - 0"
     },
@@ -232,7 +250,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let TimeStart = todatetime({TimeRange:start});\r\nlet TimeEnd = todatetime({TimeRange:end});\r\nlet TimeGrain = totimespan({TimeRange:grain});\r\nAzurePIMEvents\r\n| project TimeGenerated, RoleType\r\n| make-series TimeChart = count() default = 0 on TimeGenerated from TimeStart to TimeEnd step TimeGrain by RoleType\r\n| extend TotalCount = array_sum(TimeChart)\r\n",
+                    "query": "let TimeStart = todatetime({TimeRange:start});\r\nlet TimeEnd = todatetime({TimeRange:end});\r\nlet TimeGrain = totimespan({TimeRange:grain});\r\nlet ShowSystemEvents = {ShowSystemEvents};\r\nAzurePIMEvents\r\n| where ShowSystemEvents == \"False\" or InitiatedByObject !in (\"MS-PIM\", \"Azure AD PIM\")\r\n| project TimeGenerated, Role\r\n| make-series TimeChart = count() default = 0 on TimeGenerated from TimeStart to TimeEnd step TimeGrain by Role\r\n| extend TotalCount = array_sum(TimeChart)\r\n",
                     "size": 0,
                     "timeContextFromParameter": "TimeRange",
                     "timeBrushParameterName": "TimeRange",
@@ -267,7 +285,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"afeb5192-cdfc-4118-b3b5-78c7f1dfa264\",\"mergeType\":\"table\",\"leftTable\":\"query - 6\"}],\"projectRename\":[{\"originalName\":\"[query - 6].RoleType\",\"mergedName\":\"RoleType\",\"fromId\":\"afeb5192-cdfc-4118-b3b5-78c7f1dfa264\"},{\"originalName\":\"[query - 6].TotalCount\",\"mergedName\":\"TotalCount\",\"fromId\":\"afeb5192-cdfc-4118-b3b5-78c7f1dfa264\"},{\"originalName\":\"[query - 6].TimeChart\"},{\"originalName\":\"[query - 6].TimeGenerated\"}]}",
+                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"afeb5192-cdfc-4118-b3b5-78c7f1dfa264\",\"mergeType\":\"table\",\"leftTable\":\"query - 6\"}],\"projectRename\":[{\"originalName\":\"[query - 6].Role\",\"mergedName\":\"Role\",\"fromId\":\"afeb5192-cdfc-4118-b3b5-78c7f1dfa264\"},{\"originalName\":\"[query - 6].TotalCount\",\"mergedName\":\"TotalCount\",\"fromId\":\"afeb5192-cdfc-4118-b3b5-78c7f1dfa264\"},{\"originalName\":\"[query - 6].TimeChart\"},{\"originalName\":\"[query - 6].TimeGenerated\"}]}",
                     "size": 3,
                     "title": " ",
                     "queryType": 7,
@@ -275,7 +293,7 @@
                     "gridSettings": {
                       "formatters": [
                         {
-                          "columnMatch": "RoleType",
+                          "columnMatch": "Role",
                           "formatter": 18,
                           "formatOptions": {
                             "thresholdsOptions": "icons",
@@ -322,7 +340,7 @@
                     },
                     "tileSettings": {
                       "titleContent": {
-                        "columnMatch": "RoleType",
+                        "columnMatch": "Role",
                         "formatter": 18,
                         "formatOptions": {
                           "thresholdsOptions": "icons",
@@ -363,7 +381,7 @@
                         }
                       },
                       "leftContent": {
-                        "columnMatch": "RoleType",
+                        "columnMatch": "Role",
                         "formatter": 18,
                         "formatOptions": {
                           "thresholdsOptions": "icons",
@@ -425,7 +443,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let TimeStart = todatetime({TimeRange:start});\r\nlet TimeEnd = todatetime({TimeRange:end});\r\nlet TimeGrain = totimespan({TimeRange:grain});\r\nAzurePIMEvents\r\n| make-series Timeline = count() default = 0 on TimeGenerated from TimeStart to TimeEnd step TimeGrain by OperationName, RoleType\r\n| extend Count = array_sum(Timeline)\r\n| project OperationName, RoleType, Count, Timeline\r\n| order by Count desc",
+                    "query": "let TimeStart = todatetime({TimeRange:start});\r\nlet TimeEnd = todatetime({TimeRange:end});\r\nlet TimeGrain = totimespan({TimeRange:grain});\r\nlet ShowSystemEvents = {ShowSystemEvents};\r\nAzurePIMEvents\r\n| where ShowSystemEvents == \"False\" or InitiatedByObject !in (\"MS-PIM\", \"Azure AD PIM\")\r\n| make-series Timeline = count() default = 0 on TimeGenerated from TimeStart to TimeEnd step TimeGrain by OperationName, Role\r\n| extend Count = array_sum(Timeline)\r\n| project OperationName, Role, Count, Timeline\r\n| order by Count desc",
                     "size": 0,
                     "timeContextFromParameter": "TimeRange",
                     "queryType": 0,
@@ -436,33 +454,6 @@
                     "visualization": "table",
                     "gridSettings": {
                       "formatters": [
-                        {
-                          "columnMatch": "RoleType",
-                          "formatter": 18,
-                          "formatOptions": {
-                            "thresholdsOptions": "icons",
-                            "thresholdsGrid": [
-                              {
-                                "operator": "==",
-                                "thresholdValue": "Azure AD Role",
-                                "representation": "Globe",
-                                "text": "{0}{1}"
-                              },
-                              {
-                                "operator": "==",
-                                "thresholdValue": "Azure RBAC Role",
-                                "representation": "PersonWithFriend",
-                                "text": "{0}{1}"
-                              },
-                              {
-                                "operator": "Default",
-                                "thresholdValue": null,
-                                "representation": "2",
-                                "text": "{0}{1}"
-                              }
-                            ]
-                          }
-                        },
                         {
                           "columnMatch": "Count",
                           "formatter": 3,
@@ -493,7 +484,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1f135c2f-cb9e-4da1-90d6-1b6549e2d057\",\"mergeType\":\"table\",\"leftTable\":\"query - Overview - Summarized by Operation - Grid View \"}],\"projectRename\":[{\"originalName\":\"[query - Overview - Summarized by Operation - Grid View ].OperationName\",\"mergedName\":\"OperationName\",\"fromId\":\"1f135c2f-cb9e-4da1-90d6-1b6549e2d057\"},{\"originalName\":\"[query - Overview - Summarized by Operation - Grid View ].Count\",\"mergedName\":\"Count\",\"fromId\":\"1f135c2f-cb9e-4da1-90d6-1b6549e2d057\"},{\"originalName\":\"[query - Overview - Summarized by Operation - Grid View ].RoleType\",\"mergedName\":\"RoleType\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Overview - Summarized by Operation - Grid View ].Timeline\"}]}",
+                    "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1f135c2f-cb9e-4da1-90d6-1b6549e2d057\",\"mergeType\":\"table\",\"leftTable\":\"query - Overview - Summarized by Operation - Grid View \"}],\"projectRename\":[{\"originalName\":\"[query - Overview - Summarized by Operation - Grid View ].OperationName\",\"mergedName\":\"OperationName\",\"fromId\":\"1f135c2f-cb9e-4da1-90d6-1b6549e2d057\"},{\"originalName\":\"[query - Overview - Summarized by Operation - Grid View ].Count\",\"mergedName\":\"Count\",\"fromId\":\"1f135c2f-cb9e-4da1-90d6-1b6549e2d057\"},{\"originalName\":\"[query - Overview - Summarized by Operation - Grid View ].Role\",\"mergedName\":\"Role\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Overview - Summarized by Operation - Grid View ].Timeline\"}]}",
                     "size": 3,
                     "queryType": 7,
                     "visualization": "piechart"
@@ -517,7 +508,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let TimeStart = todatetime({TimeRange:start});\r\nlet TimeEnd = todatetime({TimeRange:end});\r\nlet TimeGrain = totimespan({TimeRange:grain});\r\nAzurePIMEvents\r\n| make-series Timeline = count() default = 0 on TimeGenerated from TimeStart to TimeEnd step TimeGrain by Object, ObjectType\r\n| extend Count = array_sum(Timeline)\r\n| project Object, ObjectType, Count, Timeline\r\n| order by Count desc",
+                    "query": "let TimeStart = todatetime({TimeRange:start});\r\nlet TimeEnd = todatetime({TimeRange:end});\r\nlet TimeGrain = totimespan({TimeRange:grain});\r\nlet ShowSystemEvents = {ShowSystemEvents};\r\nAzurePIMEvents\r\n| where ShowSystemEvents == \"False\" or InitiatedByObject !in (\"MS-PIM\", \"Azure AD PIM\")\r\n| make-series Timeline = count() default = 0 on TimeGenerated from TimeStart to TimeEnd step TimeGrain by Object, ObjectType\r\n| extend Count = array_sum(Timeline)\r\n| project Object, ObjectType, Count, Timeline\r\n| order by Count desc",
                     "size": 0,
                     "timeContextFromParameter": "TimeRange",
                     "queryType": 0,
@@ -547,6 +538,18 @@
                                 "text": "{0}{1}"
                               },
                               {
+                                "operator": "==",
+                                "thresholdValue": "Role",
+                                "representation": "Support",
+                                "text": "{0}{1}"
+                              },
+                              {
+                                "operator": "==",
+                                "thresholdValue": "ServicePrincipal",
+                                "representation": "Gear",
+                                "text": "{0}{1}"
+                              },
+                              {
                                 "operator": "Default",
                                 "thresholdValue": null,
                                 "representation": "AvatarUnknown",
@@ -569,8 +572,20 @@
                             "palette": "blue"
                           }
                         }
+                      ],
+                      "sortBy": [
+                        {
+                          "itemKey": "$gen_thresholds_ObjectType_1",
+                          "sortOrder": 1
+                        }
                       ]
                     },
+                    "sortBy": [
+                      {
+                        "itemKey": "$gen_thresholds_ObjectType_1",
+                        "sortOrder": 1
+                      }
+                    ],
                     "chartSettings": {
                       "xAxis": "OperationName",
                       "yAxis": [
@@ -614,7 +629,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let TimeStart = todatetime({TimeRange:start});\r\nlet TimeEnd = todatetime({TimeRange:end});\r\nlet TimeGrain = totimespan({TimeRange:grain});\r\nAzurePIMEvents\r\n//| where InitiatedByObject !in (\"MS-PIM\", \"Azure AD PIM\")\r\n| make-series Timeline = count() default = 0 on TimeGenerated from TimeStart to TimeEnd step TimeGrain by InitiatedByObject, InitiatedByType\r\n| extend Count = array_sum(Timeline)\r\n| project InitiatedByObject, InitiatedByType, Count, Timeline\r\n| order by Count desc",
+                    "query": "let TimeStart = todatetime({TimeRange:start});\r\nlet TimeEnd = todatetime({TimeRange:end});\r\nlet TimeGrain = totimespan({TimeRange:grain});\r\nlet ShowSystemEvents = {ShowSystemEvents};\r\nAzurePIMEvents\r\n| where ShowSystemEvents == \"False\" or InitiatedByObject !in (\"MS-PIM\", \"Azure AD PIM\")\r\n| make-series Timeline = count() default = 0 on TimeGenerated from TimeStart to TimeEnd step TimeGrain by InitiatedByObject, InitiatedByType\r\n| extend Count = array_sum(Timeline)\r\n| project InitiatedByObject, InitiatedByType, Count, Timeline\r\n| order by Count desc",
                     "size": 0,
                     "timeContextFromParameter": "TimeRange",
                     "queryType": 0,
@@ -1119,9 +1134,6 @@
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
-              "crossComponentResources": [
-                "{Workspace}"
-              ],
               "parameters": [
                 {
                   "id": "40973adb-3878-4d35-af3a-f8828f3df7ab",
@@ -1183,7 +1195,7 @@
                         "leftOperand": "AboveQueryThresholdCount",
                         "operator": ">",
                         "rightValType": "static",
-                        "rightVal": "250",
+                        "rightVal": "100",
                         "resultValType": "static",
                         "resultVal": "true"
                       }
@@ -1239,7 +1251,7 @@
           {
             "type": 1,
             "content": {
-              "json": "## Warning\r\nThe number of events returned is greater than **250**. Consider changing the time range parameter to target a smaller set of results. \r\n> Total Number of results: **{AboveQueryThresholdCount}**\r\n",
+              "json": "## Warning\r\nThe number of events returned is greater than **1000**. Consider changing the time range parameter to target a smaller set of results. \r\n> Total Number of results: **{AboveQueryThresholdCount}**\r\n",
               "style": "warning"
             },
             "conditionalVisibility": {
@@ -1253,7 +1265,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "AzurePIMEvents\r\n| where Category == \"RoleManagement\"\r\n| where OperationName in ({SelectedOperations})\r\n| where Result in ({ResultTypes})\r\n| extend MoreInfo = \"Info\"\r\n| extend Result = strcat(toupper(substring(Result,0,1)),substring(Result,1))\r\n| project-reorder\r\n    TimeGenerated, OperationName, Result, ResultDescription, Object, ObjectType, ObjectId, Role, RoleId, InitiatedByObject, InitiatedByType, InitiatedByObjectId, MoreInfo\r\n",
+              "query": "let ShowSystemEvents = {ShowSystemEvents};\r\nAzurePIMEvents\r\n| where ShowSystemEvents == \"False\" or InitiatedByObject !in (\"MS-PIM\", \"Azure AD PIM\")\r\n| where Category == \"RoleManagement\"\r\n| where OperationName in ({SelectedOperations})\r\n| where Result in ({ResultTypes})\r\n| extend Info = \"Info\"\r\n| extend Result = strcat(toupper(substring(Result,0,1)),substring(Result,1))\r\n| project-reorder\r\n    Info, TimeGenerated, OperationName, Result, ResultDescription, Object, Role, ObjectType, ObjectId, Role, RoleId, InitiatedByObject, InitiatedByType, InitiatedByObjectId\r\n",
               "size": 2,
               "timeContextFromParameter": "TimeRange",
               "queryType": 0,
@@ -1265,6 +1277,24 @@
               "gridSettings": {
                 "formatters": [
                   {
+                    "columnMatch": "Info",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "linkTarget": "GenericDetails",
+                      "linkIsContextBlade": true,
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "1",
+                          "text": ""
+                        }
+                      ],
+                      "customColumnWidthSetting": "10ch"
+                    }
+                  },
+                  {
                     "columnMatch": "TimeGenerated",
                     "formatter": 6,
                     "formatOptions": {
@@ -1273,7 +1303,10 @@
                   },
                   {
                     "columnMatch": "OperationName",
-                    "formatter": 1
+                    "formatter": 1,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "40ch"
+                    }
                   },
                   {
                     "columnMatch": "Result",
@@ -1314,6 +1347,13 @@
                     "formatter": 1
                   },
                   {
+                    "columnMatch": "Role",
+                    "formatter": 1,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "34ch"
+                    }
+                  },
+                  {
                     "columnMatch": "ObjectType",
                     "formatter": 18,
                     "formatOptions": {
@@ -1332,9 +1372,15 @@
                           "text": "{0}{1}"
                         },
                         {
+                          "operator": "==",
+                          "thresholdValue": "ServicePrincipal",
+                          "representation": "Gear",
+                          "text": "{0}{1}"
+                        },
+                        {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "ResourceFlat",
+                          "representation": "AvatarUnknown",
                           "text": "{0}{1}"
                         }
                       ]
@@ -1343,10 +1389,6 @@
                   {
                     "columnMatch": "ObjectId",
                     "formatter": 5
-                  },
-                  {
-                    "columnMatch": "Role",
-                    "formatter": 1
                   },
                   {
                     "columnMatch": "RoleId",
@@ -1363,23 +1405,6 @@
                   {
                     "columnMatch": "InitiatedByObjectId",
                     "formatter": 5
-                  },
-                  {
-                    "columnMatch": "MoreInfo",
-                    "formatter": 18,
-                    "formatOptions": {
-                      "linkTarget": "GenericDetails",
-                      "linkIsContextBlade": true,
-                      "thresholdsOptions": "icons",
-                      "thresholdsGrid": [
-                        {
-                          "operator": "Default",
-                          "thresholdValue": null,
-                          "representation": "1",
-                          "text": "{0}{1}"
-                        }
-                      ]
-                    }
                   },
                   {
                     "columnMatch": "TenantId",
@@ -1482,6 +1507,10 @@
                     "formatter": 5
                   },
                   {
+                    "columnMatch": "Group",
+                    "formatter": 1
+                  },
+                  {
                     "columnMatch": "ObjectIndexSet",
                     "formatter": 5
                   },
@@ -1493,7 +1522,8 @@
                     "columnMatch": "RoleIdIndexSet",
                     "formatter": 5
                   }
-                ]
+                ],
+                "rowLimit": 1000
               }
             },
             "name": "query - 1"
@@ -1764,7 +1794,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/3ee0eb85-9e63-4cbd-8dab-fb0ce343b2cf/resourcegroups/management/providers/microsoft.operationalinsights/workspaces/alistairrr-wksp"
+    "Azure Monitor"
   ],
   "fromTemplateId": "sentinel-UserWorkbook",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
