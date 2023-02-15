@@ -6,7 +6,7 @@ on:
   push:
     paths:
       - 'Solutions/AzurePrivilegedIdentityManager/Mappings/*'
-      - 'Solutions/AzurePrivilegedIdentityManager/.build/Scripts/Azure_PIM_Mappings_Parser_Build_Script.ps1'
+      - ''
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
         
       - name: BuildScript
         run: |
-            .\Scripts\Azure_PIM_Mappings_Parser_Build_Script.ps1
+            .\Solutions/AzurePrivilegedIdentityManager/.build/Scripts/Azure_PIM_Mappings_Parser_Build_Script.ps1
         
       - name: Auto-Commit
         uses: EndBug/add-and-commit@v9
