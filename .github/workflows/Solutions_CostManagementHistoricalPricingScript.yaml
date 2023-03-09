@@ -1,0 +1,24 @@
+name: 'Cost Management Historical Pricing Script'
+
+on:
+  schedule:
+    - cron:  '0 6 2 * *'
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      solutionDirectory: '/Solutions/CostManagement'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: BuildScript
+        run: |
+            .\Solutions\CostManagement\Script\GetMicrosoftSentinelRetailPrices.ps1
+        
+      - name: Auto-Commit
+        uses: EndBug/add-and-commit@v9
