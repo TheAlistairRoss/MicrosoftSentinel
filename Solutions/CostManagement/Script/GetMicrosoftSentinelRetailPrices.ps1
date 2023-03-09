@@ -2,6 +2,7 @@ Write-Host "Prices are calculated based on US dollars and converted using Thomso
 
 
 # Constants
+$RootDirectory = $env:directory
 $solutionDirectory = $env:solutionDirectory
 $OutputFolder = "Prices"
 $Services = "Azure Monitor", "Sentinel"
@@ -283,7 +284,7 @@ function Add-PricingObjectDifferences {
 
 function main {
 
-    Set-Location $solutionDirectory
+    Set-Location $RootDirectory\$solutionDirectory
     foreach ($Service in $Services) {
         foreach ($CurrencyCode in $CurrencyCodes) {
             Write-Host
