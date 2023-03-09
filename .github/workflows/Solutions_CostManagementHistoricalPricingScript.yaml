@@ -12,6 +12,7 @@ jobs:
     env:
       directory: '${{ github.workspace }}'
       solutionDirectory: '/Solutions/CostManagement'
+      informationPreference: 'SilentlyContinue'
 
     steps:
       - name: Checkout

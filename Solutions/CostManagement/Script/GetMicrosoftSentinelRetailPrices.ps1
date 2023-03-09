@@ -4,6 +4,7 @@ Write-Host "Prices are calculated based on US dollars and converted using Thomso
 # Constants
 $RootDirectory = $env:directory
 $solutionDirectory = $env:solutionDirectory
+$InformationPreference = $env:informationPreference
 $OutputFolder = "Prices"
 $Services = "Azure Monitor", "Sentinel"
 $baseUrl = "https://prices.azure.com/api/retail/prices?api-version=2021-10-01-preview"
@@ -91,7 +92,7 @@ function Get-AzPricing {
         $Url
     )
     $CmdletName = "Get-AzPricing"
-    Write-Verbose "$CmdletName`: -Url $url"
+    Write-Information "$CmdletName`: -Url $url"
 
     $TimeGenerated = if ($Global:ScriptRunDateTime) { 
         $Global:ScriptRunDateTime
@@ -107,7 +108,7 @@ function Get-AzPricing {
 
             $Request = Invoke-RestMethod -Method Get -Uri $Url
             $ItemsReturned += $Request.Count
-            Write-Verbose "$CmdletName`: Items Returned: $ItemsReturned"
+            Write-Information "$CmdletName`: Items Returned: $ItemsReturned"
 
             if ($Request) {
                 $Request.Items | ForEach-Object {
@@ -160,15 +161,15 @@ function Get-AzPricing {
 function New-File {
     [CmdletBinding()]
     param($Path)
-    Write-Verbose "New-File: -path $OutputPath"
+    Write-Information "New-File: -path $OutputPath"
 
     try {
         Get-Item -Path $Path -ErrorAction Stop
-        Write-Verbose "New-File: Path Exists"
+        Write-Information "New-File: Path Exists"
     }
     catch {
         try {
-            Write-Verbose "New-File: No file found. Creating file."
+            Write-Information "New-File: No file found. Creating file."
             New-Item -Path $path -Force -ErrorAction Stop | Out-Null
         }
         catch {
@@ -235,7 +236,7 @@ function Compare-PricingObjects {
         $Output = @()
         if ($ReferenceObject -and $DifferenceObject) {
             if ($ReferenceObject) {
-                Write-Verbose "Comparing Old and New Retail Prices"
+                Write-Information "Comparing Old and New Retail Prices"
                 $OldRetailPrices = $ReferenceObject | Group-Object -Property Tier | ForEach-Object {
                     $_.Group | Sort-Object TimeGenerated -Descending | Select-Object -First 1
                 }
@@ -289,7 +290,7 @@ function main {
     Set-Location $RootDirectory\$solutionDirectory
     foreach ($Service in $Services) {
         foreach ($CurrencyCode in $CurrencyCodes) {
-            Write-Host
+            Write-Host ""
             Write-Host "Processing Currency Code $CurrencyCode for $Service"
             $url = $baseUrl + "&currencyCode='$CurrencyCode'&" + $Filters.$Service
     
@@ -332,4 +333,3 @@ function main {
 }
 
 main
-
