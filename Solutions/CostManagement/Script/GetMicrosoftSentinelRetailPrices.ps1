@@ -91,7 +91,7 @@ function Get-AzPricing {
         $Url
     )
     $CmdletName = "Get-AzPricing"
-    Write-Host "$CmdletName`: -Url $url"
+    Write-Verbose "$CmdletName`: -Url $url"
 
     $TimeGenerated = if ($Global:ScriptRunDateTime) { 
         $Global:ScriptRunDateTime
@@ -107,7 +107,7 @@ function Get-AzPricing {
 
             $Request = Invoke-RestMethod -Method Get -Uri $Url
             $ItemsReturned += $Request.Count
-            Write-Host "$CmdletName`: Items Returned: $ItemsReturned"
+            Write-Verbose "$CmdletName`: Items Returned: $ItemsReturned"
 
             if ($Request) {
                 $Request.Items | ForEach-Object {
@@ -152,21 +152,23 @@ function Get-AzPricing {
     }
 
     return $Output
+    Write-Host "$CmdletName`: Items Collected: $ItemsReturned"
+
     Write-Host "$CmdletName`: Complete"
 }
 
 function New-File {
     [CmdletBinding()]
     param($Path)
-    Write-Host "New-File: -path $OutputPath"
+    Write-Verbose "New-File: -path $OutputPath"
 
     try {
         Get-Item -Path $Path -ErrorAction Stop
-        Write-Host "New-File: Path Exists"
+        Write-Verbose "New-File: Path Exists"
     }
     catch {
         try {
-            Write-Host "New-File: No file found. Creating file."
+            Write-Verbose "New-File: No file found. Creating file."
             New-Item -Path $path -Force -ErrorAction Stop | Out-Null
         }
         catch {
@@ -233,7 +235,7 @@ function Compare-PricingObjects {
         $Output = @()
         if ($ReferenceObject -and $DifferenceObject) {
             if ($ReferenceObject) {
-                Write-Host "Comparing Old and New Retail Prices"
+                Write-Verbose "Comparing Old and New Retail Prices"
                 $OldRetailPrices = $ReferenceObject | Group-Object -Property Tier | ForEach-Object {
                     $_.Group | Sort-Object TimeGenerated -Descending | Select-Object -First 1
                 }
