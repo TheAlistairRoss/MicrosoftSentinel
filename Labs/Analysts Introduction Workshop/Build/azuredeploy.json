@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "7452700055483757239"
+      "templateHash": "17088062099325954492"
     }
   },
   "parameters": {
@@ -253,6 +253,22 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('sentinelWorkspaceName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "WaitForSentinel",
+      "kind": "AzurePowerShell",
+      "location": "[parameters('location')]",
+      "properties": {
+        "azPowerShellVersion": "3.0",
+        "scriptContent": "start-sleep -Seconds 60",
+        "cleanupPreference": "Always",
+        "retentionInterval": "PT1H"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationsManagement/solutions', variables('sentinelSolutionName'))]"
       ]
     },
     {

@@ -206,6 +206,21 @@ resource azureAdSigninWorkbook 'microsoft.insights/workbooks@2022-04-01' = {
   }
 }
 
+resource WaitForSentinel 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+  kind: 'AzurePowerShell'
+  name: 'WaitForSentinel'
+  location: location
+  dependsOn: [
+    sentinelSolution
+  ]
+  properties: {
+    azPowerShellVersion: '3.0'
+    scriptContent: 'start-sleep -Seconds 60'
+    cleanupPreference: 'Always'
+    retentionInterval: 'PT1H'
+  }
+}
+
 resource contosoBreakGlassAlert 'Microsoft.SecurityInsights/alertRules@2023-02-01-preview' = [for i in range(0, numberOfAnalyticRules): {
   scope: logAnalyticsWorkspace
   dependsOn:[
