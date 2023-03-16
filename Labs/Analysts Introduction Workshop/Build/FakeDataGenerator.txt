@@ -1,0 +1,71 @@
+# This is converting existing logs from the contoso hotels demo into enriched logs with pre approved fictious names. 
+# All locations specified are Microsoft offices at the time of writing.
+let FakeData = datatable (
+    Index: int,
+    Identity: string,
+    UserPrincipalName: string,
+    IPAddress: string,
+    city: string,
+    countryOrRegion: string,
+    latitude
+    : string,
+    longitude: string,
+    state: string
+) [
+    0, "Abbi Atkins", "abbi.atkins@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington",
+    1, "Angel Brown", "angel.brown@contoso.com", "192.168.2.53", "Reading", "GB", "51.461216", "-0.926469", "Reading",
+    2, "Conrad Kutzsche", "conrad.kutzsche@contoso.com", "192.168.2.48", "Munich", "GR", "48.177862", "11.593635", "Bavaria",
+    3, "Gebhard Peters", "gebhard.peters@contoso.com", "192.168.2.48", "Munich", "GR", "48.177862", "11.593635", "Bavaria",
+    4, "Helga Schustereit", "helga.schustereit@contoso.com", "192.168.2.48", "Munich", "GR", "48.177862", "11.593635", "Bavaria",
+    5, "Lara Wolfe", "lara.wolfe@contoso.com", "192.168.2.48", "Munich", "GR", "48.177862", "11.593635", "Bavaria",
+    6, "Gabriel Woods", "gabriel.woods@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington",
+    7, "Hannah Haynes", "hannah.haynes@contoso.com", "192.168.2.53", "Reading", "GB", "51.461216", "-0.926469", "Reading",
+    8, "Grace Owens", "grace.owens@contoso.com", "192.168.2.53", "Reading", "GB", "51.461216", "-0.926469", "Reading",
+    9, "Hollie Rees", "hollie.rees@contoso.com", "192.168.2.53", "Reading", "GB", "51.461216", "-0.926469", "Reading",
+    10, "Hayden Lopez", "hayden.lopez@contoso.com", "192.168.2.53", "Reading", "GB", "51.461216", "-0.926469", "Reading",
+    11, "Jennifer Wilkins", "jennifer.wilkins@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington",
+    12, "Archie Boyle", "archie.boyle@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington",
+    13, "Isaac Talbot", "isaac.talbot@contoso.com", "192.168.2.53", "Reading", "GB", "51.461216", "-0.926469", "Reading",
+    14, "Parker Jones", "parker.jones@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington",
+    15, "Liam Small", "liam.small@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington",
+    16, "Mia Steele", "mia.steele@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington",
+    17, "Avery Smith", "avery.smith@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington",
+    18, "Quinn Anderson", "quinn.anderson@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington",
+    19, "Sonia Rees", "sonia.rees@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington",
+    20, "Peyton Davis", "peyton.davis@contoso.com", "192.168.2.53", "Reading", "GB", "51.461216", "-0.926469", "Reading",
+    21, "William Kirby", "william.kirby@contoso.com", "192.168.2.53", "Reading", "GB", "51.461216", "-0.926469", "Reading",
+    22, "Lilly Koenig", "lilly.koenig@contoso.com", "192.168.2.48", "Munich", "GR", "48.177862", "11.593635", "Bavaria",
+    23, "Brigitte Otto", "brigitte.otto@contoso.com", "192.168.2.53", "Munich", "GR", "48.177862", "11.593635", "Bavaria",
+    24, "Riley Johnson", "riley.johnson@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington"
+]
+| extend LocationDetails = pack_dictionary("city", city, "countryOrRegion", countryOrRegion, "geoCoordinates", pack_dictionary("latitude", latitude, "longitude", longitude), "state", ['state'])
+| project Index, Identity, UserPrincipalName, IPAddress, Location = countryOrRegion, LocationDetails;
+let LogsRaw = SigninLogs
+    | where TimeGenerated between (startofday(ago(1d)) .. endofday(ago(1d)))
+    | where UserType == "Member"
+    | where isempty(DeviceDetail.deviceId) or DeviceDetail.deviceId == "{PII Removed}"
+    | where AppDisplayName <> "Microsoft Azure Active Directory Connect";
+let LogsTransformed = LogsRaw
+    | summarize Count = count() by UserPrincipalName
+    | order by Count desc 
+    | extend Index = row_number(0) % 25
+    | join kind=inner (
+        FakeData
+        )
+        on Index
+    | project-away Index, Index1, Count
+    | project
+        UserPrincipalName,
+        UserPrincipalName1,
+        Identity,
+        IPAddress,
+        Location,
+        LocationDetails;
+LogsTransformed
+| join kind=inner (
+    LogsRaw
+) on UserPrincipalName
+| extend UserPrincipalName = UserPrincipalName1
+| project TimeGenerated = tostring(TimeGenerated), OperationName, Category, ResultType, ResultDescription, CorrelationId, Identity, Level, Location, AppDisplayName, AppId, ClientAppUsed, ConditionalAccessStatus, DeviceDetail, IPAddress, LocationDetails, ResourceDisplayName, UserPrincipalName, UserType
+
+
