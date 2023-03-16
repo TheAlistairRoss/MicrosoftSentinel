@@ -215,7 +215,7 @@ resource WaitForSentinel 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   ]
   properties: {
     azPowerShellVersion: '3.0'
-    scriptContent: 'start-sleep -Seconds 60'
+    scriptContent: 'start-sleep -Seconds 30'
     cleanupPreference: 'Always'
     retentionInterval: 'PT1H'
   }

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "14677740659522672561"
+      "templateHash": "1044542670038658508"
     }
   },
   "parameters": {
@@ -263,7 +263,7 @@
       "location": "[parameters('location')]",
       "properties": {
         "azPowerShellVersion": "3.0",
-        "scriptContent": "start-sleep -Seconds 60",
+        "scriptContent": "start-sleep -Seconds 30",
         "cleanupPreference": "Always",
         "retentionInterval": "PT1H"
       },
