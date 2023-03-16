@@ -289,6 +289,6 @@ resource contosoBreakGlassAlert 'Microsoft.SecurityInsights/alertRules@2023-02-0
   }
 }]
 
-output DCEIngestionEndpoint string = string(dataCollectionEndpoint.properties.logsIngestion)
+output DCEIngestionEndpoint string = string(dataCollectionEndpoint.properties.logsIngestion.endpoint)
 output DCRImmutableId string = string(dataCollectionRule.properties.immutableId)
 output StreamName string = 'Custom-${customSigninLogsTable.name}'
