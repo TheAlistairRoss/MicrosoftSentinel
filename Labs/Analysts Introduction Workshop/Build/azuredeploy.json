@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "17088062099325954492"
+      "templateHash": "14677740659522672561"
     }
   },
   "parameters": {
@@ -341,7 +341,8 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('sentinelWorkspaceName'))]",
-        "[resourceId('Microsoft.OperationsManagement/solutions', variables('sentinelSolutionName'))]"
+        "[resourceId('Microsoft.OperationsManagement/solutions', variables('sentinelSolutionName'))]",
+        "[resourceId('Microsoft.Resources/deploymentScripts', 'WaitForSentinel')]"
       ]
     }
   ],

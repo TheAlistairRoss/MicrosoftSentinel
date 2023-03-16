@@ -225,6 +225,7 @@ resource contosoBreakGlassAlert 'Microsoft.SecurityInsights/alertRules@2023-02-0
   scope: logAnalyticsWorkspace
   dependsOn:[
     sentinelSolution
+    WaitForSentinel
   ]
   name: analyticRulesUniqueNameArray[i]
   kind: 'Scheduled'
