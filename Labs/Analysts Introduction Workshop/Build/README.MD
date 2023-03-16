@@ -9,7 +9,8 @@
 ## **Phase 1 Deploy ARM Templates**
 
 1. Deploy the ARM template:
-   1. [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthealistairross%2Fmicrosoftsentinel%2Fmain%2Flabs%2Fanalysts%2520introduction%2520workshop%2Fbuild%2Fazuredeploy.json)
+   1. [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2Fmain%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2Fazuredeploy.json
+)
    2. Deploy via PowerShell
 2. Record the outputs from the script:
    1. **DCEIngestionEndpoint**: This is the Uri needed for ingesting custom data
