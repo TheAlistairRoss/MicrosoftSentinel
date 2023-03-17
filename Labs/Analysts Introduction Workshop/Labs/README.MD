@@ -1,5 +1,7 @@
 # Introduction
 
+Under Review
+
 **Objectives:**<br>
 After completing this lab, you will be able to:<br>
 •	Utilize Microsoft Sentinel to respond and investigate incidents<br>
