@@ -2,16 +2,18 @@
 
 As an analyst, your primary goal will be responding to and investigating incidents created within Microsoft Sentinel. In this section we will review an incident that has occurred. You will assign the incident to yourself and go through the details that are provided within the incident, drilling down into the events and investigation.<br>
 
-> **NOTE:** The analytic rules and incidents should be pre-populated by your instructor.
 #
 
 ## Task 1: Review your Incidents
 
 1. From within the Microsoft Sentinel blade, under Threat management, select **Incidents**.
 
-![alt text](screenshots/MicrosoftSentinel-MenuIncidents.png)<br><br>
+![image](https://user-images.githubusercontent.com/80840658/226498811-2ff775f7-94c4-4d7e-b56c-3bb57c830f22.png)
+<br><br>
 
-2. Locate your incident *standard**XX** – Failed Logon* (where “XX” is the number you have been assigned at the start of class).
+2. Look through the open incidents in the Sentinel workspace, and identify an incident that has IP address entity mapping configured <br><br>
+![image](https://user-images.githubusercontent.com/80840658/226499308-70b198bd-c022-4d11-ae18-55e738dfe14a.png) <br><br>
+
 
 3. Click on your incident, then review the details in the right hand pane.
 
@@ -23,21 +25,23 @@ As an analyst, your primary goal will be responding to and investigating inciden
 
 ![alt text](screenshots/SentinelIncident-ChangeIncidentStatus.png)<br><br>
 
-6. Scroll down the incident and select the plus **" + "** button under Tags. Enter **User XX** (where “XX” is the number you have been assigned at the start of class), then click **OK**.
+6. Scroll down the incident and select the plus **" + "** button under Tags. Enter **Malicious IP**, then click **OK**.
 
-![alt text](screenshots/SentinelIncident-AddTag.png)<br><br>
+![image](https://user-images.githubusercontent.com/80840658/226499902-b1e7b16e-5564-47d8-b8d7-f65da1c9721e.png)
+<br><br>
 
-7. At the bottom of the incident, add a simple comment in the comment field, such as *"Begining Investigation"*.
+7. At the bottom of the incident, add a simple comment in the comment field, such as *"Beginning Investigation"*.
 
 8. Click **View full details**
 
-![alt text](screenshots/SentinelIncident-AddSimpleComment.png)<br><br>
+![image](https://user-images.githubusercontent.com/80840658/226500477-3a1dab9d-71c9-4c04-820b-ef626f4653fd.png)
+<br><br>
 
-9. The timeline tab should already be selected, if not click **Timeline** and review the details within the Timeline.
+9. Navigate to the incident timeline and review the alert(s) associated with the incident.
 
-![alt text](screenshots/SentinelIncident-Timeline.png)<br><br>
-
-10. Click the **System alert ID** for an alert named *standard**XX** – Failed Logon* (where “XX” is the number you have been assigned at the start of class). This will take you to the alert details within Logs.
+10. Click the **System alert ID** for any of the alerts included in the incident. This will take you to the alert details within Logs. <br><br>
+![image](https://user-images.githubusercontent.com/80840658/226501027-48659f5b-be36-4781-9084-c7c2fca0c0e4.png)
+<br><br>
 
 11. Review the data avaliable within the Logs. Press the arrows to the left hand side of the results to expand dynamically typed results.
 
@@ -48,27 +52,27 @@ As an analyst, your primary goal will be responding to and investigating inciden
 
 13. Click **Similar incidents (Preview)**. This tab will show you the top 20 incidents that could be consider similar and the reason why.
 
-![alt text](screenshots/SentinelIncident-SimilarIncidents.png)<br><br>
+![image](https://user-images.githubusercontent.com/80840658/226501911-c4287c77-c425-43ba-80e0-b489178cfbcf.png)
+<br><br>
 
-14. Click **Alerts**. The *Alert ID* GUID will take you to the previously seen log results. This time click a value under the *Events* column.
-
-![alt text](screenshots/SentinelIncident-Alerts.png)<br><br>
-
-14. Review the output shown in the logs. The alerting query will be run within the alert timeframe and the logs produced by the query will be shown. 
-
-15. Click the **X** in the upper right hand corner to return to the Incident Alerts.
-
-16. Click **View playbooks**. You can see the playbooks (Logic Apps) that you have permissions to and any runs related to this alert from this window. 
+14. Click **View playbooks**. You can see the playbooks (Logic Apps) that you have permissions to and any runs related to this alert from this window. 
 
 > **NOTE:** You may need to scroll right depending on the resolution / zoom on your screen.
 
-17. Click the **X** in the upper right hand corner to return to the Incident Alerts.
+![image](https://user-images.githubusercontent.com/80840658/226502477-62e9da22-a080-4c2b-acac-34f6d93a3c7b.png)
+<br><br>
 
-18. Click **Bookmarks**. There should be no bookmarks at this stage, but this is where you will see bookmarked logs from your investigations within the logs. An example of a bookmark can be seen in the image below.
+![image](https://user-images.githubusercontent.com/80840658/226502705-09fb544a-d6a5-44ca-a545-254b609da306.png)
+<br><br>
 
-> **NOTE:** Do not worry that there are no bookmarks at this stage, they will be populated later
+15. Click the **X** in the upper right hand corner to return to the Incident Alerts.
 
-![alt text](screenshots/SentinelIncident-BookmarksTab.png)<br><br>
+16. Click **Bookmarks**. This is where you will see bookmarked logs from your investigations within the logs. An example of a bookmark can be seen in the image below.
+
+> **NOTE:** Do not worry if there are no bookmarks. Bookmarks can be created by selecting log results generated from KQL queries, saving the log as a bookmark (bookmarks ae saved in the hunting blade), and manually assigning the bookmark to an incident.
+
+![image](https://user-images.githubusercontent.com/80840658/226503445-2d667199-53cf-4384-a5f6-0a1a4805a7ec.png)
+<br><br>
 
 19. Click **Entities**. Here you should see the aggregated list of entities within the incident, from Alerts and bookmarks.  
 
