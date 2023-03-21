@@ -286,7 +286,7 @@ resource analyticRuleContosoBreakGlass 'Microsoft.SecurityInsights/alertRules@20
     query: 'fSigninLogs\r\n| where UserPrincipalName =~ "BreakGlass@contoso.com"\r\n| extend alertNumber = range(1,${numberOfAnalyticRules + 1})\r\n| mv-expand alertNumber'
     queryFrequency: 'PT1H'
     queryPeriod: 'P14D'
-    severity: 'High'
+    severity: 'Informational'
     suppressionDuration: 'P1D'
     suppressionEnabled: true
     tactics: [
@@ -487,6 +487,6 @@ resource playbookDemoDisableUserAccount 'Microsoft.Logic/workflows@2019-05-01' =
   }
 }
 
-output DCEIngestionEndpoint string = string(dataCollectionEndpoint.properties.logsIngestion.endpoint)
-output DCRImmutableId string = string(dataCollectionRule.properties.immutableId)
+output DCEIngestionEndpoint string = dataCollectionEndpoint.properties.logsIngestion.endpoint
+output DCRImmutableId string = dataCollectionRule.properties.immutableId
 output StreamName string = 'Custom-${customSigninLogsTable.name}'

@@ -4,13 +4,13 @@
 
 1. **Creation of an Azure App Registration and Secret** - [Quickstart: Register an app in the Microsoft identity platform - Microsoft Entra | Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
 2. **Resource Group with Owner Permissions** - This is needed as we will be deploying additional resources and assigning permissions.
-3. **(Optional) Exisitng Sentinel Instance** - This would optional, as this template will deploy everything that is needed.
+3. **User Accounts** - Each user should be provisoned a user account in your Azure Tenant. 
+4. **(Optional) Exisitng Sentinel Instance** - This would optional, as this template will deploy everything that is needed.
 
 ## **Phase 1 Deploy ARM Templates**
 
 1. Deploy the ARM template:
    1. [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2Fmain%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2Fazuredeploy.json)
-   2. Deploy via PowerShell
 2. Set the Parameters
    1. **Region** - This is automatically set based on your Resource Group location
    2. **Sentinel Workspace Name** - If using an existing workspace in the same resource group, then specify the name here. If a workspace does not exisit, then a new workspace will be created
@@ -23,16 +23,15 @@
 
 ## Phase 2: Assign Permissions
 
-1. Open the Azure Portal
-2. Navigate to **Monitor**
-3. Scroll down to **Data Collection Rules**
-4. Find the Data collection rule (**YourSentinelName-analyst-hunting-dcr**)
-5. Select **Access control**
-6. Click **Add**, then **Add Role Assignment**
-7. Select **Monitoring Metrics Publisher**, then click **Next**
-8. Ensure that "Users, group or service principal" is selected, the click **+ Select members**
-9. Find your App Registration, ensure it is selected, then click **Select**
-10. Click **Review + assign**
+There are various permissions that require assignment for this lab to work. Some may already be in place depending on your deployment. Review the permissons and ensure they are assigned
+
+| Azure Role Name                           | Scope          | Object / User                                                                | Details                                                                                                       |
+| ----------------------------------------- | -------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Monitoring Metrics Publisher              | Resource Group | Created App Registration                                                     | This is needed to ingest the custom logs                                                                      |
+| Microsoft Sentinel Automation Contributor | Resource Group | Microsoft Sentinel                                                           | This grants Sentinel the ability to trigger Playbooks (Done within Sentinel > Settings> Playbook Permissions) |
+| Microsoft Sentinel Responder              | Resource Group | Users                                                                        | This allows the lab users to manage the Sentinel Incidents                                                    |
+| Microsoft Sentinel Responder              | Resource Group | Logic App Managed Identity (Demo: Add Tasks To Contoso Break Glass Incident) | This grants the demo playbook the ability to manage incidents                                                 |
+| Microsoft Sentinel Playbook Operator      | Resource Group | Users                                                                        | This allows the lab users to view and run Playbooks (Logic Apps)                                              |
 
 ## Phase 3: Generate Dummy Sign in Logs
 

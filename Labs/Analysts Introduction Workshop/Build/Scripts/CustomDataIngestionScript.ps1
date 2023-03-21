@@ -4,7 +4,7 @@ param(
     $AppRegistrationId,
     $AppRegistrationTenantId,
     $AppRegistrationSecret,
-    $SourceFile = ".\CustomSigninLogs.csv"
+    $SourceFile = "..\CustomData\CustomSigninLogs.csv"
 )
 
 function Send-AzMonitorCustomLogs {
