@@ -286,7 +286,7 @@ resource analyticRuleContosoBreakGlass 'Microsoft.SecurityInsights/alertRules@20
     query: 'fSigninLogs\r\n| where UserPrincipalName =~ "BreakGlass@contoso.com"\r\n| extend alertNumber = range(1,${numberOfAnalyticRules + 1})\r\n| mv-expand alertNumber'
     queryFrequency: 'PT1H'
     queryPeriod: 'P14D'
-    severity: 'High'
+    severity: 'Informational'
     suppressionDuration: 'P1D'
     suppressionEnabled: true
     tactics: [
@@ -404,7 +404,7 @@ resource playbookDemoDisableUserAccount 'Microsoft.Logic/workflows@2019-05-01' =
         }
       }
       triggers: {
-        Microsoft_Sentinel_incident: {
+        Microsoft_Sentinel_entity: {
           type: 'ApiConnectionWebhook'
           inputs: {
             body: {
@@ -415,54 +415,28 @@ resource playbookDemoDisableUserAccount 'Microsoft.Logic/workflows@2019-05-01' =
                 name: '@parameters(\'$connections\')[\'azuresentinel\'][\'connectionId\']'
               }
             }
-            path: '/incident-creation'
+            path: '/entity/@{encodeURIComponent(\'Account\')}'
           }
         }
       }
       actions: {
-        'Entities_-_Get_Accounts': {
+        'Add_comment_to_incident_(V3)': {
           runAfter: {
           }
           type: 'ApiConnection'
           inputs: {
-            body: '@triggerBody()?[\'object\']?[\'properties\']?[\'relatedEntities\']'
+            body: {
+              incidentArmId: '@triggerBody()?[\'IncidentArmID\']'
+              message: '<p><strong>Demo<br>\n</strong><br>\n<strong>User</strong> : \'@{triggerBody()?[\'Entity\']?[\'properties\']?[\'Name\']}\' has been locked out and manager notified<br>\n<br>\n<strong>This is a demo comment added by the Azure Logic Apps. No Action has been taken.</strong></p>'
+            }
             host: {
               connection: {
                 name: '@parameters(\'$connections\')[\'azuresentinel\'][\'connectionId\']'
               }
             }
             method: 'post'
-            path: '/entities/account'
+            path: '/Incidents/Comment'
           }
-        }
-        For_each: {
-          foreach: '@body(\'Entities_-_Get_Accounts\')?[\'Accounts\']'
-          actions: {
-            'Add_comment_to_incident_(V3)': {
-              runAfter: {
-              }
-              type: 'ApiConnection'
-              inputs: {
-                body: {
-                  incidentArmId: '@triggerBody()?[\'object\']?[\'id\']'
-                  message: '<p><span style="font-size: 14px"><strong>Demo<br>\n</strong></span><span style="font-size: 12px"><strong><br>\nUser : \'</strong></span><span style="font-size: 12px"><strong>@{items(\'For_each\')?[\'Name\']}</strong></span><span style="font-size: 12px"><strong>\' </strong></span><span style="font-size: 12px">has been locked out and manager notified<br>\n</span><span style="font-size: 12px"><strong><br>\n</strong></span><span style="font-size: 10px"><strong>This is a demo comment added by the Azure Logic Apps. No Action has been taken.</strong></span></p>'
-                }
-                host: {
-                  connection: {
-                    name: '@parameters(\'$connections\')[\'azuresentinel\'][\'connectionId\']'
-                  }
-                }
-                method: 'post'
-                path: '/Incidents/Comment'
-              }
-            }
-          }
-          runAfter: {
-            'Entities_-_Get_Accounts': [
-              'Succeeded'
-            ]
-          }
-          type: 'Foreach'
         }
       }
       outputs: {
@@ -487,6 +461,6 @@ resource playbookDemoDisableUserAccount 'Microsoft.Logic/workflows@2019-05-01' =
   }
 }
 
-output DCEIngestionEndpoint string = string(dataCollectionEndpoint.properties.logsIngestion.endpoint)
-output DCRImmutableId string = string(dataCollectionRule.properties.immutableId)
+output DCEIngestionEndpoint string = dataCollectionEndpoint.properties.logsIngestion.endpoint
+output DCRImmutableId string = dataCollectionRule.properties.immutableId
 output StreamName string = 'Custom-${customSigninLogsTable.name}'

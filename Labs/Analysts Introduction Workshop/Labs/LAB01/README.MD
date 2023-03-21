@@ -1,166 +1,122 @@
-## Lab 01: Review and Manage Incidents in Microsoft Sentinel
+# Lab 01: Review and Manage Incidents in Microsoft Sentinel
 
-As an analyst, your primary goal will be responding to and investigating incidents created within Microsoft Sentinel. In this section we will review an incident that has occurred. You will assign the incident to yourself and go through the details that are provided within the incident, drilling down into the events and investigation.<br>
+As an analyst, your primary goal will be responding to and investigating incidents created within Microsoft Sentinel. In this section we will review an incident that has occurred. You will assign the incident to yourself and go through the details that are provided within the incident, drilling down into the events and investigation. 
 
-#
+## Prerequisites 
+Each user should have been assigned a number. There is 1 unique alert produced daily per user, this is to avoid overlap when managing incidents. Ensure you have been assigned a number by the instructor. When this document refers to "*User XX*", XX is the number which you have been assigned.
 
-## Task 1: Review your Incidents
+## Task 1: Review your Incidents 
 
 1. From within the Microsoft Sentinel blade, under Threat management, select **Incidents**.
+<br><br>![image](screenshots/MicrosoftSentinel-MenuIncidents.png)
 
-![image](https://user-images.githubusercontent.com/80840658/226498811-2ff775f7-94c4-4d7e-b56c-3bb57c830f22.png)
-<br><br>
+2. Click the toggle switch for **Auto-refresh incidents** to enable it. Change the **Time Range** to the last 48 hours.
+<br><br>![alt text](screenshots/SentinelIncident-ChangeTimeAndAutoRefresh.png)
 
-2. Look through the open incidents in the Sentinel workspace, and identify an incident that has IP address entity mapping configured <br><br>
-![image](https://user-images.githubusercontent.com/80840658/226499308-70b198bd-c022-4d11-ae18-55e738dfe14a.png) <br><br>
+3. Look through the open incidents in the Sentinel workspace, and locate the incident named "*Demo: Contoso Break Glass Account Login | User XX*", where XX is the number assigned to you.
+<br><br>![image](screenshots/SentinelIncident-IncidentList.png)
 
+> Note: There should be at least one incident per day. If the incident isn't avaliable, ensure that you don't have any filters set, such as severity. The demo incident should be set to *Informational* by default.
 
-3. Click on your incident, then review the details in the right hand pane.
+4. Click on your incident, then review the details in the right hand pane.
+5. At the top of the detail pane, select **Owner** and change the owner to yourself by selecting your account (Assign to Me), then click **Apply**.
+<br><br>![alt text](screenshots/SentinelIncident-AssignToMe.png)
 
-4. Select **Owner** and change the owner to yourself by selecting your account (Assign to Me), then click **Apply**.
+6. Change the incident status to Active, by selecting **status**, clicking **Active**, then click **Apply**.
+<br><br>![alt text](screenshots/SentinelIncident-ChangeIncidentStatus.png)
 
-![alt text](screenshots/SentinelIncident-AssignToMe.png)<br><br>
+7. Scroll down the incident and select the plus **" + "** button under Tags. Enter **Demo Lab**, then click **OK**.
+<br><br>![image](screenshots/SentinelIncident-AddTag.png)
 
-5. Change the incident status to Active, by selecting **status**, clicking **Active**, then click **Apply**.
+8. At the bottom of the incident, add a simple comment in the comment field, such as *"Beginning Investigation"*.
+9. Once done, click **View full details**
+<br><br>![image](screenshots/SentinelIncident-AddSimpleComment.png)
 
-![alt text](screenshots/SentinelIncident-ChangeIncidentStatus.png)<br><br>
+10. When opening full details, the previous details pane can be found on the left. Minimize this by clicking the double left arrows "<<"
+<br><br>![image](screenshots/SentinelIncident-IncidentOverview.png)
 
-6. Scroll down the incident and select the plus **" + "** button under Tags. Enter **Malicious IP**, then click **OK**.
+11. Review the **Incident Timeline**. Depending on when the incident was first created, will depend on how many alerts are shown (1 per day for this Demo alert by default). Select an alert within the Incident Timeline and review the individual details. The timeline also shows other events, including bookmarks. Once done click the **System alert ID**.
+<br><br>![image](screenshots/SentinelIncident-SystemAlertSelect.png)
 
-![image](https://user-images.githubusercontent.com/80840658/226499902-b1e7b16e-5564-47d8-b8d7-f65da1c9721e.png)
-<br><br>
+12. The logs for the alert will appear in a context pane. Press the arrows to the left hand side of the results to expand rows and dynamically typed results.
+13. Click **Done** once finished.
 
-7. At the bottom of the incident, add a simple comment in the comment field, such as *"Beginning Investigation"*.
-
-8. Click **View full details**
-
-![image](https://user-images.githubusercontent.com/80840658/226500477-3a1dab9d-71c9-4c04-820b-ef626f4653fd.png)
-<br><br>
-
-9. Navigate to the incident timeline and review the alert(s) associated with the incident.
-
-10. Click the **System alert ID** for any of the alerts included in the incident. This will take you to the alert details within Logs. <br><br>
-![image](https://user-images.githubusercontent.com/80840658/226501027-48659f5b-be36-4781-9084-c7c2fca0c0e4.png)
-<br><br>
-
-11. Review the data avaliable within the Logs. Press the arrows to the left hand side of the results to expand dynamically typed results.
-
-12. Click the **X** in the upper right hand corner to return to the Incident Timeline. 
 > **NOTE:** If a message pops up asking to discard edits, click **Ok**.
+<br><br>![alt text](screenshots/SentinelIncident-SystemAlertLogs.png)
 
-![alt text](screenshots/SentinelIncident-SystemAlertLogs.png)<br><br>
+14. At the bottom of the Incident Overview pane, review **Similar incidents (Preview)**. This pane will show you the top 20 incidents that could be consider similar and the reason why.
+<br><br>![image](screenshots/SentinelIncident-SimilarIncidents.png)
 
-13. Click **Similar incidents (Preview)**. This tab will show you the top 20 incidents that could be consider similar and the reason why.
+15. Click **Entities**. Here you should see the aggregated list of entities within the incident, from the alerts and bookmarks. 
+<br><br>![alt text](screenshots/SentinelIncident-EntitiesTab.png)
 
-![image](https://user-images.githubusercontent.com/80840658/226501911-c4287c77-c425-43ba-80e0-b489178cfbcf.png)
-<br><br>
+16. Select each entity and review the tabs "**Info**", "**Timeline**" and "**Insights**". This is data that is populated using "User and Entity Behaviour Analytics". In this demo, not much information will be populated due to the lack of data sources, but you can observe what type of data would be populated and you can hover over any "Info" button to find out more details.
+<br><br>![Image](screenshots/SentinelIncident-EntitiesDetails.png)
 
-14. Click **View playbooks**. You can see the playbooks (Logic Apps) that you have permissions to and any runs related to this alert from this window. 
+17. From the Incident Overview pane, click **Activity Log**. You will see your previously added comment. In this interface, you can add some further text, and format the comments using the text editor toolbar. Add a new comment and click **Comment**.
+18. Once done, click **Close**
+<br><br>![alt text](screenshots/SentinelIncident-ActivityLog.png)
 
-> **NOTE:** You may need to scroll right depending on the resolution / zoom on your screen.
-
-![image](https://user-images.githubusercontent.com/80840658/226502477-62e9da22-a080-4c2b-acac-34f6d93a3c7b.png)
-<br><br>
-
-![image](https://user-images.githubusercontent.com/80840658/226502705-09fb544a-d6a5-44ca-a545-254b609da306.png)
-<br><br>
-
-15. Click the **X** in the upper right hand corner to return to the Incident Alerts.
-
-16. Click **Bookmarks**. This is where you will see bookmarked logs from your investigations within the logs. An example of a bookmark can be seen in the image below.
-
-> **NOTE:** Do not worry if there are no bookmarks. Bookmarks can be created by selecting log results generated from KQL queries, saving the log as a bookmark (bookmarks ae saved in the hunting blade), and manually assigning the bookmark to an incident.
-
-![image](https://user-images.githubusercontent.com/80840658/226503445-2d667199-53cf-4384-a5f6-0a1a4805a7ec.png)
-<br><br>
-
-19. Click **Entities**. Here you should see the aggregated list of entities within the incident, from Alerts and bookmarks.  
-
-![alt text](screenshots/SentinelIncident-EntitiesTab.png)<br><br>
-
-20. Click **View entities full details here**. This will take you into the logs and allow you to view further details about the entities from the alerts and bookmarks.
-
-21. Click the **X** in the upper right hand corner to return to the Entities tab.
-
-22. Click the highlighted account entity **standardxx@sentinellab.xyz** (where “XX” is the number you have been assigned at the start of class). 
-
-23. For certain entity types, you can drill down into entity behaviour analytics and get further insights related to the selected entity. Review the data and drill down further into the logs if desired. 
-> **Note:** There may not be any anomalies shown due to the few actions performed by this account.
-
-![alt text](screenshots/UEBA-User.png)<br><br>
-
-24. Click the **X** in the upper right hand corner to return to the Entities.
-> **Note:** If you have drilled down into any other views, you may need to press the **X** more than once to navigate back to Entities. Alternatively, navigate back to the incident from the Incident Menu.
-
-25. Click **Comments**. You will see your previously added comment. In this interface, you can add some further text, and format the comments using the text editor toolbar. Once done, click **Comment**.
-
-![alt text](screenshots/SentinelIncident-CommentsTab.png)<br><br>
+19. From the Incident Overview pane, click **Tasks**. Here you can see tasks that have pre-populated by an Automation rule. You can add more tasks manually by selecting **"+ Add task"**. Once you have completed each task, make sure you come back to this pane and mark it as complete by selecting the radio button.
+<br><br>![Image](screenshots/SentinelIncident-Tasks.png)
 
 ## Task 2: Perform Incident Investigation
 
 1. From within the Microsoft Sentinel blade, under Threat management, select **Incidents**.
+<br><br>![image](screenshots/MicrosoftSentinel-MenuIncidents.png)
 
-![alt text](screenshots/MicrosoftSentinel-MenuIncidents.png)<br><br>
-
-2. Select the time range at the top and click **Last 48 Hours**.
-
-3. Click the toggle switch for **Auto-refresh incidents** to enable it. 
-
-![alt text](screenshots/SentinelIncident-ChangeTimeAndAutoRefresh.png)<br><br>
-
-4. Select the *Owner* filter, and click **Assigned to me**
+2. Select the *Owner* filter, and click **Assigned to me**, then click **OK**
+<br><br>![Image](screenshots/SentinelIncident-AssignToMeFilter.png)
 > **Note:** Depending on the screen resolution / zoom settings, you may need to click the **More** link to view more filters.
 
-5. Locate and click on your incident *standard**XX** – Failed Logon* (where “XX” is the number you have been assigned at the start of class).
+3. Locate your open incident from before. ("*Demo: Contoso Break Glass Account Login | User XX*", where XX is the number assigned to you.)
+<br><br>![image](screenshots/SentinelIncident-IncidentList.png)
+> **Note:** If there are no incidents shown, ensure that you have assigned it to you and the incident status is "*New*" or "*Active*"
 
-6. Click **Actions**, then **Investigate**
+4. On the Incident details, click **Actions**, then **Investigate**
+<br><br>![alt text](screenshots/SentinelIncident-InvestigateButton.png)
 
-![alt text](screenshots/SentinelIncident-InvestigateButton.png)<br><br>
+5. Click and hold one of the circles on the screen. Drag it to another location.
+6. Click  **Undo** to reset the movement.
+<br><br>![alt text](screenshots/SentinelInvestigation-DragObject.png)<br><br>
 
+7. Click the **user entity**. This will open the Info pane for the selected Object. Review the information displayed on the right hand side.
+<br><br>![alt text](screenshots/SentinelInvestigation-SelectEntityInfo.png)
 
-7. Click and hold one of the circles on the screen. Drag it to another location.
+8. Click on the tabs "**Timeline**", "**Insights**" and "**Entities**". 
+    - **Timeline:** This will show you the timeline for all events that are shown on the current investigation graph
+    - **Insights:** This is insights charts from User and Entity Behaviour Analytics.
+    - **Entities:** This is an aggregated list of all Entities, alerts and bookmarks on the current investigation graph
+    
+&emsp;&emsp;![alt text](screenshots/SentinelInvestigation-Insights.png)
 
-8. Click  **Undo** to reset the movement. 
+9. Highlight or right-click the **User entity**, click **More** and then review the investigations, such as *Office activity IPs for this account*. It will be highly likely that all except *Related Alerts* will be greyed out, due to no data relating to this demo event, from data sources such as M365 Defender. 
+<br><br>![alt text](screenshots/SentinelInvestigation-SelectRelatedData.png)
 
-![alt text](screenshots/SentinelInvestigation-DragObject.png)<br><br>
-
-9. Click the **user entity** (called standardXX). This will open the Info pane for the selected Object. Review the information displayed on the right hand side.
-
-![alt text](screenshots/SentinelInvestigation-SelectEntityInfo.png)<br><br>
-
-10. Click **Insights**. Review the data from entity and behaviour analytics here.
-
-![alt text](screenshots/SentinelInvestigation-Insights.png)<br><br>
-
-11. Click **Timeline**. This will show you any incidents and bookmarks displayed on screen, in chronological order.
-
-![alt text](screenshots/SentinelInvestigation-Timeline.png)<br><br>
-
-12. Click **Entities**. This will display all entities currently displayed on screen.
-
-13. Right-click the **User entity**, click **More** and then click any of the events listed that are not greyed out, such as *Office activity IPs for this account*.
-
-![alt text](screenshots/SentinelInvestigation-SelectRelatedData.png)<br><br>
-
-14. Repeat step 13 for the other events and other entities. Review the relationships, entities and incidents that appear as you expand the investigation.
+10. Select *Related Alerts*. You will see any alerts that relate to the selected entity appear on the investigation. Review the Timeline and interact with these new entities.
 > **Note:** If the objects do not fit on the screen, you can zoom in and out, plus fit to screen on the right hand size. Move the objects around by dragging them to best fit the layout for you.
+<br><br>![Image](screenshots/SentinelInvestigation-RelatedAlerts.png)
 
 15. Once done, click the **X** in the upper right hand corner to return to the Incident Menu.
+> **Note:** You can leave the investigation chart and reopen it later in the same state that you left it in.
 
 ## Task 3: Review the Incident Workbook
 
 1. From within the Microsoft Sentinel blade, under Threat management, select **Incidents**.
+<br><br>![image](screenshots/MicrosoftSentinel-MenuIncidents.png)
 
-![alt text](screenshots/MicrosoftSentinel-MenuIncidents.png)<br><br>
-
-2. Locate and click on your incident *standard**XX** – Failed Logon* (where “XX” is the number you have been assigned at the start of class).
+2. Locate your open incident from before. ("*Demo: Contoso Break Glass Account Login | User XX*", where XX is the number assigned to you.)
+<br><br>![image](screenshots/SentinelIncident-IncidentList.png)
+> **Note:** If there are no incidents shown, ensure that you have assigned it to you and the incident status is "*New*" or "*Active*"
 
 3. From the incident overview menu on the right-hand side, scroll down and select **Incident Overview**.
+<br><br>![image](screenshots/SentinelIncident-SelectWorkbook.png)
 
-4. All of the parameters have been pre-populated by selecting the workbook from the incident. Review the data displayed, including any incident activites, such as assigning, adding comments etc. 
-> **Note:** All this data is from within Log Analytics. The workbook just provides a friendly customisable interface to this data.
+4. All of the parameters have been pre-populated by selecting the workbook from the incident. Review the data displayed, including any incident activites, such as assigning, adding comments etc.
+<br><br>![alt text](screenshots/SentinelIncident-OverviewWorkbook.png)
+> **Note:** All this data is from within Log Analytics. The workbook just provides a customisable interface to this data.
 
-![alt text](screenshots/SentinelIncident-OverviewWorkbook.png)<br><br>
+> **Reminder:** Do not forget to update your tasks! 😀
 
 ### Continue with the next lab
 
