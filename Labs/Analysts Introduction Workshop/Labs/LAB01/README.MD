@@ -116,6 +116,8 @@ Each user should have been assigned a number. There is 1 unique alert produced d
 <br><br>![alt text](screenshots/SentinelIncident-OverviewWorkbook.png)
 > **Note:** All this data is from within Log Analytics. The workbook just provides a customisable interface to this data.
 
+> **Reminder:** Do not forget to update your tasks! 😀
+
 ### Continue with the next lab
 
 <a href="../LAB02/README.MD" target="_blank">LAB 02 - Investigate Activities Visually</a>
