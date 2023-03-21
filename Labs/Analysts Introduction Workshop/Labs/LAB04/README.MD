@@ -16,7 +16,7 @@ Once this has been completed successfully, the incident requires closing. This i
 > **Note:** If there are no incidents shown, ensure that you have assigned it to you and the incident status is "*New*" or "*Active*"
 
 3. There are multiple types of Playbook triggers (Alert, Incident and Entity). For this example, we are manually running a playbook with an entity trigger. Select the suspect account within the overview page, select the ellipses "..." (or right-click), then select **"Run playbook"**.
-<br><br>![image](screenshots/SentinelIncidents-SelectRunPlaybook.png)
+<br><br>![image](screenshots/SentinelIncidents-RunEntityPlaybook.png)
 
 4. Playbooks listed here are ones that you have permissions to run and have the entity trigger. Find the *Demo-Disable_User_Account* playbook, the click **Run**
 <br><br>![image](screenshots/SentinelIncidents-SelectRunPlaybook.png)
