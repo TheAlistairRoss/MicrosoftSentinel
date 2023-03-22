@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "1044542670038658508"
+      "templateHash": "3798202993004772334"
     }
   },
   "parameters": {
@@ -26,18 +26,6 @@
     }
   },
   "variables": {
-    "copy": [
-      {
-        "name": "analyticRulesNameArray",
-        "count": "[length(range(0, parameters('numberOfAnalyticRules')))]",
-        "input": "[format('{0} {1}', variables('analyticRuleBaseName'), add(range(0, parameters('numberOfAnalyticRules'))[copyIndex('analyticRulesNameArray')], 1))]"
-      },
-      {
-        "name": "analyticRulesUniqueNameArray",
-        "count": "[length(range(0, parameters('numberOfAnalyticRules')))]",
-        "input": "[uniqueString(parameters('sentinelWorkspaceName'), variables('analyticRulesNameArray')[range(0, parameters('numberOfAnalyticRules'))[copyIndex('analyticRulesUniqueNameArray')]])]"
-      }
-    ],
     "dataCollectionEndpointName": "[format('{0}-{1}-dce', parameters('sentinelWorkspaceName'), parameters('labName'))]",
     "dataCollectionRuleName": "[format('{0}-{1}-dcr', parameters('sentinelWorkspaceName'), parameters('labName'))]",
     "sentinelSolutionName": "[format('SecurityInsights({0})', parameters('sentinelWorkspaceName'))]",
@@ -131,7 +119,11 @@
     ],
     "azureAdSigninLogsWorkbookDisplayName": "Demo Azure AD Sign-in logs",
     "azureAdSigninLogsWorkbookName": "[guid(resourceGroup().name, parameters('sentinelWorkspaceName'), variables('azureAdSigninLogsWorkbookDisplayName'))]",
-    "analyticRuleBaseName": "Contoso Break Glass Account Login"
+    "contosoBreakGlassAlertName": "Demo: Contoso Break Glass Account Login",
+    "contosoBreakGlassAlertId": "[guid(parameters('sentinelWorkspaceName'), variables('contosoBreakGlassAlertName'))]",
+    "AutomationRuleName": "Demo: Add Tasks To Contoso Break Glass Incident",
+    "MicrosoftSentinelConnectionName": "Demo-Disable_User_Account-Connection",
+    "playbookDemoDisableUserAccountName": "Demo-Disable_User_Account"
   },
   "resources": [
     {
@@ -258,7 +250,7 @@
     {
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
-      "name": "WaitForSentinel",
+      "name": "waitForSentinel",
       "kind": "AzurePowerShell",
       "location": "[parameters('location')]",
       "properties": {
@@ -272,21 +264,18 @@
       ]
     },
     {
-      "copy": {
-        "name": "contosoBreakGlassAlert",
-        "count": "[length(range(0, parameters('numberOfAnalyticRules')))]"
-      },
       "type": "Microsoft.SecurityInsights/alertRules",
       "apiVersion": "2023-02-01-preview",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('sentinelWorkspaceName'))]",
-      "name": "[variables('analyticRulesUniqueNameArray')[range(0, parameters('numberOfAnalyticRules'))[copyIndex()]]]",
+      "name": "[variables('contosoBreakGlassAlertId')]",
       "kind": "Scheduled",
       "properties": {
         "alertDetailsOverride": {
+          "alertDisplayNameFormat": "[format('{0} | User {{{{alertNumber}}}}', variables('contosoBreakGlassAlertName'))]",
           "alertDescriptionFormat": "The break glass account has been logged into from IPAddress: {{IPAddress}}"
         },
         "description": "This alert triggers any time that a break glass is used",
-        "displayName": "[variables('analyticRulesNameArray')[range(0, parameters('numberOfAnalyticRules'))[copyIndex()]]]",
+        "displayName": "[variables('contosoBreakGlassAlertName')]",
         "enabled": true,
         "entityMappings": [
           {
@@ -313,7 +302,7 @@
           }
         ],
         "eventGroupingSettings": {
-          "aggregationKind": "SingleAlert"
+          "aggregationKind": "AlertPerResult"
         },
         "incidentConfiguration": {
           "createIncident": true,
@@ -321,13 +310,19 @@
             "enabled": true,
             "lookbackDuration": "PT5H",
             "matchingMethod": "AnyAlert",
-            "reopenClosedIncident": false
+            "reopenClosedIncident": false,
+            "groupByCustomDetails": [
+              "User"
+            ]
           }
         },
-        "query": "fSigninLogs\r\n| where UserPrincipalName =~ \"BreakGlass@contoso.com\"",
+        "customDetails": {
+          "User": "alertNumber"
+        },
+        "query": "[format('fSigninLogs\r\n| where UserPrincipalName =~ \"BreakGlass@contoso.com\"\r\n| extend alertNumber = range(1,{0})\r\n| mv-expand alertNumber', add(parameters('numberOfAnalyticRules'), 1))]",
         "queryFrequency": "PT1H",
         "queryPeriod": "P14D",
-        "severity": "High",
+        "severity": "Informational",
         "suppressionDuration": "P1D",
         "suppressionEnabled": true,
         "tactics": [
@@ -342,18 +337,185 @@
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('sentinelWorkspaceName'))]",
         "[resourceId('Microsoft.OperationsManagement/solutions', variables('sentinelSolutionName'))]",
-        "[resourceId('Microsoft.Resources/deploymentScripts', 'WaitForSentinel')]"
+        "[resourceId('Microsoft.Resources/deploymentScripts', 'waitForSentinel')]"
+      ]
+    },
+    {
+      "type": "Microsoft.SecurityInsights/automationRules",
+      "apiVersion": "2022-12-01-preview",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('sentinelWorkspaceName'))]",
+      "name": "[guid(variables('AutomationRuleName'))]",
+      "properties": {
+        "displayName": "Demo: Add Tasks To Contoso Break Glass Incident",
+        "order": 1,
+        "triggeringLogic": {
+          "isEnabled": true,
+          "triggersOn": "Incidents",
+          "triggersWhen": "Created",
+          "conditions": [
+            {
+              "conditionType": "Property",
+              "conditionProperties": {
+                "propertyName": "IncidentProviderName",
+                "operator": "Equals",
+                "propertyValues": [
+                  "Azure Sentinel"
+                ]
+              }
+            },
+            {
+              "conditionType": "Property",
+              "conditionProperties": {
+                "propertyName": "IncidentRelatedAnalyticRuleIds",
+                "operator": "Contains",
+                "propertyValues": [
+                  "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('sentinelWorkspaceName')), 'Microsoft.SecurityInsights/alertRules', variables('contosoBreakGlassAlertId'))]"
+                ]
+              }
+            }
+          ]
+        },
+        "actions": [
+          {
+            "order": 1,
+            "actionType": "AddIncidentTask",
+            "actionConfiguration": {
+              "title": "Complete Lab 01",
+              "description": "<div>As an analyst, your primary goal will be responding to and investigating incidents created within Microsoft Sentinel. In this section we will review an incident that has occurred. You will assign the incident to yourself and go through the details that are provided within the incident, drilling down into the events and investigation.</div><div><br></div><div><a href=\"https://github.com/TheAlistairRoss/MicrosoftSentinel/tree/main/Labs/Analysts%20Introduction%20Workshop/Labs/LAB01\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"color: var(--colorLink);\">MicrosoftSentinel/Labs/Analysts Introduction Workshop/Labs/LAB01 at main | TheAlistairRoss/MicrosoftSentinel (github.com)</a></div>"
+            }
+          },
+          {
+            "order": 2,
+            "actionType": "AddIncidentTask",
+            "actionConfiguration": {
+              "title": "Complete Lab 02",
+              "description": "<div>As an analyst, visual aids can provide greater insights to what is going on with your data. Use Azure workbooks to analyse the logs.</div><div><br></div><div><a href=\"https://github.com/TheAlistairRoss/MicrosoftSentinel/blob/main/Labs/Analysts%20Introduction%20Workshop/Labs/LAB02/README.MD\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"color: var(--colorLink);\">MicrosoftSentinel/README.MD at main | TheAlistairRoss/MicrosoftSentinel (github.com)</a></div>"
+            }
+          },
+          {
+            "order": 3,
+            "actionType": "AddIncidentTask",
+            "actionConfiguration": {
+              "title": "Complete Lab 03",
+              "description": "<div>All logs within Microsoft Sentinel are queried and accessed using Kusto Query Language, whether that is via a workbook, GUI, API or directly. In this exercise we will explore events within the logs and enrich and existing incident with bookmarks.</div><div><br></div><div><a href=\"https://github.com/TheAlistairRoss/MicrosoftSentinel/blob/main/Labs/Analysts%20Introduction%20Workshop/Labs/LAB03/README.MD\" rel=\"noopener noreferrer\" target=\"_blank\">MicrosoftSentinel/README.MD at main | TheAlistairRoss/MicrosoftSentinel (github.com)</a></div>"
+            }
+          },
+          {
+            "order": 4,
+            "actionType": "AddIncidentTask",
+            "actionConfiguration": {
+              "title": "Complete Lab 04",
+              "description": "<div>Once a decision has been made, action needs to be taken. Whether that is responding to the threat or closing the alert.</div><div><br></div><div><a href=\"https://github.com/TheAlistairRoss/MicrosoftSentinel/blob/main/Labs/Analysts%20Introduction%20Workshop/Labs/LAB04/README.MD\" rel=\"noopener noreferrer\" target=\"_blank\">MicrosoftSentinel/README.MD at main | TheAlistairRoss/MicrosoftSentinel (github.com)</a></div>"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('sentinelWorkspaceName')), 'Microsoft.SecurityInsights/alertRules', variables('contosoBreakGlassAlertId'))]",
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('sentinelWorkspaceName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2016-06-01",
+      "name": "[variables('MicrosoftSentinelConnectionName')]",
+      "location": "[parameters('location')]",
+      "kind": "V1",
+      "properties": {
+        "displayName": "[variables('MicrosoftSentinelConnectionName')]",
+        "customParameterValues": {},
+        "parameterValueType": "Alternative",
+        "api": {
+          "id": "[format('/subscriptions/{0}/providers/Microsoft.Web/locations/{1}/managedApis/azuresentinel', subscription().subscriptionId, parameters('location'))]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Logic/workflows",
+      "apiVersion": "2019-05-01",
+      "name": "[variables('playbookDemoDisableUserAccountName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "Microsoft_Sentinel_entity": {
+              "type": "ApiConnectionWebhook",
+              "inputs": {
+                "body": {
+                  "callback_url": "@{listCallbackUrl()}"
+                },
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['azuresentinel']['connectionId']"
+                  }
+                },
+                "path": "/entity/@{encodeURIComponent('Account')}"
+              }
+            }
+          },
+          "actions": {
+            "Add_comment_to_incident_(V3)": {
+              "runAfter": {},
+              "type": "ApiConnection",
+              "inputs": {
+                "body": {
+                  "incidentArmId": "@triggerBody()?['IncidentArmID']",
+                  "message": "<p><strong>Demo<br>\n</strong><br>\n<strong>User</strong> : '@{triggerBody()?['Entity']?['properties']?['Name']}' has been locked out and manager notified<br>\n<br>\n<strong>This is a demo comment added by the Azure Logic Apps. No Action has been taken.</strong></p>"
+                },
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['azuresentinel']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/Incidents/Comment"
+              }
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "azuresentinel": {
+                "connectionId": "[resourceId('Microsoft.Web/connections', variables('MicrosoftSentinelConnectionName'))]",
+                "connectionName": "[format('azuresentinel-{0}', variables('MicrosoftSentinelConnectionName'))]",
+                "connectionProperties": {
+                  "authentication": {
+                    "type": "ManagedServiceIdentity"
+                  }
+                },
+                "id": "[format('/subscriptions/{0}/providers/Microsoft.Web/locations/{1}/managedApis/azuresentinel', subscription().subscriptionId, parameters('location'))]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', variables('MicrosoftSentinelConnectionName'))]"
       ]
     }
   ],
   "outputs": {
     "DCEIngestionEndpoint": {
       "type": "string",
-      "value": "[string(reference(resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dataCollectionEndpointName')), '2021-09-01-preview').logsIngestion)]"
+      "value": "[reference(resourceId('Microsoft.Insights/dataCollectionEndpoints', variables('dataCollectionEndpointName')), '2021-09-01-preview').logsIngestion.endpoint]"
     },
     "DCRImmutableId": {
       "type": "string",
-      "value": "[string(reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('dataCollectionRuleName')), '2021-09-01-preview').immutableId)]"
+      "value": "[reference(resourceId('Microsoft.Insights/dataCollectionRules', variables('dataCollectionRuleName')), '2021-09-01-preview').immutableId]"
     },
     "StreamName": {
       "type": "string",
