@@ -1,12 +1,3 @@
-# Testing 
-#$RootDirectory = (Get-Location).path
-#$solutionDirectory = "Solutions/CostManagement"
-#$OutputFolder = "Prices_Test"
-#$CurrencyCodes = "USD"
-#$InformationPreference = "Continue"
-#$Regions = "westus"
-#$Services = "Azure Monitor"#, "Sentinel"
-
 
 # Constants
 $RootDirectory = $env:directory
@@ -458,13 +449,13 @@ function main {
                 }
                 else {
                     Write-Host "File Empty, Importing initial data. File: $OutputPath"
-                    $OutputToFile = $RegionPrices 
+                    $OutputToFile = $RegionPrices
                 }
 
                 if ($OutputToFile.Count -gt $ExistingContent.Count) {
                     $NewItemCount = $OutputToFile.Count - $ExistingContent.Count
                     Write-Host "$NewItemCount prices added to file: $OutputPath"
-                    $OutputToFile | Sort-Object TimeGenerated | Export-Csv -Path $OutputPath -Force
+                    $OutputToFile | Sort-Object TimeGenerated, RetailPrice | Export-Csv -Path $OutputPath -Force
                 }
                 else {
                     Write-Host "No changes to be added to file : $OutputPath"
