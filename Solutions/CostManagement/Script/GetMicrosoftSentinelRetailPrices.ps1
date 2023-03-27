@@ -223,6 +223,8 @@ function Add-AzPricingEffectivePricePerGB {
         $AddedEffectivePricePerGB.EffectivePricePerGB = $InputObject.RetailPrice
     }
     else {
+        $EffectivePricePerGB = $InputObject.Tier / $InputObject.RetailPrice 
+        $EffectivePricePerGB = [math]::Round($EffectivePricePerGB , 4)
         $AddedEffectivePricePerGB.EffectivePricePerGB = $InputObject.Tier / $InputObject.RetailPrice 
     }
     return $AddedEffectivePricePerGB
@@ -239,7 +241,9 @@ function Add-AzPricingEffectiveCommitmentTierThresholdGB {
         # Set the GB value which it is finacially viable to move up to the next tier
         $PreviousTierObject = $InputObject.Where({ $_.Tier -eq $PreviousTierHash.($Object.Tier) })
         if ($PreviousTierObject) {
-            $Object.EffectiveCommitmentTierThresholdGB = $Object.RetailPrice / $PreviousTierObject.EffectivePricePerGB 
+            $EffectiveCommitmentTierThresholdGB = $Object.RetailPrice / $PreviousTierObject.EffectivePricePerGB 
+            $EffectiveCommitmentTierThresholdGB = [math]::Round($EffectiveCommitmentTierThresholdGB, 4)
+            $Object.EffectiveCommitmentTierThresholdGB = $EffectiveCommitmentTierThresholdGB 
         }
         $AddedEffectiveCommitmentTierThresholdGB += $Object         
     }
