@@ -17,10 +17,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with: 
+          ref: main
+          token: ${{secrets.MICROSOFTSENTINELCOMMIT}}
         
       - name: BuildScript
         run: |
             .\Solutions\CostManagement\Script\GetMicrosoftSentinelRetailPrices.ps1
+        env:
+          PAT: ${{secrets.MICROSOFTSENTINELCOMMIT}}
         
       - name: Auto-Commit
         uses: EndBug/add-and-commit@v9
+        env:
+          PAT: ${{secrets.MICROSOFTSENTINELCOMMIT}}
