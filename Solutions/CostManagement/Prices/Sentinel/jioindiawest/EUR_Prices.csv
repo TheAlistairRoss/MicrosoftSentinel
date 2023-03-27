@@ -1,7 +1,0 @@
-"TimeGenerated","ServiceName","ArmRegionName","CurrencyCode","Tier","UnitOfMeasure","RetailPrice","EffectiveStartDate","EffectiveCommitmentTierThresholdGB","EffectivePricePerGB"
-"2023-03-27T13:24:09.221Z","Sentinel","jioindiawest","EUR","Pay-as-you-go","1 GB","2.6562","2021-04-15T00:00:00.000Z","0","2.6562"
-"2023-03-27T13:24:09.221Z","Sentinel","jioindiawest","EUR","100","1/Day","132.8084","2021-04-15T00:00:00.000Z","49.9994","0.7530"
-"2023-03-27T13:24:09.221Z","Sentinel","jioindiawest","EUR","200","1/Day","239.0552","2021-04-15T00:00:00.000Z","317.4704","0.8366"
-"2023-03-27T13:24:09.221Z","Sentinel","jioindiawest","EUR","300","1/Day","345.3019","2021-04-15T00:00:00.000Z","412.7443","0.8688"
-"2023-03-27T13:24:09.221Z","Sentinel","jioindiawest","EUR","400","1/Day","442.6884","2021-04-15T00:00:00.000Z","509.5401","0.9036"
-"2023-03-27T13:24:09.221Z","Sentinel","jioindiawest","EUR","500","1/Day","531.2337","2021-04-15T00:00:00.000Z","587.9080","0.9412"

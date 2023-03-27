@@ -412,10 +412,8 @@ function main {
             $Prices = Get-AzPricing -Url $url 
 
             # Create Each file for each region. This will speed up the workbook.
-            if (! $Regions) {
-                $Regions = $Prices | Select-Object -Unique -ExpandProperty armRegionName | Sort-Object 
-            }
-
+            $Regions = $Prices | Select-Object -Unique -ExpandProperty armRegionName | Sort-Object 
+            
             foreach ($Region in $Regions) {
                 $OutputPath = "$OutputFolder\$Service\$Region\$CurrencyCode`_Prices.csv"
 
