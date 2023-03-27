@@ -1,7 +1,0 @@
-"TimeGenerated","ServiceName","ArmRegionName","CurrencyCode","Tier","UnitOfMeasure","RetailPrice","EffectiveStartDate","EffectiveCommitmentTierThresholdGB","EffectivePricePerGB"
-"2023-03-27T12:22:43.688Z","Azure Monitor","jioindiawest","TWD","Pay-as-you-go","1 GB","98.1118","2021-04-15T00:00:00.000Z","0","98.1118"
-"2023-03-27T12:22:43.688Z","Azure Monitor","jioindiawest","TWD","100","1/Day","8360.8308","2021-04-15T00:00:00.000Z","85.2174","0.011960533874217380406741397"
-"2023-03-27T12:22:43.688Z","Azure Monitor","jioindiawest","TWD","200","1/Day","15697.8864","2021-04-15T00:00:00.000Z","1312473.7211","0.0127405686921011226071810534"
-"2023-03-27T12:22:43.688Z","Azure Monitor","jioindiawest","TWD","300","1/Day","23034.942","2021-04-15T00:00:00.000Z","1807999.5137","0.0130236924408144808873406323"
-"2023-03-27T12:22:43.688Z","Azure Monitor","jioindiawest","TWD","400","1/Day","30030.7392","2021-04-15T00:00:00.000Z","2305854.4523","0.013319685450832991816598374"
-"2023-03-27T12:22:43.688Z","Azure Monitor","jioindiawest","TWD","500","1/Day","36898.5645","2021-04-15T00:00:00.000Z","2770227.9184","0.013550662655182696877001814"

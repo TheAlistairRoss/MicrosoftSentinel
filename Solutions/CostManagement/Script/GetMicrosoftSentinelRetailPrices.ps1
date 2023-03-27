@@ -225,7 +225,7 @@ function Add-AzPricingEffectivePricePerGB {
     else {
         $EffectivePricePerGB = $InputObject.Tier / $InputObject.RetailPrice 
         $EffectivePricePerGB = [math]::Round($EffectivePricePerGB , 4)
-        $AddedEffectivePricePerGB.EffectivePricePerGB = $InputObject.Tier / $InputObject.RetailPrice 
+        $AddedEffectivePricePerGB.EffectivePricePerGB = $EffectivePricePerGB
     }
     return $AddedEffectivePricePerGB
 }
