@@ -8,7 +8,6 @@ $OutputFolder = "Prices"
 $Services = "Azure Monitor", "Sentinel"
 $baseUrl = "https://prices.azure.com/api/retail/prices?api-version=2021-10-01-preview"
 $CurrencyCodes = "USD", "AUD", "BRL", "CAD", "CHF", "CNY", "DKK", "EUR", "GBP", "INR", "JPY", "KRW", "NOK", "NZD", "RUB", "SEK", "TWD"
-$Global:ScriptRunDateTime = get-date -AsUTC -UFormat "%Y/%m/%d %H:%M:%S"
 
 $PreviousTierHash = @{
     "100"  = "Pay-as-you-go"
@@ -98,10 +97,28 @@ class PriceObject {
         $this.$EffectiveStartDate
         $this.$EffectiveCommitmentTierThresholdGB,
         $this.$EffectivePricePerGB
-
     }
 }
 
+# functions
+
+function Get-FormattedDate {
+    param(
+        [Parameter(ValueFromPipeline = $true,
+            ValueFromRemainingArguments = $true)]
+        [datetime]$DateTime
+    )
+
+    if ($DateTime) {
+        $Output = $DateTime | Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffZ"
+    }
+    else {
+        $Output = Get-Date -AsUTC -Format "yyyy-MM-ddTHH:mm:ss.fffZ"
+    }
+    return $Output
+}
+
+# Gets the Data from the Azure Pricing API and converts it to a PricingObject Class
 function Get-AzPricingRaw {
     param(
         $Url
@@ -112,10 +129,11 @@ function Get-AzPricingRaw {
     $ItemsReturned = 0
     $AzPricesRawRequest = [PriceObject[]]@()
 
-    $TimeGenerated = if ($Global:ScriptRunDateTime) { 
-        $Global:ScriptRunDateTime
-    }else {
-        get-date -AsUTC -UFormat "%Y-%m-%dT%H:%M:%S"
+    if ($Global:ScriptRunDateTime) { 
+        $TimeGenerated = $Global:ScriptRunDateTime
+    }
+    else {
+        $TimeGenerated = Get-Date
     }
 
     try {
@@ -127,25 +145,26 @@ function Get-AzPricingRaw {
             Write-Information "Items Returned: $ItemsReturned"
 
             if ($Request) {
-                foreach ($RequestItem in $Request.Items){
+                foreach ($RequestItem in $Request.Items) {
 
                     if ($RequestItem.serviceName -eq "Log Analytics") {
                         $ServiceName = "Azure Monitor"
-                    }else {
+                    }
+                    else {
                         $ServiceName = $RequestItem.serviceName
                     }
-                        $AzPriceRawRequest = New-Object -TypeName PriceObject -Property @{
-                            TimeGenerated      = $TimeGenerated
-                            ServiceName        = $ServiceName
-                            ArmRegionName      = $RequestItem.armRegionName
-                            CurrencyCode       = $RequestItem.currencyCode
-                            Tier               = $RequestItem.meterName.split(" ")[0]
-                            UnitOfMeasure      = $RequestItem.unitOfMeasure
-                            RetailPrice        = $RequestItem.retailPrice
-                            EffectiveStartDate = $RequestItem.effectiveStartDate
-                        }
-                        $AzPricesRawRequest += $AzPriceRawRequest 
+                    $AzPriceRawRequest = New-Object -TypeName PriceObject -Property @{
+                        TimeGenerated      = $TimeGenerated
+                        ServiceName        = $ServiceName
+                        ArmRegionName      = $RequestItem.armRegionName
+                        CurrencyCode       = $RequestItem.currencyCode
+                        Tier               = $RequestItem.meterName.split(" ")[0]
+                        UnitOfMeasure      = $RequestItem.unitOfMeasure
+                        RetailPrice        = $RequestItem.retailPrice
+                        EffectiveStartDate = $RequestItem.effectiveStartDate
                     }
+                    $AzPricesRawRequest += $AzPriceRawRequest 
+                }
             }              
             
             if ($Request.NextPageLink) {
@@ -169,32 +188,11 @@ function Get-AzPricingRaw {
         Write-Error -Message "Failed to execute command"
         break
     }
-    $AzPricesRawRequestOutput = $AzPricesRawRequest | where {$_.RetailPrice -ne 0}
+    $AzPricesRawRequestOutput = $AzPricesRawRequest | where { $_.RetailPrice -ne 0 }
     return $AzPricesRawRequestOutput
 }
 
-# functions
-function Get-AzPricing {
-    [cmdletbinding()]
-    param(
-        $Url
-    )
-    $CmdletName = "Get-AzPricing"
-    Write-Information "$CmdletName`: -Url $url"
-
-    $AzPricesRequest = Get-AzPricingRaw -Url $URL
-
-    Write-Information "Enriching Pricing Values"
-    $EnrichedAzPricesRequest = Add-AzPricingEffectiveCommitmentTierValues -InputObject $AzPricesRequest
-
-    $EnrichedAzPricesRequest | Format-Table | Out-String | foreach {Write-Information $_}
-
-    return $EnrichedAzPricesRequest
-    
-    Write-Host "$CmdletName`: Items Collected: $ItemsReturned"
-    Write-Host "$CmdletName`: Complete"
-}
-
+# Runs the enrichement cmdlets for the Azure prices
 function Add-AzPricingEffectiveCommitmentTierValues {
     param(
         [object[]]$InputObject
@@ -248,11 +246,28 @@ function Add-AzPricingEffectiveCommitmentTierThresholdGB {
     return $AddedEffectiveCommitmentTierThresholdGB
 }
 
+function Get-AzPricing {
+    [cmdletbinding()]
+    param(
+        $Url
+    )
+    $CmdletName = "Get-AzPricing"
+    Write-Information "$CmdletName`: -Url $url"
+
+    $AzPricesRequest = Get-AzPricingRaw -Url $URL
+
+    Write-Information "Enriching Pricing Values"
+    $EnrichedAzPricesRequest = Add-AzPricingEffectiveCommitmentTierValues -InputObject $AzPricesRequest
+
+    $EnrichedAzPricesRequest | Format-Table | Out-String | foreach { Write-Information $_ }
+
+    return $EnrichedAzPricesRequest
+    
+    Write-Host "$CmdletName`: Items Collected: $ItemsReturned"
+    Write-Host "$CmdletName`: Complete"
+}
+
 function Add-PricingObjectDifferences {
-    <#
-    .SYNOPSIS
-        Takes two PricingObject classes, determines the most recent for each tier in the Reference Object and compares the retail price to the Difference Object. If the retail price is different, then it returns the object
-    #>
     param (
         [cmdletbinding()]
         [object[]]$ReferenceObject,
@@ -273,30 +288,6 @@ function Add-PricingObjectDifferences {
     }
 }
 
-function Parse-DateTime {
-    param(
-        $DateTimeString
-    )
-
-    if ($DateTimeString.GetType() -ne [datetime]) {
-        try {
-            Write-Verbose "Parsing Exact DateTime: $DateTimeString"
-            $DateTimeStringOutput = [datetime]::ParseExact($DateTimeString, "dd/MM/yyyy HH:mm:ss", $null) 
-        }
-        catch {
-            Write-Error "Failed to Parse the DateTimeString '$DateTimeString'"
-            break
-        }
-    }
-    elseif($DateTimeString.GetType() -eq [datetime]) {
-        Write-Verbose "Using Exisitng Time String: $DateTimeString"
-        $DateTimeStringOutput = $DateTimeString
-    } else {
-        Write-Error "Failed To Process the DateTimeString"          
-    }
-    return $DateTimeStringOutput
-}
-
 function ConvertTo-PriceObject {
     param (
         [parameter(
@@ -309,41 +300,27 @@ function ConvertTo-PriceObject {
         $ConvertedObjects = [PriceObject[]]@()
 
         try {
-                foreach ($Object in $InputObject) {
-                if ($Object.TimeGenerated.GetType() -ne [datetime]) {
-                    try {
-                        Write-Verbose "Parsing Exact DateTime: $($Object.TimeGenerated)"
-                        $TimeGenerated = [datetime]::ParseExact($Object.TimeGenerated, "dd/MM/yyyy HH:mm:ss", $null) 
-                    }
-                    catch {
-                        Write-Error "Failed to Parse the TimeGenerated '$($Object.TimeGenerated)'"
-                        break
-                    }
-                }
-                elseif($Object.TimeGenerated.GetType() -eq [datetime]) {
-                    Write-Verbose "Using Exisitng Time: $($Object.TimeGenerated)"
-                    $TimeGenerated = $Object.TimeGenerated
-                } else {
-                    Write-Error "Failed To Process the Field Time Generated"          
-                }
+            foreach ($Object in $InputObject) {
 
+                $TimeGenerated = $Object.TimeGenerated | Get-Date
+                $EffectiveStartDate = $Object.EffectiveStartDate | Get-Date
                 $ConvertedObject = New-Object -TypeName PriceObject
                 
                 $ConvertedObjectProperties = @{
-                    TimeGenerated      = Parse-DateTime -DateTimeString $Object.TimeGenerated
-                    ServiceName        = $Object.ServiceName
-                    ArmRegionName      = $Object.ArmRegionName
-                    CurrencyCode       = $Object.CurrencyCode
-                    Tier               = $Object.Tier
-                    UnitOfMeasure      = $Object.UnitOfMeasure
-                    RetailPrice        = $Object.RetailPrice
-                    EffectiveStartDate = Parse-DateTime -DateTimeString $Object.EffectiveStartDate
+                    TimeGenerated                      = $TimeGenerated
+                    ServiceName                        = $Object.ServiceName
+                    ArmRegionName                      = $Object.ArmRegionName
+                    CurrencyCode                       = $Object.CurrencyCode
+                    Tier                               = $Object.Tier
+                    UnitOfMeasure                      = $Object.UnitOfMeasure
+                    RetailPrice                        = $Object.RetailPrice
+                    EffectiveStartDate                 = $EffectiveStartDate
                     EffectiveCommitmentTierThresholdGB = $Object.EffectiveCommitmentTierThresholdGB
-                    EffectivePricePerGB = $Object.EffectivePricePerGB
+                    EffectivePricePerGB                = $Object.EffectivePricePerGB
                 } 
                 
-                $ConvertedObjectProperties | Format-Table | Out-String | foreach {Write-Verbose $_}
-                foreach ($ConvertedObjectPropertyKey in $ConvertedObjectProperties.Keys){
+                $ConvertedObjectProperties | Format-Table | Out-String | ForEach-Object { Write-Verbose $_ }
+                foreach ($ConvertedObjectPropertyKey in $ConvertedObjectProperties.Keys) {
                     $ConvertedObject.$ConvertedObjectPropertyKey = $ConvertedObjectProperties.$ConvertedObjectPropertyKey
                 }
                 
@@ -419,6 +396,8 @@ function New-File {
 function main {
 
     Set-Location $Location
+    $Global:ScriptRunDateTime = Get-FormattedDate
+
     foreach ($Service in $Services) {
         foreach ($CurrencyCode in $CurrencyCodes) {
             Write-Host ""
@@ -429,7 +408,7 @@ function main {
             $Prices = Get-AzPricing -Url $url 
 
             # Create Each file for each region. This will speed up the workbook.
-            if (! $Regions){
+            if (! $Regions) {
                 $Regions = $Prices | Select-Object -Unique -ExpandProperty armRegionName | Sort-Object 
             }
 
@@ -455,7 +434,18 @@ function main {
                 if ($OutputToFile.Count -gt $ExistingContent.Count) {
                     $NewItemCount = $OutputToFile.Count - $ExistingContent.Count
                     Write-Host "$NewItemCount prices added to file: $OutputPath"
-                    $OutputToFile | Sort-Object TimeGenerated, RetailPrice | Export-Csv -Path $OutputPath -Force
+                    $OutputToFile | Sort-Object TimeGenerated, RetailPrice | 
+                    Select-Object  @{Name = 'TimeGenerated'; Expression = { Get-FormattedDate -DateTime $_.TimeGenerated } },
+                    ServiceName,
+                    ArmRegionName,
+                    CurrencyCode,
+                    Tier,
+                    UnitOfMeasure,
+                    RetailPrice,
+                    @{Name = 'EffectiveStartDate'; Expression = { Get-FormattedDate -DateTime $_.EffectiveStartDate } },
+                    EffectiveCommitmentTierThresholdGB,
+                    EffectivePricePerGB
+                    | Export-CSV -Path $OutputPath -Force
                 }
                 else {
                     Write-Host "No changes to be added to file : $OutputPath"
