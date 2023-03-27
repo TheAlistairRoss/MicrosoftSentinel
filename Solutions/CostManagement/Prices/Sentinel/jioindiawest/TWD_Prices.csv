@@ -1,0 +1,7 @@
+"TimeGenerated","ServiceName","ArmRegionName","CurrencyCode","Tier","UnitOfMeasure","RetailPrice","EffectiveStartDate","EffectiveCommitmentTierThresholdGB","EffectivePricePerGB"
+"2023-03-27T14:49:56.904Z","Sentinel","jioindiawest","TWD","Pay-as-you-go","1 GB","85.3146","2021-04-15T00:00:00.000Z","0","85.3146"
+"2023-03-27T14:49:56.904Z","Sentinel","jioindiawest","TWD","100","1/Day","4265.73","2021-04-15T00:00:00.000Z","50","0.0234"
+"2023-03-27T14:49:56.904Z","Sentinel","jioindiawest","TWD","200","1/Day","7678.314","2021-04-15T00:00:00.000Z","328133.0769","0.0260"
+"2023-03-27T14:49:56.904Z","Sentinel","jioindiawest","TWD","300","1/Day","11090.898","2021-04-15T00:00:00.000Z","426573","0.0270"
+"2023-03-27T14:49:56.904Z","Sentinel","jioindiawest","TWD","400","1/Day","14218.8969","2021-04-15T00:00:00.000Z","526625.8111","0.0281"
+"2023-03-27T14:49:56.904Z","Sentinel","jioindiawest","TWD","500","1/Day","17062.92","2021-04-15T00:00:00.000Z","607221.3523","0.0293"
