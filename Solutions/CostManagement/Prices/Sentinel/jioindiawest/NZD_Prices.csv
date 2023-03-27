@@ -1,7 +1,0 @@
-"TimeGenerated","ServiceName","ArmRegionName","CurrencyCode","Tier","UnitOfMeasure","RetailPrice","EffectiveStartDate","EffectiveCommitmentTierThresholdGB","EffectivePricePerGB"
-"2023-03-27T12:22:43.688Z","Sentinel","jioindiawest","NZD","Pay-as-you-go","1 GB","4.5473","2021-04-15T00:00:00.000Z","0","4.5473"
-"2023-03-27T12:22:43.688Z","Sentinel","jioindiawest","NZD","100","1/Day","227.365","2021-04-15T00:00:00.000Z","50","0.4398214324984056473071932795"
-"2023-03-27T12:22:43.688Z","Sentinel","jioindiawest","NZD","200","1/Day","409.257","2021-04-15T00:00:00.000Z","930.5072","0.4886904805537840525635480884"
-"2023-03-27T12:22:43.688Z","Sentinel","jioindiawest","NZD","300","1/Day","591.149","2021-04-15T00:00:00.000Z","1209.6593","0.5074862682673911315082999379"
-"2023-03-27T12:22:43.688Z","Sentinel","jioindiawest","NZD","400","1/Day","757.8725","2021-04-15T00:00:00.000Z","1493.3852","0.5277932633787345496768915616"
-"2023-03-27T12:22:43.688Z","Sentinel","jioindiawest","NZD","500","1/Day","909.46","2021-04-15T00:00:00.000Z","1723.1368","0.5497767906230070591339915994"
