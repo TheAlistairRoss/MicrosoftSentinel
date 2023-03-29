@@ -75,7 +75,8 @@
               "showDefault": false
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourceGroups/soc/providers/Microsoft.OperationalInsights/workspaces/cybersecuritysoc"
           },
           {
             "id": "4e04e9a7-1da3-4cfe-aa8a-35ad6229606b",
@@ -122,7 +123,8 @@
             "timeContext": {
               "durationMs": 86400000
             },
-            "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6"
+            "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6",
+            "value": "true"
           },
           {
             "id": "a27fb8f0-d361-4039-9d5a-71c86f5a1f79",
@@ -1309,7 +1311,8 @@
                   "jsonData": "[\r\n    {\r\n        \"value\":  \"Pay-as-you-go\",\r\n        \"label\":  \"Pay-as-you-go\",\r\n\t\t\"selected\" :true\r\n    },\r\n    {\r\n        \"value\":  \"100\",\r\n        \"label\":  \"100\"\r\n    },\r\n    {\r\n        \"value\":  \"200\",\r\n        \"label\":  \"200\"\r\n    },\r\n    {\r\n        \"value\":  \"300\",\r\n        \"label\":  \"300\"\r\n    },\r\n    {\r\n        \"value\":  \"400\",\r\n        \"label\":  \"400\"\r\n    },\r\n    {\r\n        \"value\":  \"500\",\r\n        \"label\":  \"500\"\r\n    },\r\n    {\r\n        \"value\":  \"1000\",\r\n        \"label\":  \"1000\"\r\n    },\r\n    {\r\n        \"value\":  \"2000\",\r\n        \"label\":  \"2000\"\r\n    },\r\n    {\r\n        \"value\":  \"5000\",\r\n        \"label\":  \"5000\"\r\n    }\r\n]\r\n",
                   "timeContext": {
                     "durationMs": 86400000
-                  }
+                  },
+                  "value": "100"
                 }
               ],
               "style": "above",
@@ -1337,7 +1340,8 @@
                   "jsonData": "[\r\n    {\r\n        \"value\":  \"Pay-as-you-go\",\r\n        \"label\":  \"Pay-as-you-go\",\r\n\t\t\"selected\" :true\r\n    },\r\n    {\r\n        \"value\":  \"100\",\r\n        \"label\":  \"100\"\r\n    },\r\n    {\r\n        \"value\":  \"200\",\r\n        \"label\":  \"200\"\r\n    },\r\n    {\r\n        \"value\":  \"300\",\r\n        \"label\":  \"300\"\r\n    },\r\n    {\r\n        \"value\":  \"400\",\r\n        \"label\":  \"400\"\r\n    },\r\n    {\r\n        \"value\":  \"500\",\r\n        \"label\":  \"500\"\r\n    },\r\n    {\r\n        \"value\":  \"1000\",\r\n        \"label\":  \"1000\"\r\n    },\r\n    {\r\n        \"value\":  \"2000\",\r\n        \"label\":  \"2000\"\r\n    },\r\n    {\r\n        \"value\":  \"5000\",\r\n        \"label\":  \"5000\"\r\n    }\r\n]\r\n",
                   "timeContext": {
                     "durationMs": 86400000
-                  }
+                  },
+                  "value": "100"
                 }
               ],
               "style": "above",
@@ -1350,7 +1354,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet PriceInputs = {SentinelExternalData}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd)\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = max(CostAtTier), Forecasted = max(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet PriceInputs = {SentinelExternalData}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd)\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n\r\n",
               "size": 0,
               "title": "Sentinel Forecasted Cost for Tier \"{SentinelSelectedForecastTier}\" in {CurrencyCode}",
               "timeContextFromParameter": "TimeRange",
@@ -1367,7 +1371,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{LogAnalyticsSelectedForecastTier}\";\r\nlet PriceInputs = {AzureMonitorExternalData}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd)\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = max(CostAtTier), Forecasted = max(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{LogAnalyticsSelectedForecastTier}\";\r\nlet PriceInputs = {AzureMonitorExternalData}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd)\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n",
               "size": 0,
               "title": "Log Analytics Forecasted Cost for Tier \"{LogAnalyticsSelectedForecastTier}\" in {CurrencyCode}",
               "timeContextFromParameter": "TimeRange",
