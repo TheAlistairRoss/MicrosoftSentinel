@@ -5,9 +5,6 @@
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
-        "crossComponentResources": [
-          "{Subscriptions}"
-        ],
         "parameters": [
           {
             "id": "255c5943-cfbe-4434-a7b2-9614b8d65b5f",
@@ -78,8 +75,7 @@
               "showDefault": false
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources",
-            "value": "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourceGroups/SOC/providers/Microsoft.OperationalInsights/workspaces/CyberSecuritySOC"
+            "resourceType": "microsoft.resourcegraph/resources"
           },
           {
             "id": "4e04e9a7-1da3-4cfe-aa8a-35ad6229606b",
@@ -94,8 +90,7 @@
             "jsonData": "[\r\n  {\r\n    \"label\": \"USD US dollar\",\r\n    \"value\": \"USD\",\r\n    \"selected\": true\r\n  },\r\n  {\r\n    \"label\": \"AUD Australian dollar\",\r\n    \"value\": \"AUD\"\r\n  },\r\n  {\r\n    \"label\": \"BRL Brazilian real\",\r\n    \"value\": \"BRL\"\r\n  },\r\n  {\r\n    \"label\": \"CAD Canadian dollar\",\r\n    \"value\": \"CAD\"\r\n  },\r\n  {\r\n    \"label\": \"CHF Swiss franc\",\r\n    \"value\": \"CHF\"\r\n  },\r\n  {\r\n    \"label\": \"CNY Chinese yuan\",\r\n    \"value\": \"CNY\"\r\n  },\r\n  {\r\n    \"label\": \"DKK Danish krone\",\r\n    \"value\": \"DKK\"\r\n  },\r\n  {\r\n    \"label\": \"EUR Euro\",\r\n    \"value\": \"EUR\"\r\n  },\r\n  {\r\n    \"label\": \"GBP British pound\",\r\n    \"value\": \"GBP\"\r\n  },\r\n  {\r\n    \"label\": \"INR Indian rupee\",\r\n    \"value\": \"INR\"\r\n  },\r\n  {\r\n    \"label\": \"JPY Japanese yen\",\r\n    \"value\": \"JPY\"\r\n  },\r\n  {\r\n    \"label\": \"KRW Korean won\",\r\n    \"value\": \"KRW\"\r\n  },\r\n  {\r\n    \"label\": \"NOK Norwegian krone\",\r\n    \"value\": \"NOK\"\r\n  },\r\n  {\r\n    \"label\": \"NZD New Zealand dollar\",\r\n    \"value\": \"NZD\"\r\n  },\r\n  {\r\n    \"label\": \"RUB Russian ruble\",\r\n    \"value\": \"RUB\"\r\n  },\r\n  {\r\n    \"label\": \"SEK Swedish krona\",\r\n    \"value\": \"SEK\"\r\n  },\r\n  {\r\n    \"label\": \"TWD Taiwan dollar\",\r\n    \"value\": \"TWD\"\r\n  }\r\n]\r\n",
             "timeContext": {
               "durationMs": 86400000
-            },
-            "value": "GBP"
+            }
           },
           {
             "id": "e7fe4e9e-f94c-49ef-aae3-f93bc7cb6cf5",
@@ -111,8 +106,7 @@
             "jsonData": "[\r\n    {\"value\":\"true\", \"label\": \"Yes\", \"selected\": false},\r\n    {\"value\":\"false\", \"label\": \"No\", \"selected\": true}\r\n]",
             "timeContext": {
               "durationMs": 86400000
-            },
-            "value": "true"
+            }
           },
           {
             "version": "KqlParameterItem/1.0",
@@ -128,7 +122,6 @@
             "timeContext": {
               "durationMs": 86400000
             },
-            "value": "true",
             "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6"
           },
           {
@@ -165,22 +158,47 @@
             "resourceType": "microsoft.resourcegraph/resources"
           },
           {
-            "id": "c07f70fc-1196-442e-aa8f-8b53e75e5509",
+            "id": "4ea12366-4603-458b-a369-538b7e6a4e78",
             "version": "KqlParameterItem/1.0",
-            "name": "SentinelCurrentTier",
+            "name": "SentinelCurrentTierQuery",
             "type": 1,
+            "isRequired": true,
             "query": "    resources\r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product == \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId has \"{Workspace}\"\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name))\r\n    | extend sentinelTier = case(\r\n        sentinelSku == \"PerGB\", \"Pay-as-you-go\",\r\n        sentinelSku == \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n        \"Not Supported in this workbook\"\r\n        )\r\n| project sentinelTier\r\n    \r\n\r\n",
             "crossComponentResources": [
               "{Subscriptions}"
             ],
             "isHiddenWhenLocked": true,
             "queryType": 1,
-            "resourceType": "microsoft.operationalinsights/workspaces"
+            "resourceType": "microsoft.resourcegraph/resources"
+          },
+          {
+            "id": "ed05ca72-f3c0-4090-b8df-80a3c671ac15",
+            "version": "KqlParameterItem/1.0",
+            "name": "SentinelCurrentTier",
+            "type": 1,
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "leftOperand": "SentinelCurrentTierQuery",
+                  "operator": "isNotNull",
+                  "rightValType": "param",
+                  "resultValType": "param",
+                  "resultVal": "SentinelCurrentTierQuery"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "static",
+                  "resultVal": "Sentinel Not Enabled"
+                }
+              }
+            ]
           }
         ],
         "style": "pills",
-        "queryType": 1,
-        "resourceType": "microsoft.operationalinsights/workspaces"
+        "queryType": 0,
+        "resourceType": "microsoft.resourcegraph/resources"
       },
       "name": "parameters - 0"
     },
