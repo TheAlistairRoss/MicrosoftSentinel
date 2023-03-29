@@ -1,0 +1,7 @@
+"TimeGenerated","ServiceName","ArmRegionName","CurrencyCode","Tier","UnitOfMeasure","RetailPrice","EffectiveStartDate","EffectiveCommitmentTierThresholdGB","EffectivePricePerGB"
+"2023-03-29T13:50:58.330Z","Azure Monitor","jioindiawest","CHF","Pay-as-you-go","1 GB","3.0263","2021-04-15T00:00:00.000Z","0","3.0263"
+"2023-03-29T13:50:58.330Z","Azure Monitor","jioindiawest","CHF","100","1/Day","257.8948","2021-04-15T00:00:00.000Z","85.2179","2.5789"
+"2023-03-29T13:50:58.330Z","Azure Monitor","jioindiawest","CHF","200","1/Day","484.2107","2021-04-15T00:00:00.000Z","187.7586","2.4211"
+"2023-03-29T13:50:58.330Z","Azure Monitor","jioindiawest","CHF","300","1/Day","710.5266","2021-04-15T00:00:00.000Z","293.4726","2.3684"
+"2023-03-29T13:50:58.330Z","Azure Monitor","jioindiawest","CHF","400","1/Day","926.3162","2021-04-15T00:00:00.000Z","391.1148","2.3158"
+"2023-03-29T13:50:58.330Z","Azure Monitor","jioindiawest","CHF","500","1/Day","1138.1584","2021-04-15T00:00:00.000Z","491.4753","2.2763"
