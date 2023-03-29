@@ -123,8 +123,7 @@
             "timeContext": {
               "durationMs": 86400000
             },
-            "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6",
-            "value": "true"
+            "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6"
           },
           {
             "id": "a27fb8f0-d361-4039-9d5a-71c86f5a1f79",
@@ -581,7 +580,7 @@
           {
             "type": 1,
             "content": {
-              "json": "# Commitment Tier Parameters\r\n\r\nThese charts require two parameters. Both have the same values, but reflect Cost Tiers for Sentinel and Log Analytics. The reason for this is because enabling Commitment Tiers for Sentinel and Log Analytics are seperate and are cost effective at different thresholds. These parameters allow you to simulate the cost for each service with a selection of combinations\r\n\r\n> TIP: You can select all the tiers at once, but it is recommend to select your current tier, the recommended tier and at least one other (the next one up or down). For example if your current tier is 100 and the recommend tier is 200, select 100, 200 and 300. Check the Overview page for the current recommendation based on your selected time range.\r\n\r\n- Details for changing Microsoft Sentinel Commitment Tiers: https://learn.microsoft.com/en-us/azure/sentinel/billing-reduce-costs#set-or-change-pricing-tier\r\n- Details for changing Log Analytics Commitment Tiers : https://learn.microsoft.com/en-US/azure/azure-monitor/logs/change-pricing-tier?tabs=azure-portal",
+              "json": "# Commitment Tier Parameters\r\n\r\nThese charts require two parameters. Both have the same values, but reflect Cost Tiers for Sentinel and Log Analytics. The reason for this is because enabling Commitment Tiers for Sentinel and Log Analytics are seperate and are cost effective at different thresholds. These parameters allow you to simulate the cost for each service with a selection of combinations\r\n\r\n> TIP: You can select all the tiers at once, but it is recommend to select your current tier, the recommended tier and at least one other (the next one up or down). For example if your current tier is 100 and the recommend tier is 200, select 100, 200 and 300. Check the Overview page for the current recommendation based on your selected time range.\r\n\r\n- Details for changing Microsoft Sentinel Commitment Tiers: https://learn.microsoft.com/en-us/azure/sentinel/billing-reduce-costs#set-or-change-pricing-tier\r\n- Details for changing Log Analytics Commitment Tiers : https://learn.microsoft.com/en-US/azure/azure-monitor/logs/change-pricing-tier?tabs=azure-portal\r\n\r\n### All prices shown are based on the current retail prices. This does not account for any discounts you may have been provided. This has been provided as a guide into your data and converted to cost, as opposed to just data ingested\r\n\r\n### This workbook has not been tested against any legacy tiers for Log Analytics or dedicated clusters.",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -614,9 +613,7 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "Pay-as-you-go",
-                    "100",
-                    "200"
+                    "Pay-as-you-go"
                   ]
                 },
                 {
@@ -636,7 +633,6 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "100",
                     "Pay-as-you-go"
                   ]
                 }
@@ -803,6 +799,7 @@
               "version": "KqlItem/1.0",
               "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{SentinelCT}]);\r\nlet PriceInputs = {SentinelExternalData}\r\n| summarize arg_max(TimeGenerated, *) by Tier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| join kind = inner (\r\n    PriceInputs\r\n    | where Tier in (SelectedTiers)\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend CostAtTier = iff(Quantity_GB > TierVolumeGB, Quantity_GB * EffectivePricePerGB, RetailPrice)\r\n| make-series CostAtTier = sum(CostAtTier), Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier\r\n| extend CostMovingAverage = series_fir(CostAtTier, repeat(1, 7), true, true)\r\n| extend Quantity_GBMovingAverage = series_fir(Quantity_GB, repeat(1, 7), true, true)\r\n| render timechart ",
               "size": 0,
+              "showAnalytics": true,
               "title": "Sum of Daily Sentinel Cost ({CurrencyCode})",
               "timeContextFromParameter": "TimeRange",
               "queryType": 0,
@@ -878,6 +875,7 @@
               "version": "KqlItem/1.0",
               "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{LogAnalyticsCT}]);\r\nlet PriceInputs = {AzureMonitorExternalData}\r\n| summarize arg_max(TimeGenerated, *) by Tier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| join kind = inner (\r\n    PriceInputs\r\n    | where Tier in (SelectedTiers)\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend CostAtTier = iff(Quantity_GB > TierVolumeGB, Quantity_GB * EffectivePricePerGB, RetailPrice)\r\n| make-series CostAtTier = sum(CostAtTier), Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier\r\n| extend CostMovingAverage = series_fir(CostAtTier, repeat(1, 7), true, true)\r\n| extend Quantity_GBMovingAverage = series_fir(Quantity_GB, repeat(1, 7), true, true)\r\n| render timechart ",
               "size": 0,
+              "showAnalytics": true,
               "title": "Sum of Log Analytics Cost ({CurrencyCode})",
               "timeContextFromParameter": "TimeRange",
               "queryType": 0,
