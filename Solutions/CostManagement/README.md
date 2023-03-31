@@ -4,6 +4,8 @@ This workbook has been desgined to help not only provide recommendations into ch
 
 This workbook does not account for historical prices, such as flucutations to exchange rates / base rate changes, though the back end script does collect this data. It is not to be used as an exact cost, as it does not reflect any discounts you may receive.
 
+[Copy the Workbook code here](https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Solutions/CostManagement/Workbook/CommitmentTierCost.json)
+
 ## Contents
 - [Workbook Parameters](#workbook-parameters)
 - [Overview Tab](#overview-tab)
