@@ -36,7 +36,7 @@ This tab shows you the current sku and tier for Log Analytics and Sentinel for t
 
 It also provides you simple recommendations and estimated cost savings
 
-![Image](Images\CommitmentTierWorkbook-Overview.png)
+![Image](Images/CommitmentTierWorkbook-Overview.png)
 
 ## Charts Tab
 
@@ -54,7 +54,7 @@ For example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-
 
 When trying to interpret these costs , the legend shows the total cost for the selected time range, with the most expensive tier on the left and the best value on the right.
 
-![Image](Images\CommitmentTierWorkbook-Charts-SumOfCosts.png)
+![Image](Images/CommitmentTierWorkbook-Charts-SumOfCosts.png)
 
 ### Seven Day Moving Average
 
@@ -64,7 +64,7 @@ In statistics, a moving average is a calculation to analyze data points by creat
 
 For example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the left chart would display two series for each selected tier. Each series would reflect the moving averages cost based on the selected tiers.
 
-![Image](Images\CommitmentTierWorkbook-Charts-7DayMovingAverage.png)
+![Image](Images/CommitmentTierWorkbook-Charts-7DayMovingAverage.png)
 
 ### GB Ingested and Thresholds
 
@@ -75,7 +75,7 @@ For example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-
 
 If the Actual_Usage_GB and / or Average_Usage_GB is higher than a displayed commitment tier, then it would be highly likely that moving to the next tier would be cost effective.
 
-![Image](Images\CommitmentTierWorkbook-Charts-GBThresholds.png)
+![Image](Images/CommitmentTierWorkbook-Charts-GBThresholds.png)
 
 ## Forecasting Tab
 
@@ -95,7 +95,7 @@ When observing these charts, you will see two series.
 
 >Note: Forecasting cannot predict for unexpected changes that have not happened regularlly in the historical data, such as onboarding of new data sources. Also if seasonality cannot be detected (This means regular patterns, such as peaks and troughs in the data relating to user working hours), then it will display a line of best fit.
 
-![Image](Images\CommitmentTierWorkbook-Forecasting.png)
+![Image](Images/CommitmentTierWorkbook-Forecasting.png)
 
 ## Troubleshooting
 
