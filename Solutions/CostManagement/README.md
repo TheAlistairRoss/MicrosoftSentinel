@@ -18,7 +18,7 @@ This workbook does not account for historical prices, such as flucutations to ex
 
 ## Workbook Parameters
 
-# Displayed
+### Displayed
 - **Time Range**: This should be set to at least 7 days minimum. You can select custom time ranges, but note that data shown will only show complete days, for example if you pick the last 14 days, data show will start at the beginning of the first complete day and end of the last complete day.
 - **Subscriptions**: Azure subscription picker
 - **Workspace**: The Log Analytics workspace you want to review. If the workspace isn't Sentinel enabled, then Sentinel charts won't load
@@ -26,7 +26,7 @@ This workbook does not account for historical prices, such as flucutations to ex
 - **Show Help**: This displays further information within the workbook to assist. 
 - **Use Demo Data**: When displaying value for the workbook or simulating tier changes, changing this to *Yes* allows for you to visualise what the workbook would look like if breaching the 100 GB Commitment tier.
 
-# Hidden
+### Hidden
 - If you clone this repo and wish to host it in a differenct Github repository, the hidden parameter **RepositoryURL** can be changed to direct the queries to another. The directory structure is also included in this URL up to and including the directory that containers the *Sentinel* and *Azure Monitor* directories. The default is *https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Solutions/CostManagement/Prices*
 
 
