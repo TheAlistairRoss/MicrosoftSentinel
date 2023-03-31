@@ -81,8 +81,7 @@
               "showDefault": false
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources",
-            "value": "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourceGroups/soc/providers/Microsoft.OperationalInsights/workspaces/cybersecuritysoc"
+            "resourceType": "microsoft.resourcegraph/resources"
           },
           {
             "id": "4e04e9a7-1da3-4cfe-aa8a-35ad6229606b",
@@ -97,7 +96,8 @@
             "jsonData": "[\r\n  {\r\n    \"label\": \"USD US dollar\",\r\n    \"value\": \"USD\",\r\n    \"selected\": true\r\n  },\r\n  {\r\n    \"label\": \"AUD Australian dollar\",\r\n    \"value\": \"AUD\"\r\n  },\r\n  {\r\n    \"label\": \"BRL Brazilian real\",\r\n    \"value\": \"BRL\"\r\n  },\r\n  {\r\n    \"label\": \"CAD Canadian dollar\",\r\n    \"value\": \"CAD\"\r\n  },\r\n  {\r\n    \"label\": \"CHF Swiss franc\",\r\n    \"value\": \"CHF\"\r\n  },\r\n  {\r\n    \"label\": \"CNY Chinese yuan\",\r\n    \"value\": \"CNY\"\r\n  },\r\n  {\r\n    \"label\": \"DKK Danish krone\",\r\n    \"value\": \"DKK\"\r\n  },\r\n  {\r\n    \"label\": \"EUR Euro\",\r\n    \"value\": \"EUR\"\r\n  },\r\n  {\r\n    \"label\": \"GBP British pound\",\r\n    \"value\": \"GBP\"\r\n  },\r\n  {\r\n    \"label\": \"INR Indian rupee\",\r\n    \"value\": \"INR\"\r\n  },\r\n  {\r\n    \"label\": \"JPY Japanese yen\",\r\n    \"value\": \"JPY\"\r\n  },\r\n  {\r\n    \"label\": \"KRW Korean won\",\r\n    \"value\": \"KRW\"\r\n  },\r\n  {\r\n    \"label\": \"NOK Norwegian krone\",\r\n    \"value\": \"NOK\"\r\n  },\r\n  {\r\n    \"label\": \"NZD New Zealand dollar\",\r\n    \"value\": \"NZD\"\r\n  },\r\n  {\r\n    \"label\": \"RUB Russian ruble\",\r\n    \"value\": \"RUB\"\r\n  },\r\n  {\r\n    \"label\": \"SEK Swedish krona\",\r\n    \"value\": \"SEK\"\r\n  },\r\n  {\r\n    \"label\": \"TWD Taiwan dollar\",\r\n    \"value\": \"TWD\"\r\n  }\r\n]\r\n",
             "timeContext": {
               "durationMs": 86400000
-            }
+            },
+            "label": "Currency Code"
           },
           {
             "id": "e7fe4e9e-f94c-49ef-aae3-f93bc7cb6cf5",
@@ -183,6 +183,8 @@
             "version": "KqlParameterItem/1.0",
             "name": "SentinelCurrentTier",
             "type": 1,
+            "isRequired": true,
+            "isHiddenWhenLocked": true,
             "criteriaData": [
               {
                 "criteriaContext": {
@@ -205,7 +207,7 @@
         ],
         "style": "pills",
         "queryType": 0,
-        "resourceType": "microsoft.resourcegraph/resources"
+        "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "name": "parameters - 0"
     },
@@ -619,6 +621,7 @@
                     "durationMs": 86400000
                   },
                   "value": [
+                    "100",
                     "Pay-as-you-go"
                   ]
                 },
@@ -639,8 +642,10 @@
                     "durationMs": 86400000
                   },
                   "value": [
-                    "Pay-as-you-go"
-                  ]
+                    "Pay-as-you-go",
+                    "100"
+                  ],
+                  "label": "Log Analytics Commitment Tier"
                 }
               ],
               "style": "pills",
@@ -1315,8 +1320,7 @@
                   "jsonData": "[\r\n    {\r\n        \"value\":  \"Pay-as-you-go\",\r\n        \"label\":  \"Pay-as-you-go\",\r\n\t\t\"selected\" :true\r\n    },\r\n    {\r\n        \"value\":  \"100\",\r\n        \"label\":  \"100\"\r\n    },\r\n    {\r\n        \"value\":  \"200\",\r\n        \"label\":  \"200\"\r\n    },\r\n    {\r\n        \"value\":  \"300\",\r\n        \"label\":  \"300\"\r\n    },\r\n    {\r\n        \"value\":  \"400\",\r\n        \"label\":  \"400\"\r\n    },\r\n    {\r\n        \"value\":  \"500\",\r\n        \"label\":  \"500\"\r\n    },\r\n    {\r\n        \"value\":  \"1000\",\r\n        \"label\":  \"1000\"\r\n    },\r\n    {\r\n        \"value\":  \"2000\",\r\n        \"label\":  \"2000\"\r\n    },\r\n    {\r\n        \"value\":  \"5000\",\r\n        \"label\":  \"5000\"\r\n    }\r\n]\r\n",
                   "timeContext": {
                     "durationMs": 86400000
-                  },
-                  "value": "100"
+                  }
                 }
               ],
               "style": "above",
@@ -1344,8 +1348,7 @@
                   "jsonData": "[\r\n    {\r\n        \"value\":  \"Pay-as-you-go\",\r\n        \"label\":  \"Pay-as-you-go\",\r\n\t\t\"selected\" :true\r\n    },\r\n    {\r\n        \"value\":  \"100\",\r\n        \"label\":  \"100\"\r\n    },\r\n    {\r\n        \"value\":  \"200\",\r\n        \"label\":  \"200\"\r\n    },\r\n    {\r\n        \"value\":  \"300\",\r\n        \"label\":  \"300\"\r\n    },\r\n    {\r\n        \"value\":  \"400\",\r\n        \"label\":  \"400\"\r\n    },\r\n    {\r\n        \"value\":  \"500\",\r\n        \"label\":  \"500\"\r\n    },\r\n    {\r\n        \"value\":  \"1000\",\r\n        \"label\":  \"1000\"\r\n    },\r\n    {\r\n        \"value\":  \"2000\",\r\n        \"label\":  \"2000\"\r\n    },\r\n    {\r\n        \"value\":  \"5000\",\r\n        \"label\":  \"5000\"\r\n    }\r\n]\r\n",
                   "timeContext": {
                     "durationMs": 86400000
-                  },
-                  "value": "100"
+                  }
                 }
               ],
               "style": "above",
@@ -1402,7 +1405,6 @@
       "content": {
         "version": "NotebookGroup/1.0",
         "groupType": "editable",
-        "title": "group - Troubleshooting",
         "items": [
           {
             "type": 1,
