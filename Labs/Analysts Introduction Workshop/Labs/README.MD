@@ -11,9 +11,7 @@ Before working on this lab, it would help to have the following: <br/>
 •	Working knowledge of SIEM and SOAR technology <br/>
 •	Familiarity with common attack scenarios and techniques <br/>
 
-The following lab is based on the original Lab written by **Brian Delaney**, Principal PFE and **Jon Shectman**, Associate Architect.
-
-This has been update / redesigned by **[Alistair Ross](https://github.com/TheAlistairRoss)**, Cloud Solution Architect - Engineering and **[Anne Igbekele](https://github.com/anne-efi)**, Cloud Solution Architect - Engineering to focus on tasks performed Threat Management tasks performed by Analysts.
+This lab has been created by **[Alistair Ross](https://github.com/TheAlistairRoss)**, Cloud Solution Architect - Engineering and **[Anne Igbekele](https://github.com/anne-efi)**, Cloud Solution Architect - Engineering to focus on tasks performed Threat Management tasks performed by Analysts.
 
 ## Get Started
 
