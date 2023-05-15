@@ -361,9 +361,20 @@ function Compare-PricingObjects {
                 foreach ($OldRetailPrice in $OldRetailPrices) {
                     # Compare each price
                     $NewRetailPrice = $DifferenceObject.Where({ $_.Tier -eq $OldRetailPrice.Tier })
-                    $Compare = Compare-Object -ReferenceObject $OldRetailPrice.retailPrice -DifferenceObject $NewRetailPrice.retailPrice
-                    if ($Compare) {
-                        $PricingObjects += $NewRetailPrice 
+                    try {
+                        $Compare = Compare-Object -ReferenceObject $OldRetailPrice.retailPrice -DifferenceObject $NewRetailPrice.retailPrice
+                        if ($Compare) {
+                            $PricingObjects += $NewRetailPrice 
+                        }
+                    }
+                    catch {
+                        Write-Error "Failed to Compare Retail prices."
+
+                        Write-Host "Displaying ReferenceObject"
+                        $ReferenceObject | Format-Table
+
+                        Write-Host "Displaying DifferenceObject"
+                        $DifferenceObject | Format-Table
                     }
                 }
 
