@@ -1,2 +1,3 @@
 "TimeGenerated","ServiceName","ArmRegionName","CurrencyCode","Tier","UnitOfMeasure","RetailPrice","EffectiveStartDate","EffectiveCommitmentTierThresholdGB","EffectivePricePerGB"
 "2023-03-29T13:50:58.330Z","Sentinel","usgovarizona","USD","Pay-as-you-go","1 GB","2.5","2023-01-01T00:00:00.000Z","0","2.5"
+"2023-07-02T06:08:00.652Z","Sentinel","usgovarizona","USD","Pay-as-you-go","1 GB","5.38","2023-07-01T00:00:00.000Z","0","5.38"
