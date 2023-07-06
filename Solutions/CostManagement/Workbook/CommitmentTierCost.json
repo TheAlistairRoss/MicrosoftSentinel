@@ -2,6 +2,13 @@
   "version": "Notebook/1.0",
   "items": [
     {
+      "type": 1,
+      "content": {
+        "json": "# Microsoft Sentinel Commitment Tier Workbook\r\n\r\n[If you have any feedback or issues, please submit them here](https://github.com/TheAlistairRoss/MicrosoftSentinel/issues/new/choose)"
+      },
+      "name": "text - 8"
+    },
+    {
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
@@ -242,6 +249,7 @@
             "name": "PricingModel",
             "type": 2,
             "isRequired": true,
+            "isHiddenWhenLocked": true,
             "typeSettings": {
               "additionalResourceOptions": [],
               "showDefault": false
@@ -356,7 +364,7 @@
             ]
           }
         ],
-        "style": "pills",
+        "style": "formHorizontal",
         "queryType": 0,
         "resourceType": "microsoft.operationalinsights/workspaces"
       },
