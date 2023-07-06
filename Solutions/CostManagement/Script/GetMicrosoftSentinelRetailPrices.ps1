@@ -1,10 +1,42 @@
+<#
+.SYNOPSIS
+    This script Gets the publically avaliable pricing details related to Microsoft Sentinel'
+.DESCRIPTION
+    This scrpt gets the publically avaliable pricing details for related to Log Ingestion and Analysis for Microsoft Sentinel. 
+    It does this by gathering the ingestion and commitment tier details for Log Analytics and the classic analysis and commitment tiers for Microsoft Sentinel.
+    It performs calculations to determine the cost effective volume to move commitment tier and the effective price per GB. 
+    Once calculated, it writes the data to a file path in CSV format.
+.NOTES
+    Information or caveats about the function e.g. 'This function is not supported in Linux'
+.LINK
+    https://github.com/TheAlistairRoss/MicrosoftSentinel/tree/CostManagementV2/Solutions/CostManagement
+.EXAMPLE
+    GetMicrosoftSentinelRetailPrices.ps1
+    Gets all the data and ingest the logs into a local file. The Root Directory and Solution Directory parameters are passed in as Environment variables. Useful when running as a pipeline
+.EXAMPLE
+    GetMicrosoftSentinelRetailPrices.ps1 -RootDirectory "C:/Users/TheAlistairRoss/" -SolutionsDirectory "/Solutions/CostManagement"
+    Gets all the data and ingest the logs into a local file. The Root Directory and Solution Directory parameters are passed in as strings to allow the script to be run in a different location to the output.
+#>
+
+[CmdletBinding()]
+param (
+    [string]
+    $RootDirectory,
+    [string]
+    $SolutionDirectory
+
+)
 
 # Constants
-$RootDirectory = $env:directory
-$solutionDirectory = $env:solutionDirectory
+if (!$RootDirectory) {
+    $RootDirectory = $env:directory
+}
+if (!$SolutionDirectory) {
+    $SolutionDirectory = $env:solutionDirectory
+}
 $Location = Join-Path -Path $RootDirectory -ChildPath $solutionDirectory
 $InformationPreference = $env:informationPreference
-$OutputFolder = "Prices"
+$OutputFolder = "Prices/Classic"
 $Services = "Azure Monitor", "Sentinel"
 $baseUrl = "https://prices.azure.com/api/retail/prices?api-version=2021-10-01-preview"
 $CurrencyCodes = "USD", "AUD", "BRL", "CAD", "CHF", "CNY", "DKK", "EUR", "GBP", "INR", "JPY", "KRW", "NOK", "NZD", "RUB", "SEK", "TWD"
@@ -42,15 +74,15 @@ $SentinelFilter = "&`$filter=" +
 "serviceName eq 'Sentinel'" +
 ")" +
 " and (" +
-"meterName eq 'Pay-as-you-go Analysis'" +
-" or meterName eq '100 GB Commitment Tier Capacity Reservation'" +
-" or meterName eq '200 GB Commitment Tier Capacity Reservation'" +
-" or meterName eq '300 GB Commitment Tier Capacity Reservation'" +
-" or meterName eq '400 GB Commitment Tier Capacity Reservation'" +
-" or meterName eq '500 GB Commitment Tier Capacity Reservation'" +
-" or meterName eq '1000 GB Commitment Tier Capacity Reservation'" +
-" or meterName eq '2000 GB Commitment Tier Capacity Reservation'" +
-" or meterName eq '5000 GB Commitment Tier Capacity Reservation'" +
+"meterName eq 'Classic Pay-as-you-go Analysis'" +
+" or meterName eq 'Classic 100 GB Commitment Tier Capacity Reservation'" +
+" or meterName eq 'Classic 200 GB Commitment Tier Capacity Reservation'" +
+" or meterName eq 'Classic 300 GB Commitment Tier Capacity Reservation'" +
+" or meterName eq 'Classic 400 GB Commitment Tier Capacity Reservation'" +
+" or meterName eq 'Classic 500 GB Commitment Tier Capacity Reservation'" +
+" or meterName eq 'Classic 1000 GB Commitment Tier Capacity Reservation'" +
+" or meterName eq 'Classic 2000 GB Commitment Tier Capacity Reservation'" +
+" or meterName eq 'Classic 5000 GB Commitment Tier Capacity Reservation'" +
 ")" 
 $Filters = @{
     "Azure Monitor" = $AzureMonitorFilter
@@ -66,6 +98,7 @@ class PriceObject {
     [string]$ArmRegionName
     [ValidateSet("USD", "AUD", "BRL", "CAD", "CHF", "CNY", "DKK", "EUR", "GBP", "INR", "JPY", "KRW", "NOK", "NZD", "RUB", "SEK", "TWD")]
     [string]$CurrencyCode
+    [string]$MeterName
     [string]$Tier
     [string]$UnitOfMeasure
     [decimal]$RetailPrice 
@@ -80,6 +113,7 @@ class PriceObject {
         [string]$ServiceName,
         [string]$ArmRegionName,
         [string]$CurrencyCode,
+        [string]$MeterName,
         [string]$Tier,
         [string]$UnitOfMeasure,
         [decimal]$RetailPrice,
@@ -91,6 +125,7 @@ class PriceObject {
         $this.$ServiceName
         $this.$ArmRegionName
         $this.$CurrencyCode
+        $this.$MeterName
         $this.$Tier
         $this.$UnitOfMeasure
         $this.$RetailPrice
@@ -125,7 +160,7 @@ function Get-AzPricingRaw {
     )
 
     $OriginalUrl = $Url
-    $AzPricesRequest = [PriceObject[]]@()
+    #$AzPricesRequest = [PriceObject[]]@()
     $ItemsReturned = 0
     $AzPricesRawRequest = [PriceObject[]]@()
 
@@ -147,49 +182,63 @@ function Get-AzPricingRaw {
             if ($Request) {
                 foreach ($RequestItem in $Request.Items) {
 
-                    if ($RequestItem.serviceName -eq "Log Analytics") {
-                        $ServiceName = "Azure Monitor"
-                    }
-                    else {
-                        $ServiceName = $RequestItem.serviceName
-                    }
-                    $AzPriceRawRequest = New-Object -TypeName PriceObject -Property @{
-                        TimeGenerated      = $TimeGenerated
-                        ServiceName        = $ServiceName
-                        ArmRegionName      = $RequestItem.armRegionName
-                        CurrencyCode       = $RequestItem.currencyCode
-                        Tier               = $RequestItem.meterName.split(" ")[0]
-                        UnitOfMeasure      = $RequestItem.unitOfMeasure
-                        RetailPrice        = $RequestItem.retailPrice
-                        EffectiveStartDate = $RequestItem.effectiveStartDate
-                    }
-                    $AzPricesRawRequest += $AzPriceRawRequest 
+                if ($RequestItem.serviceName -eq "Log Analytics") {
+                    $ServiceName = "Azure Monitor"
                 }
-            }              
+                else {
+                    $ServiceName = $RequestItem.serviceName
+                }
+
+                # Set Tier
+                if ($RequestItem.meterName -like "Classic Pay-as-you-go*") {
+                    $Tier = "Pay-as-you-go"
+                }
+                elseif ($RequestItem.meterName -like "Classic*") {
+                    $Tier = $RequestItem.meterName.Split(" ")[1]
+                }
+                else {
+                    $Tier = $RequestItem.meterName.Split(" ")[0]
+
+                }
+
+                $AzPriceRawRequest = New-Object -TypeName PriceObject -Property @{
+                    TimeGenerated      = $TimeGenerated
+                    ServiceName        = $ServiceName
+                    ArmRegionName      = $RequestItem.armRegionName
+                    CurrencyCode       = $RequestItem.currencyCode
+                    MeterName          = $RequestItem.meterName
+                    Tier               = $Tier
+                    UnitOfMeasure      = $RequestItem.unitOfMeasure
+                    RetailPrice        = $RequestItem.retailPrice
+                    EffectiveStartDate = $RequestItem.effectiveStartDate
+                }
+                $AzPricesRawRequest += $AzPriceRawRequest 
+            }
+        }              
             
-            if ($Request.NextPageLink) {
-                $Url = $Request.NextPageLink
-            }
-            elseif ($Request.Count -eq 100) {
+        if ($Request.NextPageLink) {
+            $Url = $Request.NextPageLink
+        }
+        elseif ($Request.Count -eq 100) {
 
-                $Url = $OriginalUrl + '&$skip=' + $ItemsReturned
-            }
-            else {
-                $EndLoop = $true
-            }
+            $Url = $OriginalUrl + '&$skip=' + $ItemsReturned
+        }
+        else {
+            $EndLoop = $true
+        }
 
-            $i ++
-        } until (
-            $EndLoop -eq $true -or $Request.Count -lt 100
-        )
-    }
-    catch {
-        Write-Error $Error[0]
-        Write-Error -Message "Failed to execute command"
-        break
-    }
-    $AzPricesRawRequestOutput = $AzPricesRawRequest | where { $_.RetailPrice -ne 0 }
-    return $AzPricesRawRequestOutput
+        $i ++
+    } until (
+        $EndLoop -eq $true -or $Request.Count -lt 100
+    )
+}
+catch {
+    Write-Error $Error[0]
+    Write-Error -Message "Failed to execute command"
+    break
+}
+$AzPricesRawRequestOutput = $AzPricesRawRequest | where { $_.RetailPrice -ne 0 }
+return $AzPricesRawRequestOutput
 }
 
 # Runs the enrichement cmdlets for the Azure prices
@@ -315,6 +364,7 @@ function ConvertTo-PriceObject {
                     ServiceName                        = $Object.ServiceName
                     ArmRegionName                      = $Object.ArmRegionName
                     CurrencyCode                       = $Object.CurrencyCode
+                    MeterName                          = $Object.MeterName
                     Tier                               = $Object.Tier
                     UnitOfMeasure                      = $Object.UnitOfMeasure
                     RetailPrice                        = $Object.RetailPrice
@@ -414,59 +464,60 @@ function main {
     $Global:ScriptRunDateTime = Get-FormattedDate
 
     foreach ($Service in $Services) {
-        foreach ($CurrencyCode in $CurrencyCodes) {
-            Write-Host ""
-            Write-Host "Processing Currency Code $CurrencyCode for $Service"
-            $url = $baseUrl + "&currencyCode='$CurrencyCode'" + $Filters.$Service
+    foreach ($CurrencyCode in $CurrencyCodes) {
+    Write-Host ""
+    Write-Host "Processing Currency Code $CurrencyCode for $Service"
+    $url = $baseUrl + "&currencyCode='$CurrencyCode'" + $Filters.$Service
     
-            #Filter out zero prices, we aren't interested in free tiers for this
-            $Prices = Get-AzPricing -Url $url 
+    #Filter out zero prices, we aren't interested in free tiers for this
+    $Prices = Get-AzPricing -Url $url 
 
-            # Create Each file for each region. This will speed up the workbook.
-            $Regions = $Prices | Select-Object -Unique -ExpandProperty armRegionName | Sort-Object 
+    # Create Each file for each region. This will speed up the workbook.
+    $Regions = $Prices | Select-Object -Unique -ExpandProperty armRegionName | Sort-Object 
             
-            foreach ($Region in $Regions) {
-                $OutputPath = "$OutputFolder\$Service\$Region\$CurrencyCode`_Prices.csv"
+    foreach ($Region in $Regions) {
+        $OutputPath = "$OutputFolder\$Service\$Region\$CurrencyCode`_Prices.csv"
 
-                New-File -Path $OutputPath
+        New-File -Path $OutputPath
 
-                # Get Existing Content
-                $RegionPrices = $Prices.where({ $_.armRegionName -like $Region })
+        # Get Existing Content
+        $RegionPrices = $Prices.where({ $_.armRegionName -like $Region })
 
-                $ExistingContent = Import-CSV -Path $OutputPath | ConvertTo-PriceObject
+        $ExistingContent = Import-CSV -Path $OutputPath | ConvertTo-PriceObject
            
-                if ($ExistingContent) {
-                    Write-Host "Comparing Prices from $OutputPath"
-                    $OutputToFile = Add-PricingObjectDifferences -ReferenceObject $ExistingContent -DifferenceObject $RegionPrices
-                }
-                else {
-                    Write-Host "File Empty, Importing initial data. File: $OutputPath"
-                    $OutputToFile = $RegionPrices
-                }
-
-                if ($OutputToFile.Count -gt $ExistingContent.Count) {
-                    $NewItemCount = $OutputToFile.Count - $ExistingContent.Count
-                    Write-Host "$NewItemCount prices added to file: $OutputPath"
-                    $OutputToFile | Sort-Object TimeGenerated, RetailPrice | 
-                    Select-Object  @{Name = 'TimeGenerated'; Expression = { Get-FormattedDate -DateTime $_.TimeGenerated } },
-                    ServiceName,
-                    ArmRegionName,
-                    CurrencyCode,
-                    Tier,
-                    UnitOfMeasure,
-                    RetailPrice,
-                    @{Name = 'EffectiveStartDate'; Expression = { Get-FormattedDate -DateTime $_.EffectiveStartDate } },
-                    EffectiveCommitmentTierThresholdGB,
-                    EffectivePricePerGB
-                    | Export-CSV -Path $OutputPath -Force
-                }
-                else {
-                    Write-Host "No changes to be added to file : $OutputPath"
-                } 
-            }
+        if ($ExistingContent) {
+            Write-Host "Comparing Prices from $OutputPath"
+            $OutputToFile = Add-PricingObjectDifferences -ReferenceObject $ExistingContent -DifferenceObject $RegionPrices
         }
-    } 
-    Write-Host "End of script"
+        else {
+            Write-Host "File Empty, Importing initial data. File: $OutputPath"
+            $OutputToFile = $RegionPrices
+        }
+
+        if ($OutputToFile.Count -gt $ExistingContent.Count) {
+            $NewItemCount = $OutputToFile.Count - $ExistingContent.Count
+            Write-Host "$NewItemCount prices added to file: $OutputPath"
+            $OutputToFile | Sort-Object TimeGenerated, RetailPrice | 
+            Select-Object  @{Name = 'TimeGenerated'; Expression = { Get-FormattedDate -DateTime $_.TimeGenerated } },
+            ServiceName,
+            ArmRegionName,
+            CurrencyCode,
+            MeterName,
+            Tier,
+            UnitOfMeasure,
+            RetailPrice,
+            @{Name = 'EffectiveStartDate'; Expression = { Get-FormattedDate -DateTime $_.EffectiveStartDate } },
+            EffectiveCommitmentTierThresholdGB,
+            EffectivePricePerGB
+            | Export-CSV -Path $OutputPath -Force
+        }
+        else {
+            Write-Host "No changes to be added to file : $OutputPath"
+        } 
+    }
+}
+} 
+Write-Host "End of script"
 }
 
 main

@@ -2,6 +2,13 @@
   "version": "Notebook/1.0",
   "items": [
     {
+      "type": 1,
+      "content": {
+        "json": "# Microsoft Sentinel Commitment Tier Workbook\r\n\r\n[If you have any feedback or issues, please submit them here](https://github.com/TheAlistairRoss/MicrosoftSentinel/issues/new/choose)"
+      },
+      "name": "text - 8"
+    },
+    {
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
@@ -237,6 +244,19 @@
             }
           },
           {
+            "id": "63c70db7-75ca-4bfb-804c-a795a7cbbd75",
+            "version": "KqlParameterItem/1.0",
+            "name": "PricingModel",
+            "type": 2,
+            "isRequired": true,
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "jsonData": "[\r\n    {\"value\":\"Classic\", \"selected\":true},\r\n    {\"value\":\"Combined\"}\r\n]"
+          },
+          {
             "id": "3790a338-3ba9-42c8-8cda-354808853434",
             "version": "KqlParameterItem/1.0",
             "name": "AzureMonitorPricesCSVURL",
@@ -248,7 +268,7 @@
                 "criteriaContext": {
                   "operator": "Default",
                   "resultValType": "static",
-                  "resultVal": "{RepositoryURL}/Azure%20Monitor/{WorkspaceLocation}/{CurrencyCode}_Prices.csv"
+                  "resultVal": "{RepositoryURL}/{PricingModel}/Azure%20Monitor/{WorkspaceLocation}/{CurrencyCode}_Prices.csv"
                 }
               }
             ],
@@ -268,7 +288,7 @@
                 "criteriaContext": {
                   "operator": "Default",
                   "resultValType": "static",
-                  "resultVal": "{RepositoryURL}/Sentinel/{WorkspaceLocation}/{CurrencyCode}_Prices.csv"
+                  "resultVal": "{RepositoryURL}/{PricingModel}/Sentinel/{WorkspaceLocation}/{CurrencyCode}_Prices.csv"
                 }
               }
             ],
@@ -288,7 +308,7 @@
                 "criteriaContext": {
                   "operator": "Default",
                   "resultValType": "static",
-                  "resultVal": "externaldata(TimeGenerated : datetime , ServiceName: string , ArmRegionName: string, CurrencyCode: string, Tier: string, UnitOfMeasure: string, RetailPrice: decimal , EffectiveStartDate:datetime , EffectiveCommitmentTierThresholdGB:decimal , EffectivePricePerGB:decimal)[  h\"{AzureMonitorPricesCSVURL}\" ] with(format=\"csv\",ignoreFirstRecord=true)"
+                  "resultVal": "externaldata(TimeGenerated : datetime , ServiceName: string , ArmRegionName: string, CurrencyCode: string, MeterName: string, Tier: string, UnitOfMeasure: string, RetailPrice: decimal , EffectiveStartDate:datetime , EffectiveCommitmentTierThresholdGB:decimal , EffectivePricePerGB:decimal)[  h\"{AzureMonitorPricesCSVURL}\" ] with(format=\"csv\",ignoreFirstRecord=true)"
                 }
               }
             ],
@@ -297,6 +317,7 @@
             }
           },
           {
+            "id": "69f032a3-1378-424c-be11-f0f6851753d5",
             "version": "KqlParameterItem/1.0",
             "name": "SentinelExternalData",
             "type": 1,
@@ -307,14 +328,13 @@
                 "criteriaContext": {
                   "operator": "Default",
                   "resultValType": "static",
-                  "resultVal": "externaldata(TimeGenerated : datetime , ServiceName: string , ArmRegionName: string, CurrencyCode: string, Tier: string, UnitOfMeasure: string, RetailPrice: decimal , EffectiveStartDate:datetime , EffectiveCommitmentTierThresholdGB:decimal , EffectivePricePerGB:decimal)[  h\"{SentinelPricesCSVURL}\" ] with(format=\"csv\",ignoreFirstRecord=true)"
+                  "resultVal": "externaldata(TimeGenerated : datetime , ServiceName: string , ArmRegionName: string, CurrencyCode: string, MeterName: string, Tier: string, UnitOfMeasure: string, RetailPrice: decimal , EffectiveStartDate:datetime , EffectiveCommitmentTierThresholdGB:decimal , EffectivePricePerGB:decimal)[  h\"{SentinelPricesCSVURL}\" ] with(format=\"csv\",ignoreFirstRecord=true)"
                 }
               }
             ],
             "timeContext": {
               "durationMs": 86400000
-            },
-            "id": "69f032a3-1378-424c-be11-f0f6851753d5"
+            }
           },
           {
             "id": "51ff305b-87db-4d58-96d5-5a4979d54ed7",
@@ -344,7 +364,7 @@
             ]
           }
         ],
-        "style": "pills",
+        "style": "formHorizontal",
         "queryType": 0,
         "resourceType": "microsoft.operationalinsights/workspaces"
       },
@@ -1675,7 +1695,8 @@
     }
   ],
   "fallbackResourceIds": [
-    "Azure Monitor"
+    "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourcegroups/soc/providers/microsoft.operationalinsights/workspaces/cybersecuritysoc"
   ],
+  "fromTemplateId": "sentinel-UserWorkbook",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

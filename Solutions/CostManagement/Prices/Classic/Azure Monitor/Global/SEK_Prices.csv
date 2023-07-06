@@ -1,0 +1,5 @@
+"TimeGenerated","ServiceName","ArmRegionName","CurrencyCode","MeterName","Tier","UnitOfMeasure","RetailPrice","EffectiveStartDate","EffectiveCommitmentTierThresholdGB","EffectivePricePerGB"
+"2023-03-29T15:50:58.330Z","Azure Monitor","Global","SEK","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","24.1311","2018-02-01T00:00:00.000Z","0","24.1311"
+"2023-04-12T13:28:34.468Z","Azure Monitor","Global","SEK","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","23.9493","2018-02-01T00:00:00.000Z","0","23.9493"
+"2023-05-02T08:07:40.927Z","Azure Monitor","Global","SEK","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","23.7591","2018-02-01T00:00:00.000Z","0","23.7591"
+"2023-06-02T08:07:42.568Z","Azure Monitor","Global","SEK","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","24.8445","2018-02-01T00:00:00.000Z","0","24.8445"
