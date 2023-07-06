@@ -1,5 +1,0 @@
-"TimeGenerated","ServiceName","ArmRegionName","CurrencyCode","Tier","UnitOfMeasure","RetailPrice","EffectiveStartDate","EffectiveCommitmentTierThresholdGB","EffectivePricePerGB"
-"2023-03-29T13:50:58.330Z","Sentinel","usgovarizona","KRW","Pay-as-you-go","1 GB","3261.875","2023-01-01T00:00:00.000Z","0","3261.875"
-"2023-04-12T11:28:34.468Z","Sentinel","usgovarizona","KRW","Pay-as-you-go","1 GB","3256.625","2023-01-01T00:00:00.000Z","0","3256.625"
-"2023-05-02T06:07:40.927Z","Sentinel","usgovarizona","KRW","Pay-as-you-go","1 GB","3340.875","2023-01-01T00:00:00.000Z","0","3340.875"
-"2023-07-02T06:08:00.652Z","Sentinel","usgovarizona","KRW","Pay-as-you-go","1 GB","7033.005","2023-07-01T00:00:00.000Z","0","7033.005"

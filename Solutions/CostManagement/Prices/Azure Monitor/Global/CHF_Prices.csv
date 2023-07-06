@@ -1,6 +1,0 @@
-"TimeGenerated","ServiceName","ArmRegionName","CurrencyCode","Tier","UnitOfMeasure","RetailPrice","EffectiveStartDate","EffectiveCommitmentTierThresholdGB","EffectivePricePerGB"
-"2023-03-29T13:50:58.330Z","Azure Monitor","Global","CHF","Pay-as-you-go","1 GB","2.1617","2018-02-01T00:00:00.000Z","0","2.1617"
-"2023-04-12T11:28:34.468Z","Azure Monitor","Global","CHF","Pay-as-you-go","1 GB","2.1149","2018-02-01T00:00:00.000Z","0","2.1149"
-"2023-05-02T06:07:40.927Z","Azure Monitor","Global","CHF","Pay-as-you-go","1 GB","2.048","2018-02-01T00:00:00.000Z","0","2.048"
-"2023-06-02T06:07:42.568Z","Azure Monitor","Global","CHF","Pay-as-you-go","1 GB","2.0864","2018-02-01T00:00:00.000Z","0","2.0864"
-"2023-07-02T06:08:00.652Z","Azure Monitor","Global","CHF","Pay-as-you-go","1 GB","2.0639","2018-02-01T00:00:00.000Z","0","2.0639"
