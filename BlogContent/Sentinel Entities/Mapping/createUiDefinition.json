@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "basics": [
+
+            {
+                "name": "workspaceSelection",
+                "type": "Microsoft.Solutions.ResourceSelector",
+                "visible": "[if(steps('analyticRuleSelection').deployDemoAnalyticRule, true, false)]",
+                "label": "Select Microsoft Sentinel Workspace",
+                "toolTip": "All Log Analytics workspaces in the selected subscription are displayed, including those without Microsoft Sentinel",
+                "resourceType": "Microsoft.OperationalInsights/workspaces",
+                "options": {
+                    "filter": {
+                        "subscription": "onBasics",
+                        "location": "onBasics"
+                    }
+                },
+                "constraints": {
+                    "required": false,
+                    "validationMessage": "Please select a Microsoft Sentinel Workspace"
+                }
+            }            {
+                "name": "basicsInfoBox",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": true,
+                "options": {
+                    "icon": "Info",
+                    "text": "Before completing this page, ensure the selected Resource group is the same as the selected Microsoft Sentinel Workspace."
+                }
+            }
+        ],
+        "steps": [
+        ],
+        "outputs": {
+            "workspace": "[steps('basics').workspaceSelection.name]",
+            "location": "[location()]"
+        }
+    }
+}

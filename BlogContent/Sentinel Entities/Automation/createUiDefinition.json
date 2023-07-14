@@ -1,0 +1,120 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "basics": [],
+        "steps": [
+            {
+                "name": "analyticRuleSelection",
+                "label": "Analytic Rule",
+                "elements": [
+                    {
+                        "name": "analyticRuleSelectionInfoBox",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": true,
+                        "options": {
+                            "icon": "Info",
+                            "text": "Please choose if you would like to deploy the Demo analytic rule. If selected you will need to select an exisiting Microsoft Sentinel Workspace to deploy the analytic rule to."
+                        }
+                    },
+                    {
+                        "name": "deployDemoAnalyticRule",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Deploy Demo Analytic Rule",
+                        "defaultValue": true,
+                        "toolTip": "This will deploy a Microsoft Sentinel Analytic rule, which will generate an incident with fake entity data (Account, IP Address and Azure Resource) ",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": "Please choose"
+                        }
+                    },
+                    {
+                        "name": "deployDemoAnalyticRuleInfoBox",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": "[if(steps('analyticRuleSelection').deployDemoAnalyticRule, false, true)]",
+                        "options": {
+                            "icon": "Info",
+                            "text": "While not required, this analytic rule provides the required outputs for each playbook. Consider deploying or use another incident for testing which has an account, an IP address and an Azure Resource"
+                        }
+                    },
+                    {
+                        "name": "workspaceSelection",
+                        "type": "Microsoft.Solutions.ResourceSelector",
+                        "visible": "[if(steps('analyticRuleSelection').deployDemoAnalyticRule, true, false)]",
+                        "label": "Select Microsoft Sentinel Workspace",
+                        "toolTip": "All Log Analytics workspaces in the selected subscription are displayed, including those without Microsoft Sentinel",
+                        "resourceType": "Microsoft.OperationalInsights/workspaces",
+                        "options": {
+                            "filter": {
+                                "subscription": "onBasics",
+                                "location": "all"
+                            }
+                        },
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": "Please a Microsoft Sentinel Workspace"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "playbookSelection",
+                "label": "Playbook Selection",
+                "elements": [
+                    {
+                        "name": "playbookSelectionInfoBox",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": true,
+                        "options": {
+                            "icon": "Info",
+                            "text": "Please select which playbooks you would like to deploy in your Microsoft Sentinel environment"
+                        }
+                    },
+                    {
+                        "name": "deployIncidentTriggerExample",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Deploy Incident Trigger Example",
+                        "defaultValue": true,
+                        "toolTip": "This will deploy the Microsoft Sentinel Playbook, demoing an Incident trigger as described [here](https://thealistairross0.wordpress.com/?p=92) ",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": "Please choose"
+                        }
+                    },
+                    {
+                        "name": "deployAlertTriggerExample",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Deploy Alert Trigger Example",
+                        "defaultValue": true,
+                        "toolTip": "This will deploy the Microsoft Sentinel Playbook, demoing an Alert trigger as described [here](https://thealistairross0.wordpress.com/?p=92) ",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": "Please choose"
+                        }
+                    },
+                    {
+                        "name": "deployEntityTriggerExample",
+                        "type": "Microsoft.Common.CheckBox",
+                        "label": "Deploy Entity Trigger Example",
+                        "defaultValue": true,
+                        "toolTip": "This will deploy the Microsoft Sentinel Playbook, demoing an Entity trigger as described [here](https://thealistairross0.wordpress.com/?p=92) ",
+                        "constraints": {
+                            "required": false,
+                            "validationMessage": "Please choose"
+                        }
+                    }
+                ]
+            }
+        ],
+        "outputs": {
+            "deployDemoAnalyticRule": "[steps('analyticRuleSelection').deployDemoAnalyticRule]",
+            "deployIncidentTriggerExample": "[steps('playbookSelection').deployIncidentTriggerExample]",
+            "deployAlertTriggerExample": "[steps('playbookSelection').deployAlertTriggerExample]",
+            "deployEntityTriggerExample": "[steps('playbookSelection').deployEntityTriggerExample]",
+            "workspaceLocation": "[steps('analyticRuleSelection').workspaceSelection.location]",
+            "workspaceId": "[steps('analyticRuleSelection').workspaceSelection.id]",
+            "location": "[location()]"
+        }
+    }
+}

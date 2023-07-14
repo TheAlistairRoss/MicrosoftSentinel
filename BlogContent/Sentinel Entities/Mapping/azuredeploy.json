@@ -1,11 +1,18 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "location": {
+            "type": "string"
+        },
         "workspace": {
-            "type": "String"
+            "type": "string",
+            "metadata": {
+                "description": "Log Analytics Workspace name with Microsoft Sentinel enabled."
+            }
         }
     },
+    "variables": {},
     "resources": [
         {
             "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/493b6376-8cd5-4bbe-ac58-54b4f64aafbe')]",
@@ -14,18 +21,18 @@
             "kind": "Scheduled",
             "apiVersion": "2022-11-01-preview",
             "properties": {
-                "displayName": "thealistairross - Test Entities Rule 2",
-                "description": "This rule looks for alerts called \"thealistairross - Test Entities Rule 1\" and maps the entities from that rule using Sentinel Entities mapping",
+                "displayName": "thealistairross - Test Entities Rule Destination",
+                "description": "This rule looks for alerts called \"thealistairross - Test Entities Rule Source\" and maps the entities from that rule using Sentinel Entities mapping.\n\nFor more details on this demo, visit https://thealistairross0.wordpress.com/2023/07/20/microsoft-sentinel-entities-3-of-4-cross-workspace",
                 "severity": "Informational",
                 "enabled": true,
-                "query": "SecurityAlert\n| where AlertName == \"thealistairross - Test Entities Rule 1\"\n| summarize arg_max(TimeGenerated, *) by SystemAlertId\n\n",
-                "queryFrequency": "PT1H",
-                "queryPeriod": "PT1H",
+                "query": "SecurityAlert\n| where AlertName == \"thealistairross - Test Entities Rule Source\"\n| summarize arg_max(TimeGenerated, *) by SystemAlertId\n\n",
+                "queryFrequency": "P14D",
+                "queryPeriod": "P14D",
                 "triggerOperator": "GreaterThan",
                 "triggerThreshold": 0,
                 "suppressionDuration": "P1D",
-                "suppressionEnabled": true,
-                "startTimeUtc": null,
+                "suppressionEnabled": false,
+                "startTimeUtc": "2023-07-15T11:00:00.000Z",
                 "tactics": [],
                 "techniques": [],
                 "alertRuleTemplateName": null,
@@ -62,17 +69,17 @@
             "kind": "Scheduled",
             "apiVersion": "2022-11-01-preview",
             "properties": {
-                "displayName": "thealistairross - Test Entities Rule 1",
-                "description": "This is the Analytics rule which will generate a fake alert with two entities",
+                "displayName": "thealistairross - Test Entities Rule Source",
+                "description": "This is the Analytic rule which will generate a simulated alert with two entities.\nFor more details on this demo visit https://thealistairross0.wordpress.com/2023/07/17/microsoft-sentinel-entities-2-of-4-mapping",
                 "severity": "Informational",
                 "enabled": true,
                 "query": "print FullName = \"thealistairross@contoso.com\", IPAddress = \"10.0.0.4\"",
-                "queryFrequency": "PT1H",
-                "queryPeriod": "PT1H",
+                "queryFrequency": "P14D",
+                "queryPeriod": "P14D",
                 "triggerOperator": "GreaterThan",
                 "triggerThreshold": 0,
                 "suppressionDuration": "P1D",
-                "suppressionEnabled": true,
+                "suppressionEnabled": false,
                 "startTimeUtc": null,
                 "tactics": [],
                 "techniques": [],
@@ -118,5 +125,8 @@
                 "templateVersion": null
             }
         }
-    ]
+
+
+    ],
+    "outputs": {}
 }
