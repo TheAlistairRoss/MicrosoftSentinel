@@ -44,3 +44,7 @@
 "2023-07-07T06:09:02.036Z","Azure Monitor","australiaeast","DKK","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","16260.398","2021-06-01T00:00:00.000Z","982.6617","16.2604"
 "2023-07-07T06:09:02.036Z","Azure Monitor","australiaeast","DKK","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","31755.6008","2021-06-01T00:00:00.000Z","1952.9409","15.8778"
 "2023-07-07T06:09:02.036Z","Azure Monitor","australiaeast","DKK","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","76997.767","2021-06-01T00:00:00.000Z","4849.3977","15.3996"
+"2023-08-01T06:08:30.007Z","Azure Monitor","australiaeast","DKK","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","22.6444","2018-02-01T00:00:00.000Z","0","22.6444"
+"2023-08-01T06:08:30.007Z","Azure Monitor","australiaeast","DKK","200 GB Commitment Tier Capacity Reservation","200","1/Day","3492.9272","2019-11-01T00:00:00.000Z","186.3163","17.4646"
+"2023-08-01T06:08:30.007Z","Azure Monitor","australiaeast","DKK","300 GB Commitment Tier Capacity Reservation","300","1/Day","5125.491","2019-11-01T00:00:00.000Z","293.4789","17.0850"
+"2023-08-01T06:08:30.007Z","Azure Monitor","australiaeast","DKK","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","76407.7825","2021-06-01T00:00:00.000Z","4812.2399","15.2816"

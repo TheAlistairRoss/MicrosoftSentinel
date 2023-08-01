@@ -43,4 +43,5 @@
 "2023-07-07T06:09:02.036Z","Azure Monitor","francecentral","CAD","500 GB Commitment Tier Capacity Reservation","500","1/Day","1434.2241","2019-11-01T00:00:00.000Z","491.4756","2.8684"
 "2023-07-07T06:09:02.036Z","Azure Monitor","francecentral","CAD","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","2818.7062","2021-06-01T00:00:00.000Z","982.6754","2.8187"
 "2023-07-07T06:09:02.036Z","Azure Monitor","francecentral","CAD","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","5504.7675","2021-06-01T00:00:00.000Z","1952.9455","2.7524"
-"2023-07-07T06:09:02.036Z","Azure Monitor","francecentral","CAD","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","13347.4031","2021-06-01T00:00:00.000Z","4849.3690","2.6695"
+"2023-07-07T06:09:02.036Z","Azure Monitor","francecentral","CAD","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","13347.4031","2021-06-01T00:00:00.000Z","4849.369","2.6695"
+"2023-08-01T06:08:30.007Z","Azure Monitor","francecentral","CAD","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","3.6422","2018-02-01T00:00:00.000Z","0","3.6422"

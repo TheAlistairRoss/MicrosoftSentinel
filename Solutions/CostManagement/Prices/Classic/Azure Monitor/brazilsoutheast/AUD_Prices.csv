@@ -44,3 +44,6 @@
 "2023-07-07T06:09:02.036Z","Azure Monitor","brazilsoutheast","AUD","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","5923.7937","2021-06-01T00:00:00.000Z","982.6641","5.9238"
 "2023-07-07T06:09:02.036Z","Azure Monitor","brazilsoutheast","AUD","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","11568.8205","2021-06-01T00:00:00.000Z","1952.9391","5.7844"
 "2023-07-07T06:09:02.036Z","Azure Monitor","brazilsoutheast","AUD","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","28050.9052","2021-06-01T00:00:00.000Z","4849.4062","5.6102"
+"2023-08-01T06:08:30.007Z","Azure Monitor","brazilsoutheast","AUD","200 GB Commitment Tier Capacity Reservation","200","1/Day","1258.1197","2020-10-01T00:00:00.000Z","184.2103","6.2906"
+"2023-08-01T06:08:30.007Z","Azure Monitor","brazilsoutheast","AUD","400 GB Commitment Tier Capacity Reservation","400","1/Day","2406.8376","2020-10-01T00:00:00.000Z","383.7249","6.0171"
+"2023-08-01T06:08:30.007Z","Azure Monitor","brazilsoutheast","AUD","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","11350.4274","2021-06-01T00:00:00.000Z","1916.0720","5.6752"

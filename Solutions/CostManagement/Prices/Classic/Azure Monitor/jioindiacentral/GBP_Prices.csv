@@ -44,3 +44,8 @@
 "2023-07-07T06:09:02.036Z","Azure Monitor","jioindiacentral","GBP","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","1887.1665","2021-08-01T00:00:00.000Z","982.6433","1.8872"
 "2023-07-07T06:09:02.036Z","Azure Monitor","jioindiacentral","GBP","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","3685.5251","2021-08-01T00:00:00.000Z","1952.9065","1.8428"
 "2023-07-07T06:09:02.036Z","Azure Monitor","jioindiacentral","GBP","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","8936.2883","2021-08-01T00:00:00.000Z","4849.2991","1.7873"
+"2023-08-01T06:08:30.007Z","Azure Monitor","jioindiacentral","GBP","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","2.5062","2021-08-01T00:00:00.000Z","0","2.5062"
+"2023-08-01T06:08:30.007Z","Azure Monitor","jioindiacentral","GBP","100 GB Commitment Tier Capacity Reservation","100","1/Day","213.5741","2021-08-01T00:00:00.000Z","85.2183","2.1357"
+"2023-08-01T06:08:30.007Z","Azure Monitor","jioindiacentral","GBP","300 GB Commitment Tier Capacity Reservation","300","1/Day","588.4184","2021-08-01T00:00:00.000Z","288.0732","1.9614"
+"2023-08-01T06:08:30.007Z","Azure Monitor","jioindiacentral","GBP","500 GB Commitment Tier Capacity Reservation","500","1/Day","942.5592","2021-08-01T00:00:00.000Z","482.4236","1.8851"
+"2023-08-01T06:08:30.007Z","Azure Monitor","jioindiacentral","GBP","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","8771.7933","2021-08-01T00:00:00.000Z","4760.0354","1.7544"
