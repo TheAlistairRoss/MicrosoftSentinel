@@ -50,3 +50,6 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","westcentralus","INR","500 GB Commitment Tier Capacity Reservation","500","1/Day","79382.8907","2019-11-01T00:00:00.000Z","491.4774","158.7658"
 "2023-08-01T06:08:30.007Z","Azure Monitor","westcentralus","INR","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","156012.6176","2021-06-01T00:00:00.000Z","982.6588","156.0126"
 "2023-08-01T06:08:30.007Z","Azure Monitor","westcentralus","INR","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","738765.6304","2021-06-01T00:00:00.000Z","4842.4913","147.7531"
+"2023-08-02T06:09:03.844Z","Azure Monitor","westcentralus","INR","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","226.1527","2018-02-01T00:00:00.000Z","0","226.1527"
+"2023-08-02T06:09:03.844Z","Azure Monitor","westcentralus","INR","100 GB Commitment Tier Capacity Reservation","100","1/Day","17987.3371","2019-11-01T00:00:00.000Z","79.5362","179.8734"
+"2023-08-02T06:09:03.844Z","Azure Monitor","westcentralus","INR","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","304683.465","2021-06-01T00:00:00.000Z","1952.9414","152.3417"

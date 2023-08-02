@@ -50,3 +50,6 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","eastus","INR","300 GB Commitment Tier Capacity Reservation","300","1/Day","44247.276","2019-11-01T00:00:00.000Z","293.4783","147.4909"
 "2023-08-01T06:08:30.007Z","Azure Monitor","eastus","INR","400 GB Commitment Tier Capacity Reservation","400","1/Day","57685.3376","2019-11-01T00:00:00.000Z","391.1112","144.2133"
 "2023-08-01T06:08:30.007Z","Azure Monitor","eastus","INR","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","272038.808","2021-06-01T00:00:00.000Z","1950.1605","136.0194"
+"2023-08-02T06:09:03.844Z","Azure Monitor","eastus","INR","500 GB Commitment Tier Capacity Reservation","500","1/Day","70877.581","2019-11-01T00:00:00.000Z","491.4774","141.7552"
+"2023-08-02T06:09:03.844Z","Azure Monitor","eastus","INR","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","139296.98","2021-06-01T00:00:00.000Z","982.6587","139.2970"
+"2023-08-02T06:09:03.844Z","Azure Monitor","eastus","INR","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","659612.17","2021-06-01T00:00:00.000Z","4849.3977","131.9224"

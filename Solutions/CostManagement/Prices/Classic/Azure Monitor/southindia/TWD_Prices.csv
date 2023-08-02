@@ -49,3 +49,7 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","southindia","TWD","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","80190.513","2021-06-01T00:00:00.000Z","982.6594","80.1905"
 "2023-08-01T06:08:30.007Z","Azure Monitor","southindia","TWD","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","156607.3548","2021-06-01T00:00:00.000Z","1952.9415","78.3037"
 "2023-08-01T06:08:30.007Z","Azure Monitor","southindia","TWD","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","379725.6645","2021-06-01T00:00:00.000Z","4849.3962","75.9451"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southindia","TWD","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","107.7746","2018-02-01T00:00:00.000Z","0","107.7746"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southindia","TWD","100 GB Commitment Tier Capacity Reservation","100","1/Day","9245.4944","2019-11-01T00:00:00.000Z","85.7855","92.4549"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southindia","TWD","200 GB Commitment Tier Capacity Reservation","200","1/Day","17358.8875","2019-11-01T00:00:00.000Z","187.7552","86.7944"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southindia","TWD","300 GB Commitment Tier Capacity Reservation","300","1/Day","25472.2806","2019-11-01T00:00:00.000Z","293.4784","84.9076"

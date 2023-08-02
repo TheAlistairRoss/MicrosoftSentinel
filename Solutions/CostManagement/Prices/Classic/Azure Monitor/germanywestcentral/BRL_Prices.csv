@@ -48,3 +48,8 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","germanywestcentral","BRL","200 GB Commitment Tier Capacity Reservation","200","1/Day","2245.6867","2019-11-01T00:00:00.000Z","187.7555","11.2284"
 "2023-08-01T06:08:30.007Z","Azure Monitor","germanywestcentral","BRL","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","10374.0962","2021-06-01T00:00:00.000Z","957.2054","10.3741"
 "2023-08-01T06:08:30.007Z","Azure Monitor","germanywestcentral","BRL","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","49124.3965","2021-06-01T00:00:00.000Z","4723.7722","9.8249"
+"2023-08-02T06:09:03.844Z","Azure Monitor","germanywestcentral","BRL","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","14.1443","2019-09-01T00:00:00.000Z","0","14.1443"
+"2023-08-02T06:09:03.844Z","Azure Monitor","germanywestcentral","BRL","300 GB Commitment Tier Capacity Reservation","300","1/Day","3295.3011","2019-11-01T00:00:00.000Z","293.4791","10.9843"
+"2023-08-02T06:09:03.844Z","Azure Monitor","germanywestcentral","BRL","400 GB Commitment Tier Capacity Reservation","400","1/Day","4296.0963","2019-11-01T00:00:00.000Z","391.1124","10.7402"
+"2023-08-02T06:09:03.844Z","Azure Monitor","germanywestcentral","BRL","500 GB Commitment Tier Capacity Reservation","500","1/Day","5278.5842","2019-11-01T00:00:00.000Z","491.4791","10.5572"
+"2023-08-02T06:09:03.844Z","Azure Monitor","germanywestcentral","BRL","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","20259.9995","2021-06-01T00:00:00.000Z","1952.9404","10.1300"

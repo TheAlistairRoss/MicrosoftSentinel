@@ -48,3 +48,8 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","eastasia","DKK","300 GB Commitment Tier Capacity Reservation","300","1/Day","5674.6507","2019-11-01T00:00:00.000Z","291.2303","18.9155"
 "2023-08-01T06:08:30.007Z","Azure Monitor","eastasia","DKK","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","34888.5935","2021-06-01T00:00:00.000Z","1937.9753","17.4443"
 "2023-08-01T06:08:30.007Z","Azure Monitor","eastasia","DKK","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","84594.3306","2021-06-01T00:00:00.000Z","4849.3967","16.9189"
+"2023-08-02T06:09:03.844Z","Azure Monitor","eastasia","DKK","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","27.3224","2018-02-01T00:00:00.000Z","0","27.3224"
+"2023-08-02T06:09:03.844Z","Azure Monitor","eastasia","DKK","200 GB Commitment Tier Capacity Reservation","200","1/Day","3867.1694","2019-11-01T00:00:00.000Z","187.7549","19.3358"
+"2023-08-02T06:09:03.844Z","Azure Monitor","eastasia","DKK","400 GB Commitment Tier Capacity Reservation","400","1/Day","7398.0632","2019-11-01T00:00:00.000Z","391.1112","18.4952"
+"2023-08-02T06:09:03.844Z","Azure Monitor","eastasia","DKK","500 GB Commitment Tier Capacity Reservation","500","1/Day","9089.9498","2019-11-01T00:00:00.000Z","491.4762","18.1799"
+"2023-08-02T06:09:03.844Z","Azure Monitor","eastasia","DKK","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","17864.6412","2021-06-01T00:00:00.000Z","982.6589","17.8646"

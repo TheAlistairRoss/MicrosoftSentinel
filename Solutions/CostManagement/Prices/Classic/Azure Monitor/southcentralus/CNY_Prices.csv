@@ -49,3 +49,7 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","southcentralus","CNY","200 GB Commitment Tier Capacity Reservation","200","1/Day","2943.2346","2019-11-01T00:00:00.000Z","187.7554","14.7162"
 "2023-08-01T06:08:30.007Z","Azure Monitor","southcentralus","CNY","300 GB Commitment Tier Capacity Reservation","300","1/Day","4318.8768","2019-11-01T00:00:00.000Z","293.4777","14.3963"
 "2023-08-01T06:08:30.007Z","Azure Monitor","southcentralus","CNY","500 GB Commitment Tier Capacity Reservation","500","1/Day","6918.2008","2019-11-01T00:00:00.000Z","484.4068","13.8364"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southcentralus","CNY","400 GB Commitment Tier Capacity Reservation","400","1/Day","5630.5357","2019-11-01T00:00:00.000Z","391.1099","14.0763"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southcentralus","CNY","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","13596.464","2021-06-01T00:00:00.000Z","982.6591","13.5965"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southcentralus","CNY","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","26553.0944","2021-06-01T00:00:00.000Z","1952.9360","13.2765"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southcentralus","CNY","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","64383.256","2021-06-01T00:00:00.000Z","4849.4148","12.8767"

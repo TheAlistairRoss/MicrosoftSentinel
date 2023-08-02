@@ -51,4 +51,5 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","switzerlandnorth","INR","400 GB Commitment Tier Capacity Reservation","400","1/Day","74414.0855","2019-11-01T00:00:00.000Z","391.1111","186.0352"
 "2023-08-01T06:08:30.007Z","Azure Monitor","switzerlandnorth","INR","500 GB Commitment Tier Capacity Reservation","500","1/Day","91432.0795","2019-11-01T00:00:00.000Z","491.4773","182.8642"
 "2023-08-01T06:08:30.007Z","Azure Monitor","switzerlandnorth","INR","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","179693.1042","2021-06-01T00:00:00.000Z","982.6587","179.6931"
-"2023-08-01T06:08:30.007Z","Azure Monitor","switzerlandnorth","INR","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","350930.0623","2021-06-01T00:00:00.000Z","1952.9412","175.4650"
+"2023-08-01T06:08:30.007Z","Azure Monitor","switzerlandnorth","INR","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","350930.0623","2021-06-01T00:00:00.000Z","1952.9412","175.465"
+"2023-08-02T06:09:03.844Z","Azure Monitor","switzerlandnorth","INR","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","850899.6993","2021-06-01T00:00:00.000Z","4849.3985","170.1799"

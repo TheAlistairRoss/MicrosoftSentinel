@@ -49,4 +49,7 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","ukwest","BRL","300 GB Commitment Tier Capacity Reservation","300","1/Day","3295.3011","2019-11-01T00:00:00.000Z","293.4791","10.9843"
 "2023-08-01T06:08:30.007Z","Azure Monitor","ukwest","BRL","400 GB Commitment Tier Capacity Reservation","400","1/Day","4296.0963","2019-11-01T00:00:00.000Z","391.1124","10.7402"
 "2023-08-01T06:08:30.007Z","Azure Monitor","ukwest","BRL","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","10374.0962","2021-06-01T00:00:00.000Z","957.2054","10.3741"
-"2023-08-01T06:08:30.007Z","Azure Monitor","ukwest","BRL","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","20259.9995","2021-06-01T00:00:00.000Z","1952.9404","10.1300"
+"2023-08-01T06:08:30.007Z","Azure Monitor","ukwest","BRL","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","20259.9995","2021-06-01T00:00:00.000Z","1952.9404","10.13"
+"2023-08-02T06:09:03.844Z","Azure Monitor","ukwest","BRL","100 GB Commitment Tier Capacity Reservation","100","1/Day","1196.0723","2019-11-01T00:00:00.000Z","87.7916","11.9607"
+"2023-08-02T06:09:03.844Z","Azure Monitor","ukwest","BRL","500 GB Commitment Tier Capacity Reservation","500","1/Day","5278.5842","2019-11-01T00:00:00.000Z","491.4791","10.5572"
+"2023-08-02T06:09:03.844Z","Azure Monitor","ukwest","BRL","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","49124.3965","2021-06-01T00:00:00.000Z","4849.3975","9.8249"

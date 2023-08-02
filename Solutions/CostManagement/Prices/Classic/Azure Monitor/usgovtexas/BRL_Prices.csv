@@ -13,3 +13,7 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","usgovtexas","BRL","300 GB Commitment Tier Capacity Reservation","300","1/Day","3193.1213","2023-07-01T00:00:00.000Z","293.4773","10.6437"
 "2023-08-01T06:08:30.007Z","Azure Monitor","usgovtexas","BRL","400 GB Commitment Tier Capacity Reservation","400","1/Day","4162.884","2023-07-01T00:00:00.000Z","391.1125","10.4072"
 "2023-08-01T06:08:30.007Z","Azure Monitor","usgovtexas","BRL","500 GB Commitment Tier Capacity Reservation","500","1/Day","5114.9072","2023-07-01T00:00:00.000Z","491.4777","10.2298"
+"2023-08-02T06:09:03.844Z","Azure Monitor","usgovtexas","BRL","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","10.8803","2023-07-01T00:00:00.000Z","0","10.8803"
+"2023-08-02T06:09:03.844Z","Azure Monitor","usgovtexas","BRL","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","10052.4188","2023-07-01T00:00:00.000Z","982.6603","10.0524"
+"2023-08-02T06:09:03.844Z","Azure Monitor","usgovtexas","BRL","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","19631.7825","2023-07-01T00:00:00.000Z","1952.9448","9.8159"
+"2023-08-02T06:09:03.844Z","Azure Monitor","usgovtexas","BRL","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","47601.1594","2023-07-01T00:00:00.000Z","4849.3933","9.5202"

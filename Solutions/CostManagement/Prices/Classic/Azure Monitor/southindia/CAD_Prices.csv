@@ -48,3 +48,8 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","southindia","CAD","100 GB Commitment Tier Capacity Reservation","100","1/Day","390.5636","2019-11-01T00:00:00.000Z","85.7854","3.9056"
 "2023-08-01T06:08:30.007Z","Azure Monitor","southindia","CAD","200 GB Commitment Tier Capacity Reservation","200","1/Day","733.3031","2019-11-01T00:00:00.000Z","187.7568","3.6665"
 "2023-08-01T06:08:30.007Z","Azure Monitor","southindia","CAD","300 GB Commitment Tier Capacity Reservation","300","1/Day","1076.0426","2019-11-01T00:00:00.000Z","293.4795","3.5868"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southindia","CAD","400 GB Commitment Tier Capacity Reservation","400","1/Day","1402.8407","2019-11-01T00:00:00.000Z","391.1120","3.5071"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southindia","CAD","500 GB Commitment Tier Capacity Reservation","500","1/Day","1723.6608","2019-11-01T00:00:00.000Z","491.4775","3.4473"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southindia","CAD","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","3387.5415","2021-06-01T00:00:00.000Z","982.6651","3.3875"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southindia","CAD","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","6615.6694","2021-06-01T00:00:00.000Z","1952.9651","3.3078"
+"2023-08-02T06:09:03.844Z","Azure Monitor","southindia","CAD","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","16041.0056","2021-06-01T00:00:00.000Z","4849.4485","3.2082"

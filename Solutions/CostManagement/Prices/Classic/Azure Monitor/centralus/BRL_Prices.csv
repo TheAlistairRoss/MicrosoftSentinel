@@ -48,3 +48,8 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","centralus","BRL","100 GB Commitment Tier Capacity Reservation","100","1/Day","1038.4503","2019-11-01T00:00:00.000Z","79.5363","10.3845"
 "2023-08-01T06:08:30.007Z","Azure Monitor","centralus","BRL","500 GB Commitment Tier Capacity Reservation","500","1/Day","4582.9568","2019-11-01T00:00:00.000Z","478.7478","9.1659"
 "2023-08-01T06:08:30.007Z","Azure Monitor","centralus","BRL","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","42650.6388","2021-06-01T00:00:00.000Z","4723.7912","8.5301"
+"2023-08-02T06:09:03.844Z","Azure Monitor","centralus","BRL","200 GB Commitment Tier Capacity Reservation","200","1/Day","1949.7435","2019-11-01T00:00:00.000Z","187.7552","9.7487"
+"2023-08-02T06:09:03.844Z","Azure Monitor","centralus","BRL","300 GB Commitment Tier Capacity Reservation","300","1/Day","2861.0366","2019-11-01T00:00:00.000Z","293.4788","9.5368"
+"2023-08-02T06:09:03.844Z","Azure Monitor","centralus","BRL","400 GB Commitment Tier Capacity Reservation","400","1/Day","3729.9441","2019-11-01T00:00:00.000Z","391.1107","9.3249"
+"2023-08-02T06:09:03.844Z","Azure Monitor","centralus","BRL","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","9006.9672","2021-06-01T00:00:00.000Z","982.6604","9.0070"
+"2023-08-02T06:09:03.844Z","Azure Monitor","centralus","BRL","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","17590.0771","2021-06-01T00:00:00.000Z","1952.9341","8.7950"

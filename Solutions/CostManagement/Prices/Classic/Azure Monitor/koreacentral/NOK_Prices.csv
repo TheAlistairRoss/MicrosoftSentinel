@@ -48,3 +48,8 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","koreacentral","NOK","500 GB Commitment Tier Capacity Reservation","500","1/Day","11823.5855","2019-11-01T00:00:00.000Z","460.1405","23.6472"
 "2023-08-01T06:08:30.007Z","Azure Monitor","koreacentral","NOK","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","23237.1045","2021-06-01T00:00:00.000Z","982.6578","23.2371"
 "2023-08-01T06:08:30.007Z","Azure Monitor","koreacentral","NOK","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","45380.6982","2021-06-01T00:00:00.000Z","1952.9416","22.6903"
+"2023-08-02T06:09:03.844Z","Azure Monitor","koreacentral","NOK","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","31.4891","2018-02-01T00:00:00.000Z","0","31.4891"
+"2023-08-02T06:09:03.844Z","Azure Monitor","koreacentral","NOK","100 GB Commitment Tier Capacity Reservation","100","1/Day","2679.1015","2019-11-01T00:00:00.000Z","85.0803","26.7910"
+"2023-08-02T06:09:03.844Z","Azure Monitor","koreacentral","NOK","300 GB Commitment Tier Capacity Reservation","300","1/Day","7381.1979","2019-11-01T00:00:00.000Z","293.4788","24.6040"
+"2023-08-02T06:09:03.844Z","Azure Monitor","koreacentral","NOK","400 GB Commitment Tier Capacity Reservation","400","1/Day","9622.895","2019-11-01T00:00:00.000Z","391.1110","24.0572"
+"2023-08-02T06:09:03.844Z","Azure Monitor","koreacentral","NOK","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","110034.5242","2021-06-01T00:00:00.000Z","4849.4081","22.0069"

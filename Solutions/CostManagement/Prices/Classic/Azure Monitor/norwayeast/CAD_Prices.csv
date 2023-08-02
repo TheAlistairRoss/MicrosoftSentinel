@@ -48,3 +48,8 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","norwayeast","CAD","300 GB Commitment Tier Capacity Reservation","300","1/Day","1019.0337","2020-10-01T00:00:00.000Z","293.4751","3.3968"
 "2023-08-01T06:08:30.007Z","Azure Monitor","norwayeast","CAD","500 GB Commitment Tier Capacity Reservation","500","1/Day","1632.3411","2020-10-01T00:00:00.000Z","488.9591","3.2647"
 "2023-08-01T06:08:30.007Z","Azure Monitor","norwayeast","CAD","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","15191.151","2021-06-01T00:00:00.000Z","4824.5787","3.0382"
+"2023-08-02T06:09:03.844Z","Azure Monitor","norwayeast","CAD","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","4.3403","2020-10-01T00:00:00.000Z","0","4.3403"
+"2023-08-02T06:09:03.844Z","Azure Monitor","norwayeast","CAD","100 GB Commitment Tier Capacity Reservation","100","1/Day","369.8715","2020-10-01T00:00:00.000Z","85.2180","3.6987"
+"2023-08-02T06:09:03.844Z","Azure Monitor","norwayeast","CAD","400 GB Commitment Tier Capacity Reservation","400","1/Day","1328.518","2020-10-01T00:00:00.000Z","391.1087","3.3213"
+"2023-08-02T06:09:03.844Z","Azure Monitor","norwayeast","CAD","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","3208.0691","2021-06-01T00:00:00.000Z","982.6536","3.2081"
+"2023-08-02T06:09:03.844Z","Azure Monitor","norwayeast","CAD","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","6265.1703","2021-06-01T00:00:00.000Z","1952.9224","3.1326"

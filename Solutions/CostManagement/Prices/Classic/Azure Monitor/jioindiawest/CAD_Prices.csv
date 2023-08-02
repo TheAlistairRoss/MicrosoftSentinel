@@ -30,3 +30,8 @@
 "2023-07-07T06:09:02.036Z","Azure Monitor","jioindiawest","CAD","400 GB Commitment Tier Capacity Reservation","400","1/Day","1307.3491","2021-04-15T00:00:00.000Z","391.1057","3.2684"
 "2023-07-07T06:09:02.036Z","Azure Monitor","jioindiawest","CAD","500 GB Commitment Tier Capacity Reservation","500","1/Day","1606.3309","2021-04-15T00:00:00.000Z","491.4732","3.2127"
 "2023-08-01T06:08:30.007Z","Azure Monitor","jioindiawest","CAD","400 GB Commitment Tier Capacity Reservation","400","1/Day","1300.647","2021-04-15T00:00:00.000Z","389.1007","3.2516"
+"2023-08-02T06:09:03.844Z","Azure Monitor","jioindiawest","CAD","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","4.2493","2021-04-15T00:00:00.000Z","0","4.2493"
+"2023-08-02T06:09:03.844Z","Azure Monitor","jioindiawest","CAD","100 GB Commitment Tier Capacity Reservation","100","1/Day","362.112","2021-04-15T00:00:00.000Z","85.2169","3.6211"
+"2023-08-02T06:09:03.844Z","Azure Monitor","jioindiawest","CAD","200 GB Commitment Tier Capacity Reservation","200","1/Day","679.8837","2021-04-15T00:00:00.000Z","187.7561","3.3994"
+"2023-08-02T06:09:03.844Z","Azure Monitor","jioindiawest","CAD","300 GB Commitment Tier Capacity Reservation","300","1/Day","997.6554","2021-04-15T00:00:00.000Z","293.4798","3.3255"
+"2023-08-02T06:09:03.844Z","Azure Monitor","jioindiawest","CAD","500 GB Commitment Tier Capacity Reservation","500","1/Day","1598.0961","2021-04-15T00:00:00.000Z","491.4799","3.1962"

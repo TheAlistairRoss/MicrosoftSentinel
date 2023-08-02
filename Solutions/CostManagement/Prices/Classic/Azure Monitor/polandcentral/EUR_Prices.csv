@@ -50,4 +50,6 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","polandcentral","EUR","500 GB Commitment Tier Capacity Reservation","500","1/Day","1116.7129","2023-02-21T00:00:00.000Z","487.4134","2.2334"
 "2023-08-01T06:08:30.007Z","Azure Monitor","polandcentral","EUR","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","2194.6959","2023-02-21T00:00:00.000Z","982.6703","2.1947"
 "2023-08-01T06:08:30.007Z","Azure Monitor","polandcentral","EUR","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","4286.112","2023-02-21T00:00:00.000Z","1952.9375","2.1431"
-"2023-08-01T06:08:30.007Z","Azure Monitor","polandcentral","EUR","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","10392.5306","2023-02-21T00:00:00.000Z","4849.2980","2.0785"
+"2023-08-01T06:08:30.007Z","Azure Monitor","polandcentral","EUR","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","10392.5306","2023-02-21T00:00:00.000Z","4849.298","2.0785"
+"2023-08-02T06:09:03.844Z","Azure Monitor","polandcentral","EUR","Pay-as-you-go Data Ingestion","Pay-as-you-go","1 GB","2.9923","2023-02-21T00:00:00.000Z","0","2.9923"
+"2023-08-02T06:09:03.844Z","Azure Monitor","polandcentral","EUR","400 GB Commitment Tier Capacity Reservation","400","1/Day","908.8623","2023-02-21T00:00:00.000Z","391.1104","2.2722"

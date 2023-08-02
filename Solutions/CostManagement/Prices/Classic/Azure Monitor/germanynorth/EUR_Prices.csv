@@ -49,4 +49,7 @@
 "2023-08-01T06:08:30.007Z","Azure Monitor","germanynorth","EUR","400 GB Commitment Tier Capacity Reservation","400","1/Day","890.2879","2023-03-01T00:00:00.000Z","391.1118","2.2257"
 "2023-08-01T06:08:30.007Z","Azure Monitor","germanynorth","EUR","1000 GB Commitment Tier Capacity Reservation","1000","1/Day","2149.8431","2023-03-01T00:00:00.000Z","974.5436","2.1498"
 "2023-08-01T06:08:30.007Z","Azure Monitor","germanynorth","EUR","2000 GB Commitment Tier Capacity Reservation","2000","1/Day","4198.517","2023-03-01T00:00:00.000Z","1952.9803","2.0993"
-"2023-08-01T06:08:30.007Z","Azure Monitor","germanynorth","EUR","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","10180.1392","2023-03-01T00:00:00.000Z","4849.3018","2.0360"
+"2023-08-01T06:08:30.007Z","Azure Monitor","germanynorth","EUR","5000 GB Commitment Tier Capacity Reservation","5000","1/Day","10180.1392","2023-03-01T00:00:00.000Z","4849.3018","2.036"
+"2023-08-02T06:09:03.844Z","Azure Monitor","germanynorth","EUR","100 GB Commitment Tier Capacity Reservation","100","1/Day","247.8643","2023-03-01T00:00:00.000Z","70.0894","2.4786"
+"2023-08-02T06:09:03.844Z","Azure Monitor","germanynorth","EUR","200 GB Commitment Tier Capacity Reservation","200","1/Day","465.3778","2023-03-01T00:00:00.000Z","187.7583","2.3269"
+"2023-08-02T06:09:03.844Z","Azure Monitor","germanynorth","EUR","500 GB Commitment Tier Capacity Reservation","500","1/Day","1093.8907","2023-03-01T00:00:00.000Z","491.4816","2.1878"
