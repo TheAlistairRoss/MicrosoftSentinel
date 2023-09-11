@@ -27,7 +27,7 @@ jobs:
         env:
           PAT: ${{secrets.MICROSOFTSENTINELCOMMIT}}
 
-      - name: SentinelPricingScript - Combined
+      - name: SentinelPricingScript - Unified
         run: |
             .\Solutions\CostManagement\Script\GetMicrosoftSentinelRetailPrices.ps1 -PricingModel 'Combined'
         env:

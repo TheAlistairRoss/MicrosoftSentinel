@@ -26,7 +26,7 @@ param (
     $SolutionDirectory,
 
     [Parameter(Mandatory = $true)]
-    [ValidateSet("Classic", "Combined")]
+    [ValidateSet("Classic", "Unified")]
     [string]
     $PricingModel
 )
@@ -90,7 +90,7 @@ $ClassicSentinelFilter = "&`$filter=" +
 " or meterName eq 'Classic 5000 GB Commitment Tier Capacity Reservation'" +
 ")" 
 
-$CombinedSentinelFilter = "&`$filter=" +
+$UnifiedSentinelFilter = "&`$filter=" +
 "(" +
 "serviceName eq 'Sentinel'" +
 ")" +
@@ -109,7 +109,7 @@ $CombinedSentinelFilter = "&`$filter=" +
 $Filters = @{
     "Azure Monitor"     = $AzureMonitorFilter
     "Classic Sentinel"  = $ClassicSentinelFilter
-    "Combined Sentinel" = $CombinedSentinelFilter
+    "Unified Sentinel" = $UnifiedSentinelFilter
 }
 
 # classes
@@ -492,13 +492,13 @@ function main {
         $OutputFolder = "Prices/Classic"
         $Services = @("Azure Monitor", "Classic Sentinel")
     } 
-    elseif ($PricingModel -eq "Combined") {
-        Write-Information "Setting Pricing Model to Combined"
-        $OutputFolder = "Prices/Combined"
-        $Services = @("Combined Sentinel")
+    elseif ($PricingModel -eq "Unified") {
+        Write-Information "Setting Pricing Model to Unified"
+        $OutputFolder = "Prices/Unified"
+        $Services = @("Unified Sentinel")
     }
     else{
-        Write-Error "No pricing model selected. Choose either '-Classic' or '-Combined' parameters when running the script"
+        Write-Error "No pricing model selected. Choose either '-Classic' or '-Unified' parameters when running the script"
         exit
     }
 
