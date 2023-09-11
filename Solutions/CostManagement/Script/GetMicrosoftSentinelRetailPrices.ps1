@@ -31,8 +31,6 @@ param (
     $PricingModel
 )
 
-param
-
 # Constants
 if (!$RootDirectory) {
     $RootDirectory = $env:directory
@@ -107,9 +105,18 @@ $UnifiedSentinelFilter = "&`$filter=" +
 ")" 
 
 $Filters = @{
-    "Azure Monitor"     = $AzureMonitorFilter
-    "Classic Sentinel"  = $ClassicSentinelFilter
-    "Unified Sentinel" = $UnifiedSentinelFilter
+    "Azure Monitor"     = @{
+        Name = "Azure Monitor"
+        oDataFilter = $AzureMonitorFilter
+    }
+    "Classic Sentinel"  = @{
+        Name = "Sentinel"
+        oDataFilter = $ClassicSentinelFilter
+    }
+    "Unified Sentinel"  = @{
+        Name = "Sentinel"
+        oDataFilter = $UnifiedSentinelFilter
+    }
 }
 
 # classes
@@ -506,7 +513,7 @@ function main {
         foreach ($CurrencyCode in $CurrencyCodes) {
             Write-Host ""
             Write-Host "Processing Currency Code $CurrencyCode for $Service"
-            $url = $baseUrl + "&currencyCode='$CurrencyCode'" + $Filters.$Service
+            $url = $baseUrl + "&currencyCode='$CurrencyCode'" + $Filters.$Service.oDatafilter
     
             #Filter out zero prices, we aren't interested in free tiers for this
             $Prices = Get-AzPricing -Url $url 
@@ -515,7 +522,7 @@ function main {
             $Regions = $Prices | Select-Object -Unique -ExpandProperty armRegionName | Sort-Object 
             
             foreach ($Region in $Regions) {
-                $OutputPath = "$OutputFolder\$Service\$Region\$CurrencyCode`_Prices.csv"
+                $OutputPath = "$OutputFolder\$($Filters.$Service.Name)\$Region\$CurrencyCode`_Prices.csv"
 
                 New-File -Path $OutputPath
 
