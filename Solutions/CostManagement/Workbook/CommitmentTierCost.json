@@ -305,7 +305,7 @@
           }
         ],
         "style": "pills",
-        "queryType": 8
+        "queryType": 12
       },
       "name": "parameters - Main Page"
     },
@@ -745,6 +745,11 @@
           }
         ],
         "exportParameters": true
+      },
+      "conditionalVisibility": {
+        "parameterName": "_",
+        "comparison": "isEqualTo",
+        "value": "_"
       },
       "name": "group - default prices parameters"
     },
@@ -1326,6 +1331,57 @@
             }
           },
           {
+            "id": "013627cd-1109-4d54-9c5d-ee1f4a8b6319",
+            "version": "KqlParameterItem/1.0",
+            "name": "BasicTablesQuery",
+            "type": 2,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{Workspace}/tables?api-version=2022-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.value[?(@.properties.plan == 'Basic')]\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Table\",\"columnType\":\"string\"}]}}]}",
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "defaultValue": "value::all",
+            "queryType": 12
+          },
+          {
+            "id": "d7adeecf-40bd-4e53-888c-6595f50bb74b",
+            "version": "KqlParameterItem/1.0",
+            "name": "BasicTablesOutput",
+            "type": 1,
+            "isHiddenWhenLocked": true,
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "leftOperand": "BasicTablesQuery",
+                  "operator": "isNotNull",
+                  "rightValType": "param",
+                  "resultValType": "static",
+                  "resultVal": "{BasicTablesQuery}"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "static",
+                  "resultVal": "\"*\""
+                }
+              }
+            ],
+            "timeContext": {
+              "durationMs": 86400000
+            }
+          },
+          {
             "id": "51ff305b-87db-4d58-96d5-5a4979d54ed7",
             "version": "KqlParameterItem/1.0",
             "name": "UsageDataQuery",
@@ -1347,7 +1403,7 @@
                 "criteriaContext": {
                   "operator": "Default",
                   "resultValType": "static",
-                  "resultVal": "let UsageMetrics =      Usage      | where IsBillable == true      | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | make-series Quantity = sum(Quantity) default = 0 on StartTime step 1d     | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)     | project Quantity_GB  = (Quantity / 1e3), StartTime     | extend JoinColumn = 1;"
+                  "resultVal": "let BasicTables = dynamic([{BasicTablesOutput}]); let UsageMetrics =      Usage     | where IsBillable == true     | where '*' == BasicTables[0] or DataType !in (BasicTables)     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | make-series Quantity = sum(Quantity) default = 0 on StartTime step 1d     | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)     | project Quantity_GB  = (Quantity / 1e3), StartTime     | extend JoinColumn = 1;"
                 }
               }
             ]
@@ -1430,6 +1486,11 @@
         "style": "formHorizontal",
         "queryType": 0,
         "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "conditionalVisibility": {
+        "parameterName": "_",
+        "comparison": "isEqualTo",
+        "value": "_"
       },
       "name": "parameters - Main Page - URL Parameters"
     },
