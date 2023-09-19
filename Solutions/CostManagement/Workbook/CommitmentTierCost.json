@@ -4,9 +4,9 @@
     {
       "type": 1,
       "content": {
-        "json": "# Microsoft Sentinel Commitment Tier Workbook\r\n\r\n[If you have any feedback or issues, please submit them here](https://github.com/TheAlistairRoss/MicrosoftSentinel/issues/new/choose)"
+        "json": "# Workspace Commitment Tier Workbook\r\n\r\n[If you have any feedback or issues, please submit them here](https://github.com/TheAlistairRoss/MicrosoftSentinel/issues/new/choose)"
       },
-      "name": "text - 8"
+      "name": "text - Main Page - Title"
     },
     {
       "type": 9,
@@ -71,7 +71,10 @@
             },
             "defaultValue": "value::all",
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": [
+              "value::all"
+            ]
           },
           {
             "id": "d766ea1e-e7cb-4c21-9544-ced5c7aeef8d",
@@ -123,6 +126,22 @@
             }
           },
           {
+            "id": "bd7f3a5a-3a14-46a4-8241-f18615a0e636",
+            "version": "KqlParameterItem/1.0",
+            "name": "CustomPrices",
+            "label": "Input Custom Prices",
+            "type": 10,
+            "isRequired": true,
+            "query": "{\"version\":\"1.0.0\",\"content\":\"[\\r\\n    {\\\"value\\\":\\\"true\\\", \\\"label\\\": \\\"Yes\\\", \\\"selected\\\": false},\\r\\n    {\\\"value\\\":\\\"false\\\", \\\"label\\\": \\\"No\\\", \\\"selected\\\": true}\\r\\n]\",\"transformers\":null}",
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "queryType": 8
+          },
+          {
             "version": "KqlParameterItem/1.0",
             "name": "UseDemoData",
             "label": "Use Demo Data",
@@ -137,6 +156,25 @@
               "durationMs": 86400000
             },
             "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6"
+          },
+          {
+            "id": "6e2979ef-af24-467a-afc5-13ee2012c838",
+            "version": "KqlParameterItem/1.0",
+            "name": "PricingModel",
+            "type": 2,
+            "description": "This defaults to your current pricing model. Change this if you wish to view the pricing on the different pricing model. Note! Switching to Classic from Unified provides no benefit as you cannot downgrade the pricing model once moved.. https://techcommunity.microsoft.com/t5/microsoft-sentinel-blog/introducing-the-new-microsoft-sentinel-simplified-pricing/ba-p/3869145",
+            "isRequired": true,
+            "query": "resources\r\n| where type =~ 'microsoft.operationalinsights/workspaces'\r\n| where id =~ \"{Workspace}\"\r\n| project workspaceId = tolower(id), ServiceType = \"Log Analytics\", sku = tostring(properties.sku.name)\r\n| union (\r\n    resources\r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product == \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId has \"{Workspace}\"\r\n    | project workspaceId = tolower(tostring(properties.workspaceResourceId)), ServiceType = \"Sentinel\", sku = trim(' ', tostring(properties.sku.name))\r\n    ) \r\n| extend Packed = pack_dictionary(ServiceType, sku)\r\n| summarize ServiceTypes = make_list(ServiceType), Values = make_bag(Packed) by workspaceId\r\n| project value = iif(\r\n    ServiceTypes has \"Sentinel\", \r\n    iif (Values.Sentinel == \"Unified\", \"Unified\", \"Classic\"),\r\n    \"Log Analytics\" \r\n    )\r\n| extend\r\n    label = value, \r\n    selected = true\r\n| project value, label, selected",
+            "crossComponentResources": [
+              "{Subscriptions}"
+            ],
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources"
           },
           {
             "id": "a27fb8f0-d361-4039-9d5a-71c86f5a1f79",
@@ -177,7 +215,7 @@
             "name": "SentinelCurrentTierQuery",
             "type": 1,
             "isRequired": true,
-            "query": "    resources\r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product == \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId has \"{Workspace}\"\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name))\r\n    | extend sentinelTier = case(\r\n        sentinelSku == \"PerGB\", \"Pay-as-you-go\",\r\n        sentinelSku == \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n        \"Not Supported in this workbook\"\r\n        )\r\n| project sentinelTier\r\n    \r\n\r\n",
+            "query": "    resources\r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product == \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId has \"{Workspace}\"\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name))\r\n    | extend sentinelTier = case(\r\n        sentinelSku == \"Unified\", \"Pay-as-you-go\",\r\n        sentinelSku == \"PerGB\", \"Pay-as-you-go\",\r\n        sentinelSku == \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n        \"Not Supported in this workbook\"\r\n        )\r\n| project sentinelTier\r\n    \r\n\r\n",
             "crossComponentResources": [
               "{Subscriptions}"
             ],
@@ -210,13 +248,977 @@
                 }
               }
             ]
+          },
+          {
+            "id": "b53b44a9-08a1-406c-92d1-7bc592252ad4",
+            "version": "KqlParameterItem/1.0",
+            "name": "ShowSentinel",
+            "type": 1,
+            "isRequired": true,
+            "isHiddenWhenLocked": true,
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "leftOperand": "PricingModel",
+                  "operator": "==",
+                  "rightValType": "static",
+                  "rightVal": "Log Analytics",
+                  "resultValType": "static",
+                  "resultVal": "false"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "static",
+                  "resultVal": "true"
+                }
+              }
+            ]
+          },
+          {
+            "version": "KqlParameterItem/1.0",
+            "name": "ShowLogAnalytics",
+            "type": 1,
+            "isRequired": true,
+            "isHiddenWhenLocked": true,
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "leftOperand": "PricingModel",
+                  "operator": "==",
+                  "rightValType": "static",
+                  "rightVal": "Unified",
+                  "resultValType": "static",
+                  "resultVal": "false"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "static",
+                  "resultVal": "true"
+                }
+              }
+            ],
+            "id": "85f7fa57-7ff4-4511-bc24-3b6c4c95960e"
           }
         ],
         "style": "pills",
-        "queryType": 0,
-        "resourceType": "microsoft.operationalinsights/workspaces"
+        "queryType": 8
       },
-      "name": "parameters - 0"
+      "name": "parameters - Main Page"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "# Help\r\n\r\nWelcome to my Microsoft Sentinel Commitment Tier workbook. The aim of this workbook is to help you make an informed desicion with regards to changing commitment tiers. These changes can have a negative impact if done incorrectly, but done correctly, they will unlock additional discounts as you ingest more data into you log analytics workspace.\r\n\r\nYou need to ensure that the parameters above are set. Some are hidden and automatically determined, but you will need to ensure the following are set.\r\n\r\n- **Time Range**: This is the time period which you want to analyse in this workbook.\r\n- **Subscriptions**: This is the subscription where your log analytics workspace resides.\r\n- **Workspace**: This is the Log Analytics workspace you are analysing.\r\n- **CurrencyCode**: This should be the currency which you are invoiced. Not everyone can view the billing information, so this is not looked up automatically.\r\n\r\nThe following parameters are optional:\r\n- **Show Help**: You have already pressed this, otherwise you would not be here. This presents helpful information all throughout the workbook.\r\n- **Use Demo Data**: Sometimes to realise value of workbooks, you need to simulate the data. This will change all the usage queries to use a simulated data which makes the recommendation to move to the 100 GB commitment tier. This has only been designed with a workspace at the pay-as-you-go tier.\r\n- **Input Custom Prices**: This gives you the option to input your own custom prices. This is typically used when you have additional discounts applied by Microsoft\r\n\r\n## NOTE: Input Custom Prices - If this option is selected, expand the heading immediatly below and input the values. They will default to zero, so consider saving the workbook to maintain these values.",
+        "style": "info"
+      },
+      "conditionalVisibility": {
+        "parameterName": "ShowHelp",
+        "comparison": "isEqualTo",
+        "value": "true"
+      },
+      "name": "text - Main Page - Initial Help"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "loadType": "always",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "# Default Parameters\r\n\r\nThese values are always left hidden and not ammended. They are here to force the parameter to have a value, even when not used. To use these parameters. Select the Input Custom Prices parameter."
+            },
+            "conditionalVisibility": {
+              "parameterName": "_",
+              "comparison": "isEqualTo",
+              "value": "_"
+            },
+            "name": "text - default custom prices parameters"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "1dd98ee2-bec6-4728-859c-75be9722314e",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorPayasyougo",
+                  "label": "Pay-as-you-go",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "47d4951d-d47b-4b44-922c-f41cb601902a",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorOneHundred",
+                  "label": "100 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "abea1ff5-c49a-4019-af8b-dffdd6e28cff",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorTwoHundred",
+                  "label": "200 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "95fe558a-a0bc-442d-a42d-b5ba74b7c6d3",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorThreeHundred",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "label": "300 GB"
+                },
+                {
+                  "id": "081cde4b-0f37-432d-b54a-a54a7c4c5c25",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorFourHundred",
+                  "label": "400 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "a977e58b-3e34-4fd2-aa20-c1b0525c4cb2",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorFiveHundred",
+                  "label": "500 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "c50ca221-d1ad-4816-9f90-b0d15f12219b",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorOneThousand",
+                  "label": "1000 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "defd265e-554d-4302-988e-373e130c7aed",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorTwoThousand",
+                  "label": "2000 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "d8aa9a65-bfec-4b6f-8cb9-d63c99fbbcea",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorFiveThousand",
+                  "label": "5000 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                }
+              ],
+              "style": "above",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "parameters - Microsoft Azure Monitor Custom Pricing - Copy"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "9bc05fda-2b6e-49a8-9f23-792041b3bb8d",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorPayasyougo",
+                  "label": "Pay-as-you-go",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "471e01c5-5b31-4940-bdac-497c775d1d63",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorOneHundred",
+                  "label": "100 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "0f577e1d-ce38-41d0-8e1f-f01438c08d9c",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorTwoHundred",
+                  "label": "200 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "f050fcdf-0bd0-4e1d-bb85-2fe165613b07",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorThreeHundred",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "label": "300 GB"
+                },
+                {
+                  "id": "4dc9ad0f-03fa-480e-bda3-7b23244664f9",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorFourHundred",
+                  "label": "400 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "c662558c-4744-4463-b80e-93152ed3ded2",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorFiveHundred",
+                  "label": "500 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "18b2169e-540e-4b57-b87c-e25749711231",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorOneThousand",
+                  "label": "1000 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "d58ddfd7-16f4-46ab-b794-82c2a3794292",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorTwoThousand",
+                  "label": "2000 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "274b155b-429b-4ef6-b6a4-2403531c26b0",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AzureMonitorFiveThousand",
+                  "label": "5000 GB",
+                  "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
+                  "criteriaData": [
+                    {
+                      "criteriaContext": {
+                        "operator": "Default",
+                        "resultValType": "static",
+                        "resultVal": "0"
+                      }
+                    }
+                  ],
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                }
+              ],
+              "style": "above",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "parameters - Microsoft Azure Monitor Custom Pricing - Copy"
+          }
+        ],
+        "exportParameters": true
+      },
+      "name": "group - default prices parameters"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "title": "Input Custom Prices",
+        "expandable": true,
+        "expanded": true,
+        "loadType": "always",
+        "items": [
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "title": "Azure Monitor (Log Analytics) Custom Prices",
+              "loadType": "always",
+              "items": [
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "parameters": [
+                      {
+                        "id": "6af066c5-0264-4f65-9282-062f51967237",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "AzureMonitorPayasyougo",
+                        "label": "Pay-as-you-go",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "46a84065-0374-4fa4-99f2-fa7056d9fe28",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "AzureMonitorOneHundred",
+                        "label": "100 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "56f09db4-511a-4bf5-9901-195bddee1cb0",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "AzureMonitorTwoHundred",
+                        "label": "200 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "5a3d9b06-c3f9-4e1a-b7b8-9b4da712cdf5",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "AzureMonitorThreeHundred",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "label": "300 GB"
+                      },
+                      {
+                        "id": "3d1007a4-1a12-49f1-9add-13e62dfbd25f",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "AzureMonitorFourHundred",
+                        "label": "400 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "e19a4ce7-1dc8-427a-9417-2ddeccfaba8a",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "AzureMonitorFiveHundred",
+                        "label": "500 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "1ec6113c-a214-46f7-8ced-710933504fd5",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "AzureMonitorOneThousand",
+                        "label": "1000 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "bdbd1a7c-591e-47e0-9b9d-de0a6014c60b",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "AzureMonitorTwoThousand",
+                        "label": "2000 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "6c558126-cf68-4282-aad7-49adbc89b147",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "AzureMonitorFiveThousand",
+                        "label": "5000 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      }
+                    ],
+                    "style": "above",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "name": "parameters - Microsoft Azure Monitor Custom Pricing"
+                }
+              ],
+              "exportParameters": true
+            },
+            "customWidth": "50",
+            "conditionalVisibility": {
+              "parameterName": "ShowLogAnalytics",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "group - Custom Prices - Log Analytics"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "title": "Sentinel Custom Prices",
+              "loadType": "always",
+              "items": [
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "parameters": [
+                      {
+                        "id": "6af066c5-0264-4f65-9282-062f51967237",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SentinelPayasyougo",
+                        "label": "Pay-as-you-go",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "46a84065-0374-4fa4-99f2-fa7056d9fe28",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SentinelOneHundred",
+                        "label": "100 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "56f09db4-511a-4bf5-9901-195bddee1cb0",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SentinelTwoHundred",
+                        "label": "200 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "5a3d9b06-c3f9-4e1a-b7b8-9b4da712cdf5",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SentinelThreeHundred",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "label": "300 GB"
+                      },
+                      {
+                        "id": "3d1007a4-1a12-49f1-9add-13e62dfbd25f",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SentinelFourHundred",
+                        "label": "400 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "e19a4ce7-1dc8-427a-9417-2ddeccfaba8a",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SentinelFiveHundred",
+                        "label": "500 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "1ec6113c-a214-46f7-8ced-710933504fd5",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SentinelOneThousand",
+                        "label": "1000 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "bdbd1a7c-591e-47e0-9b9d-de0a6014c60b",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SentinelTwoThousand",
+                        "label": "2000 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      },
+                      {
+                        "id": "6c558126-cf68-4282-aad7-49adbc89b147",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SentinelFiveThousand",
+                        "label": "5000 GB",
+                        "type": 1,
+                        "isRequired": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "0"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      }
+                    ],
+                    "style": "above",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "ShowSentinel",
+                    "comparison": "isEqualTo",
+                    "value": "true"
+                  },
+                  "name": "parameters - Microsoft Sentinel Custom Pricing"
+                }
+              ],
+              "exportParameters": true
+            },
+            "customWidth": "50",
+            "conditionalVisibility": {
+              "parameterName": "ShowSentinel",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "group - Custom Prices - Sentinel"
+          }
+        ],
+        "exportParameters": true
+      },
+      "conditionalVisibility": {
+        "parameterName": "CustomPrices",
+        "comparison": "isEqualTo",
+        "value": "true"
+      },
+      "name": "group - Input Custom Prices"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "# DEMO DATA\r\n## This workbook is currently displaying usage data for demonstration purposes. Ensure you turn this parameter off in production",
+        "style": "warning"
+      },
+      "conditionalVisibility": {
+        "parameterName": "UseDemoData",
+        "comparison": "isEqualTo",
+        "value": "true"
+      },
+      "name": "text - Main Page - Demo Data Warning"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "# Intentionally hidden - URL and Query Parameters\r\n\r\nThese parameters are only used in advanced scenarios. This contain the Urls and queries used for the external data queries and are constructed based on selected parameters. They allow the correct file to be referenced from the selected repository.\r\n\r\nDo not modify these unless you know what you are doing!\r\n\r\n"
+      },
+      "conditionalVisibility": {
+        "parameterName": "_",
+        "comparison": "isEqualTo",
+        "value": "_"
+      },
+      "name": "text - 8"
     },
     {
       "type": 9,
@@ -244,19 +1246,6 @@
             }
           },
           {
-            "id": "63c70db7-75ca-4bfb-804c-a795a7cbbd75",
-            "version": "KqlParameterItem/1.0",
-            "name": "PricingModel",
-            "type": 2,
-            "isRequired": true,
-            "isHiddenWhenLocked": true,
-            "typeSettings": {
-              "additionalResourceOptions": [],
-              "showDefault": false
-            },
-            "jsonData": "[\r\n    {\"value\":\"Classic\", \"selected\":true},\r\n    {\"value\":\"Combined\"}\r\n]"
-          },
-          {
             "id": "3790a338-3ba9-42c8-8cda-354808853434",
             "version": "KqlParameterItem/1.0",
             "name": "AzureMonitorPricesCSVURL",
@@ -268,7 +1257,7 @@
                 "criteriaContext": {
                   "operator": "Default",
                   "resultValType": "static",
-                  "resultVal": "{RepositoryURL}/{PricingModel}/Azure%20Monitor/{WorkspaceLocation}/{CurrencyCode}_Prices.csv"
+                  "resultVal": "{RepositoryURL}/Classic/Azure%20Monitor/{WorkspaceLocation}/{CurrencyCode}_Prices.csv"
                 }
               }
             ],
@@ -362,88 +1351,190 @@
                 }
               }
             ]
+          },
+          {
+            "id": "519ab20c-9074-4f23-a485-4cf5aabb0d64",
+            "version": "KqlParameterItem/1.0",
+            "name": "AzureMonitorPrices",
+            "type": 1,
+            "isRequired": true,
+            "isHiddenWhenLocked": true,
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "leftOperand": "ShowLogAnalytics",
+                  "operator": "==",
+                  "rightValType": "static",
+                  "rightVal": "false",
+                  "resultValType": "static",
+                  "resultVal": "datatable (     OrderIndex: int,     MeterName: string,     Tier: string,     RetailPrice: real )[     0, \"Pay-as-you-go Data Ingestion\", \"Pay-as-you-go\", {AzureMonitorPayasyougo},     1, \"100 GB Commitment Tier Capacity Reservation\", \"100\", {AzureMonitorOneHundred},     2, \"200 GB Commitment Tier Capacity Reservation\", \"200\", {AzureMonitorTwoHundred},     3, \"300 GB Commitment Tier Capacity Reservation\", \"300\", {AzureMonitorThreeHundred},     4, \"400 GB Commitment Tier Capacity Reservation\", \"400\", {AzureMonitorFourHundred},     5, \"500 GB Commitment Tier Capacity Reservation\", \"500\", {AzureMonitorFiveHundred},     6, \"1000 GB Commitment Tier Capacity Reservation\", \"1000\", {AzureMonitorOneThousand},     7, \"2000 GB Commitment Tier Capacity Reservation\", \"2000\", {AzureMonitorTwoThousand},     8, \"5000 GB Commitment Tier Capacity Reservation\", \"5000\", {AzureMonitorFiveThousand} ] | extend EffectivePricePerGB = iff(Tier == \"Pay-as-you-go\", RetailPrice, RetailPrice / toint(Tier)) | project     EffectivePricePerGB = bag_pack(tostring(OrderIndex), EffectivePricePerGB),     DetailsPacked = bag_pack(\"MeterName\", MeterName, \"Tier\", Tier, \"RetailPrice\", RetailPrice, \"OrderIndex\", OrderIndex, \"EffectivePricePerGB\", EffectivePricePerGB) | summarize     Details = make_list(DetailsPacked),     EffectivePricePerGBPacked = make_bag(EffectivePricePerGB) | mv-expand Details | evaluate bag_unpack(Details) : (MeterName:string, Tier:string, RetailPrice:decimal, OrderIndex:int, EffectivePricePerGB:decimal, EffectivePricePerGBPacked :dynamic) | extend EffectiveCommitmentTierThresholdGB = iif(Tier == \"Pay-as-you-go\", todecimal(0), todecimal(round(RetailPrice / todecimal(EffectivePricePerGBPacked[tostring(OrderIndex - 1)]), 4))) | extend ServiceName = \"AzureMonitor\" | extend TimeGenerated = now() | project-away EffectivePricePerGBPacked, OrderIndex"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "leftOperand": "CustomPrices",
+                  "operator": "==",
+                  "rightValType": "static",
+                  "rightVal": "true",
+                  "resultValType": "static",
+                  "resultVal": "datatable (     OrderIndex: int,     MeterName: string,     Tier: string,     RetailPrice: real )[     0, \"Pay-as-you-go Data Ingestion\", \"Pay-as-you-go\", {AzureMonitorPayasyougo},     1, \"100 GB Commitment Tier Capacity Reservation\", \"100\", {AzureMonitorOneHundred},     2, \"200 GB Commitment Tier Capacity Reservation\", \"200\", {AzureMonitorTwoHundred},     3, \"300 GB Commitment Tier Capacity Reservation\", \"300\", {AzureMonitorThreeHundred},     4, \"400 GB Commitment Tier Capacity Reservation\", \"400\", {AzureMonitorFourHundred},     5, \"500 GB Commitment Tier Capacity Reservation\", \"500\", {AzureMonitorFiveHundred},     6, \"1000 GB Commitment Tier Capacity Reservation\", \"1000\", {AzureMonitorOneThousand},     7, \"2000 GB Commitment Tier Capacity Reservation\", \"2000\", {AzureMonitorTwoThousand},     8, \"5000 GB Commitment Tier Capacity Reservation\", \"5000\", {AzureMonitorFiveThousand} ] | extend EffectivePricePerGB = iff(Tier == \"Pay-as-you-go\", RetailPrice, RetailPrice / toint(Tier)) | project     EffectivePricePerGB = bag_pack(tostring(OrderIndex), EffectivePricePerGB),     DetailsPacked = bag_pack(\"MeterName\", MeterName, \"Tier\", Tier, \"RetailPrice\", RetailPrice, \"OrderIndex\", OrderIndex, \"EffectivePricePerGB\", EffectivePricePerGB) | summarize     Details = make_list(DetailsPacked),     EffectivePricePerGBPacked = make_bag(EffectivePricePerGB) | mv-expand Details | evaluate bag_unpack(Details) : (MeterName:string, Tier:string, RetailPrice:decimal, OrderIndex:int, EffectivePricePerGB:decimal, EffectivePricePerGBPacked :dynamic) | extend EffectiveCommitmentTierThresholdGB = iif(Tier == \"Pay-as-you-go\", todecimal(0), todecimal(round(RetailPrice / todecimal(EffectivePricePerGBPacked[tostring(OrderIndex - 1)]), 4))) | extend ServiceName = \"AzureMonitor\" | extend TimeGenerated = now() | project-away EffectivePricePerGBPacked, OrderIndex"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "param",
+                  "resultVal": "AzureMonitorExternalData"
+                }
+              }
+            ]
+          },
+          {
+            "id": "ab7ae2d0-13e2-4e04-bfa6-c5a914a2379d",
+            "version": "KqlParameterItem/1.0",
+            "name": "SentinelPrices",
+            "type": 1,
+            "isRequired": true,
+            "isHiddenWhenLocked": true,
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "leftOperand": "ShowSentinel",
+                  "operator": "==",
+                  "rightValType": "static",
+                  "rightVal": "false",
+                  "resultValType": "static",
+                  "resultVal": "datatable (     OrderIndex: int,     MeterName: string,     Tier: string,     RetailPrice: real )[     0, \"Pay-as-you-go Data Ingestion\", \"Pay-as-you-go\", {SentinelPayasyougo},     1, \"100 GB Commitment Tier Capacity Reservation\", \"100\", {SentinelOneHundred},     2, \"200 GB Commitment Tier Capacity Reservation\", \"200\", {SentinelTwoHundred},     3, \"300 GB Commitment Tier Capacity Reservation\", \"300\", {SentinelThreeHundred},     4, \"400 GB Commitment Tier Capacity Reservation\", \"400\", {SentinelFourHundred},     5, \"500 GB Commitment Tier Capacity Reservation\", \"500\", {SentinelFiveHundred},     6, \"1000 GB Commitment Tier Capacity Reservation\", \"1000\", {SentinelOneThousand},     7, \"2000 GB Commitment Tier Capacity Reservation\", \"2000\", {SentinelTwoThousand},     8, \"5000 GB Commitment Tier Capacity Reservation\", \"5000\", {SentinelFiveThousand} ] | extend EffectivePricePerGB = iff(Tier == \"Pay-as-you-go\", RetailPrice, RetailPrice / toint(Tier)) | project     EffectivePricePerGB = bag_pack(tostring(OrderIndex), EffectivePricePerGB),     DetailsPacked = bag_pack(\"MeterName\", MeterName, \"Tier\", Tier, \"RetailPrice\", RetailPrice, \"OrderIndex\", OrderIndex, \"EffectivePricePerGB\", EffectivePricePerGB) | summarize     Details = make_list(DetailsPacked),     EffectivePricePerGBPacked = make_bag(EffectivePricePerGB) | mv-expand Details | evaluate bag_unpack(Details) : (MeterName:string, Tier:string, RetailPrice:decimal, OrderIndex:int, EffectivePricePerGB:decimal, EffectivePricePerGBPacked :dynamic) | extend EffectiveCommitmentTierThresholdGB = iif(Tier == \"Pay-as-you-go\", todecimal(0), todecimal(round(RetailPrice / todecimal(EffectivePricePerGBPacked[tostring(OrderIndex - 1)]), 4))) | extend ServiceName = \"Sentinel\" | extend TimeGenerated = now() | project-away EffectivePricePerGBPacked, OrderIndex"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "leftOperand": "CustomPrices",
+                  "operator": "==",
+                  "rightValType": "static",
+                  "rightVal": "true",
+                  "resultValType": "static",
+                  "resultVal": "datatable (     OrderIndex: int,     MeterName: string,     Tier: string,     RetailPrice: real )[     0, \"Pay-as-you-go Data Ingestion\", \"Pay-as-you-go\", {SentinelPayasyougo},     1, \"100 GB Commitment Tier Capacity Reservation\", \"100\", {SentinelOneHundred},     2, \"200 GB Commitment Tier Capacity Reservation\", \"200\", {SentinelTwoHundred},     3, \"300 GB Commitment Tier Capacity Reservation\", \"300\", {SentinelThreeHundred},     4, \"400 GB Commitment Tier Capacity Reservation\", \"400\", {SentinelFourHundred},     5, \"500 GB Commitment Tier Capacity Reservation\", \"500\", {SentinelFiveHundred},     6, \"1000 GB Commitment Tier Capacity Reservation\", \"1000\", {SentinelOneThousand},     7, \"2000 GB Commitment Tier Capacity Reservation\", \"2000\", {SentinelTwoThousand},     8, \"5000 GB Commitment Tier Capacity Reservation\", \"5000\", {SentinelFiveThousand} ] | extend EffectivePricePerGB = iff(Tier == \"Pay-as-you-go\", RetailPrice, RetailPrice / toint(Tier)) | project     EffectivePricePerGB = bag_pack(tostring(OrderIndex), EffectivePricePerGB),     DetailsPacked = bag_pack(\"MeterName\", MeterName, \"Tier\", Tier, \"RetailPrice\", RetailPrice, \"OrderIndex\", OrderIndex, \"EffectivePricePerGB\", EffectivePricePerGB) | summarize     Details = make_list(DetailsPacked),     EffectivePricePerGBPacked = make_bag(EffectivePricePerGB) | mv-expand Details | evaluate bag_unpack(Details) : (MeterName:string, Tier:string, RetailPrice:decimal, OrderIndex:int, EffectivePricePerGB:decimal, EffectivePricePerGBPacked :dynamic) | extend EffectiveCommitmentTierThresholdGB = iif(Tier == \"Pay-as-you-go\", todecimal(0), todecimal(round(RetailPrice / todecimal(EffectivePricePerGBPacked[tostring(OrderIndex - 1)]), 4))) | extend ServiceName = \"Sentinel\" | extend TimeGenerated = now() | project-away EffectivePricePerGBPacked, OrderIndex"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "param",
+                  "resultVal": "SentinelExternalData"
+                }
+              }
+            ]
           }
         ],
         "style": "formHorizontal",
         "queryType": 0,
         "resourceType": "microsoft.operationalinsights/workspaces"
       },
-      "name": "parameters - URL Parameters"
-    },
-    {
-      "type": 11,
-      "content": {
-        "version": "LinkItem/1.0",
-        "style": "tabs",
-        "links": [
-          {
-            "id": "7b5be365-0a70-4f1d-8eec-9f0acf17c37d",
-            "cellValue": "TabSelection",
-            "linkTarget": "parameter",
-            "linkLabel": "Overview",
-            "subTarget": "Overview",
-            "style": "link"
-          },
-          {
-            "id": "fb7a3cf7-c9be-418b-9bde-149a1b770abf",
-            "cellValue": "TabSelection",
-            "linkTarget": "parameter",
-            "linkLabel": "Charts",
-            "subTarget": "Charts",
-            "style": "link"
-          },
-          {
-            "id": "cf8eb75a-f396-4b76-a024-8de0c737231c",
-            "cellValue": "TabSelection",
-            "linkTarget": "parameter",
-            "linkLabel": "Forecasting",
-            "subTarget": "Forecasting",
-            "style": "link"
-          },
-          {
-            "id": "40149dda-d3c5-4a2b-b2a3-230f3b81e126",
-            "cellValue": "TabSelection",
-            "linkTarget": "parameter",
-            "linkLabel": "Troubleshooting",
-            "subTarget": "Troubleshooting",
-            "style": "link"
-          }
-        ]
-      },
-      "name": "links - 6"
-    },
-    {
-      "type": 1,
-      "content": {
-        "json": "# DEMO DATA\r\n## This workbook is currently displaying usage data for demonstration purposes. Ensure you turn this parameter off in production",
-        "style": "warning"
-      },
-      "conditionalVisibility": {
-        "parameterName": "UseDemoData",
-        "comparison": "isEqualTo",
-        "value": "true"
-      },
-      "name": "text - Demo Data Warning"
+      "name": "parameters - Main Page - URL Parameters"
     },
     {
       "type": 12,
       "content": {
         "version": "NotebookGroup/1.0",
         "groupType": "editable",
+        "title": "Overview",
         "items": [
           {
-            "type": 1,
+            "type": 3,
             "content": {
-              "json": "# Overview"
+              "version": "KqlItem/1.0",
+              "query": "// Function for building tiles\r\nlet BuildTile = (tileOrder:int, tileTitle: string, tileSubtitle: string, tileLeft: string, tileRight: string, tileBottom: string) {\r\nprint \r\n    TileOrder = tileOrder, \r\n    title = tileTitle,\r\n    subtitle = tileSubtitle,\r\n    left = tileLeft,\r\n    right = tileRight,\r\n    bottom = tileBottom\r\n};\r\n// Commitment Tier Recommendations Query for Status Tile\r\nlet TimeRangeStart = startofday(todatetime({TimeRange:start}), 1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelPriceInputs = {SentinelPrices};\r\nlet LogAnalyticsPriceInputs = {AzureMonitorPrices};\r\nlet PriceInputs = union SentinelPriceInputs, LogAnalyticsPriceInputs \r\n    | summarize arg_max(TimeGenerated, *) by Tier, ServiceName  \r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))     \r\n    | project ServiceName, Tier, TierVolumeGB, RetailPrice, EffectivePricePerGB, EffectiveCommitmentTierThresholdGB  \r\n    | extend JoinColumn = 1;\r\n{UsageDataQuery} \r\nlet TierStats = UsageMetrics  \r\n    | join kind = inner (PriceInputs) \r\n    on JoinColumn  \r\n    | project Tier, Quantity_GB, EffectivePricePerGB, RetailPrice, TierVolumeGB, ServiceName  \r\n    | extend CostAtTier = iff(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", Quantity_GB * EffectivePricePerGB, RetailPrice)  \r\n    | summarize CostAtTier = sum(CostAtTier) by Tier, ServiceName  \r\n    | extend CostAtTier = round(CostAtTier, 2)  \r\n    | extend JoinColumn = 1;\r\nlet TierChange = toscalar(TierStats\r\n| where (ServiceName == \"Sentinel\" and Tier == SentinelCurrentTier and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and Tier == LogAnalyticsCurrentTier and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| join kind = inner(TierStats\r\n    | summarize arg_min(CostAtTier, Tier, JoinColumn) by ServiceName)\r\n    on ServiceName\r\n| extend Status = case(\r\n    Tier == Tier1, \"Good\", \"Change Tier\")\r\n| project\r\n    ServiceName,\r\n    Status\r\n| project Pack = pack_all());\r\n//Build Tiles\r\nlet IsCustomDataTile = BuildTile(0, \"Is Custom Prices\", \"\", {CustomPrices}, \"\",\"\" );\r\nlet PricingModelTile = BuildTile(1, \"Pricing Model\", \"\", \"{PricingModel}\", \"\", \"\");\r\nlet IsSentinelEnabledTile = BuildTile( 2, \"Sentinel Enabled\", \"\", {ShowSentinel},\"\",\"\");\r\nlet TierChangeTile = BuildTile(3, strcat(TierChange.['ServiceName'], \" Tier\"), \"Tier Status\", TierChange.['Status'],\"\",\"\");\r\nunion IsCustomDataTile, PricingModelTile, IsSentinelEnabledTile, TierChangeTile\r\n| order by TileOrder asc\r\n",
+              "size": 4,
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "title",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "left",
+                  "formatter": 18,
+                  "formatOptions": {
+                    "thresholdsOptions": "icons",
+                    "thresholdsGrid": [
+                      {
+                        "operator": "==",
+                        "thresholdValue": "True",
+                        "representation": "success",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "False",
+                        "representation": "2",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Log Analytics",
+                        "representation": "Log",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Classic",
+                        "representation": "Disconnect",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Unified",
+                        "representation": "Connect",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Good",
+                        "representation": "success",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Change Tier",
+                        "representation": "3",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "No Value - Input Custom Prices value",
+                        "representation": "2",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "Default",
+                        "thresholdValue": null,
+                        "representation": "unknown",
+                        "text": "{0}{1}"
+                      }
+                    ]
+                  }
+                },
+                "showBorder": false
+              }
             },
-            "name": "text - 0"
+            "name": "query - 7"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources\r\n| where type =~ 'microsoft.operationalinsights/workspaces' \r\n| where id has \"{Workspace}\"\r\n| extend workspaceId = id, \r\n        logAnalyticsSku   = trim(' ', tostring(properties.sku.name))\r\n        ,logAnalyticsSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n| extend logAnalyticsTier = case(\r\n    logAnalyticsSku =~ \"pergb2018\", \"Pay-as-you-go\",\r\n    //logAnalyticsSku == \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n    \"Not Supported in this workbook\"\r\n)\r\n//| extend logAnalyticsSkuUpdate    = iif(strlen(logAnalyticsSkuUpdate) > 0, logAnalyticsSkuUpdate,\"Unknown\")\r\n| extend JoinColumn = 1\r\n| join kind = leftouter(\r\nresources\r\n| where type =~ \"microsoft.operationsmanagement/solutions\"\r\n| where plan.product == \"OMSGallery/SecurityInsights\"\r\n| where properties.workspaceResourceId has \"{Workspace}\"\r\n| extend sentinelSku   = trim(' ', tostring(properties.sku.name))\r\n        ,sentinelSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n//| extend sentinelSkuUpdate    = iif(strlen(sentinelSkuUpdate) > 0, sentinelSkuUpdate,\"Unknown\")\r\n| extend sentinelTier = case(\r\n    sentinelSku == \"PerGB\", \"Pay-as-you-go\",\r\n    sentinelSku == \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n    \"Not Supported in this workbook\"\r\n)\r\n| extend JoinColumn = 1\r\n) on JoinColumn\r\n| extend sentinelSku  = iif(strlen(sentinelSku) > 0, sentinelSku,\"Sentinel Not Enabled\")\r\n| project \r\n    workspaceId \r\n    ,logAnalyticsSku\r\n    ,logAnalyticsTier \r\n    //,logAnalyticsSkuUpdate \r\n    ,sentinelSku \r\n    ,sentinelTier\r\n    //,sentinelSkuUpdate\r\n\r\n",
+              "query": "resources \r\n| where type =~ 'microsoft.operationalinsights/workspaces'\r\n| where id =~ \"{Workspace}\" \r\n| extend workspaceId = tolower(id)\r\n| extend logAnalyticsSku   = trim(' ', tostring(properties.sku.name))\r\n| extend logAnalyticsSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n| extend logAnalyticsTier = case(logAnalyticsSku =~ \"pergb2018\", \"Pay-as-you-go\", \"Free, PerNode and Standalone not supported in this workbook\")\r\n| join kind = leftouter(\r\n    resources \r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product == \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId startswith \"{Workspace}\"\r\n    | extend workspaceId = tolower(tostring(properties.workspaceResourceId))\r\n    | extend sentinelEnabled = true\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name)), sentinelSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n    | extend sentinelTier = case(sentinelSku == \"Unified\", \"Pay-as-you-go\", sentinelSku == \"PerGB\", \"Pay-as-you-go\", sentinelSku == \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel), \"Not Supported in this workbook\")\r\n    | project workspaceId, sentinelEnabled, sentinelSku, sentinelTier, sentinelSkuUpdate\r\n    )\r\n    on workspaceId\r\n| extend sentinelEnabled = iif(isnotnull(sentinelEnabled), true, false)\r\n| extend sentinelSku  = iif(strlen(sentinelSku) > 0, sentinelSku, \"\")\r\n| project workspaceId, logAnalyticsSku, logAnalyticsTier,sentinelEnabled, sentinelSku, sentinelTier\r\n",
               "size": 4,
+              "showAnalytics": true,
+              "title": "Workspace Details",
+              "showRefreshButton": true,
               "queryType": 1,
               "resourceType": "microsoft.resourcegraph/resources",
               "crossComponentResources": [
@@ -452,45 +1543,106 @@
               "gridSettings": {
                 "formatters": [
                   {
-                    "columnMatch": "sentinelSku",
+                    "columnMatch": "logAnalyticsSku",
                     "formatter": 18,
                     "formatOptions": {
                       "thresholdsOptions": "icons",
                       "thresholdsGrid": [
                         {
                           "operator": "==",
-                          "thresholdValue": "Sentinel Not Enabled",
-                          "representation": "2",
+                          "thresholdValue": "pergb2018",
+                          "representation": "success",
                           "text": "{0}{1}"
                         },
                         {
                           "operator": "Default",
                           "thresholdValue": null,
-                          "representation": "Blank",
+                          "representation": "warning",
                           "text": "{0}{1}"
                         }
                       ]
                     }
+                  },
+                  {
+                    "columnMatch": "sentinelEnabled",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "0",
+                          "representation": "more",
+                          "text": "False"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "1",
+                          "representation": "success",
+                          "text": "True"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "unknown",
+                          "text": "Unknown"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "workspaceId",
+                    "label": "Workspace Id"
+                  },
+                  {
+                    "columnId": "logAnalyticsSku",
+                    "label": "Log Analytics Sku"
+                  },
+                  {
+                    "columnId": "logAnalyticsTier",
+                    "label": "Log Analytics Tier"
+                  },
+                  {
+                    "columnId": "sentinelEnabled",
+                    "label": "Is Sentinel Enabled"
+                  },
+                  {
+                    "columnId": "sentinelSku",
+                    "label": "Sentinel Sku"
+                  },
+                  {
+                    "columnId": "sentinelTier",
+                    "label": "Sentinel Tier"
                   }
                 ]
               }
             },
-            "name": "query - 18"
+            "name": "query - Overview - Workspace Details"
           },
           {
             "type": 1,
             "content": {
-              "json": "# Commitment Tier Recommendations\r\n\r\nThis table view displays the current tiers for Log Analytics (Azure Monitor) and Sentinel, It also displays the optimal tier to be on based on the selected time range. It does this by calculating the total cost at each tier and returns the cost for the current tier and the lowest price tier in the selected time range. \r\n\r\nBecause of this, the recommended tier may not always be the most optimal if you have recently made changes to data ingestion, such as increasing or decreasing. Always review the charts page\r\n\r\n"
+              "json": "# Commitment Tier Recommendations\r\n\r\nThis table view displays the current tiers for Microsoft Sentinel. It shows the optimal tier to be on based on the selected time range. It does this by calculating the total cost at each tier and returns the cost for the current tier and the lowest price tier in the selected time range. \r\n\r\nBecause of this, the recommended tier may not always be the most optimal if you have recently made changes to data ingestion, such as increasing or decreasing. Always review the charts page\r\n\r\n"
             },
-            "name": "text - 3"
+            "conditionalVisibility": {
+              "parameterName": "ShowHelp",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "text - Unified - Overview - Commitment Tier Recommendations"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelPriceInputs = {SentinelExternalData};\r\nlet LogAnalyticsPriceInputs = {AzureMonitorExternalData};\r\nlet PriceInputs = union SentinelPriceInputs, LogAnalyticsPriceInputs\r\n    | summarize arg_max(TimeGenerated, *) by Tier, ServiceName\r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | project\r\n        ServiceName,\r\n        Tier,\r\n        TierVolumeGB,\r\n        RetailPrice,\r\n        EffectivePricePerGB,\r\n        EffectiveCommitmentTierThresholdGB\r\n    | extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nlet TierStats = UsageMetrics\r\n    | join kind = inner (\r\n        PriceInputs\r\n        )\r\n        on JoinColumn\r\n    | project Tier, Quantity_GB, EffectivePricePerGB, RetailPrice, TierVolumeGB, ServiceName\r\n    | extend CostAtTier = iff(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", Quantity_GB * EffectivePricePerGB, RetailPrice)\r\n    | summarize CostAtTier = sum(CostAtTier) by Tier, ServiceName\r\n    | extend CostAtTier = round(CostAtTier, 2)\r\n    | extend JoinColumn = 1;\r\nTierStats\r\n| where (ServiceName == \"Sentinel\" and Tier == SentinelCurrentTier) or (ServiceName == \"Azure Monitor\" and Tier == LogAnalyticsCurrentTier)\r\n| join kind = inner(\r\n    TierStats\r\n    | summarize arg_min(CostAtTier, Tier, JoinColumn) by ServiceName\r\n    )\r\n    on ServiceName\r\n| extend Status = iif(Tier == Tier1, \"Good\", \"Change Tier\")\r\n| project\r\n    ServiceName,\r\n    CurrentTier = Tier,\r\n    RecommendedTier = Tier1,\r\n    Status,\r\n    CurrentTierCost = CostAtTier,\r\n    RecommendedTierCost = CostAtTier1,\r\n    CostDifferences = CostAtTier - CostAtTier1\r\n\r\n\r\n \r\n",
-              "size": 0,
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}), 1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelPriceInputs = {SentinelPrices};\r\nlet LogAnalyticsPriceInputs = {AzureMonitorPrices};\r\nlet PriceInputs = union SentinelPriceInputs, LogAnalyticsPriceInputs \r\n    | summarize arg_max(TimeGenerated, *) by Tier, ServiceName  \r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))     \r\n    | project ServiceName, Tier, TierVolumeGB, RetailPrice, EffectivePricePerGB, EffectiveCommitmentTierThresholdGB  \r\n    | extend JoinColumn = 1;\r\n{UsageDataQuery} \r\nlet TierStats = UsageMetrics  \r\n    | join kind = inner (PriceInputs) \r\n    on JoinColumn  \r\n    | project Tier, Quantity_GB, EffectivePricePerGB, RetailPrice, TierVolumeGB, ServiceName  \r\n    | extend CostAtTier = iff(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", Quantity_GB * EffectivePricePerGB, RetailPrice)  \r\n    | summarize CostAtTier = sum(CostAtTier) by Tier, ServiceName  \r\n    | extend CostAtTier = round(CostAtTier, 2)  \r\n    | extend JoinColumn = 1;\r\nTierStats\r\n| where (ServiceName == \"Sentinel\" and Tier == SentinelCurrentTier and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and Tier == LogAnalyticsCurrentTier and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| join kind = inner(TierStats\r\n    | summarize arg_min(CostAtTier, Tier, JoinColumn) by ServiceName)\r\n    on ServiceName\r\n| extend Status = case(\r\n    Tier == Tier1, \"Good\", \"Change Tier\")\r\n| project-rename \r\n    CurrentTier = Tier,\r\n    RecommendedTier = Tier1,\r\n    CurrentTierCost = CostAtTier,\r\n    RecommendedTierCost = CostAtTier1\r\n| extend CostDifference = RecommendedTierCost - CurrentTierCost\r\n| project\r\n    ServiceName,\r\n    CurrentTier,\r\n    RecommendedTier,\r\n    Status,\r\n    CurrentTierCost,\r\n    RecommendedTierCost,\r\n    CostDifference",
+              "size": 4,
+              "showAnalytics": true,
+              "title": "Commitment Tier Recommendations",
               "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -502,6 +1654,8 @@
                     "columnMatch": "Status",
                     "formatter": 18,
                     "formatOptions": {
+                      "linkTarget": "CellDetails",
+                      "linkIsContextBlade": true,
                       "thresholdsOptions": "icons",
                       "thresholdsGrid": [
                         {
@@ -517,6 +1671,12 @@
                           "text": "{0}{1}"
                         },
                         {
+                          "operator": "startsWith",
+                          "thresholdValue": "No Value",
+                          "representation": "2",
+                          "text": "{0}"
+                        },
+                        {
                           "operator": "Default",
                           "thresholdValue": null,
                           "representation": "unknown",
@@ -527,13 +1687,16 @@
                   },
                   {
                     "columnMatch": "CurrentTierCost",
-                    "formatter": 0,
+                    "formatter": 1,
                     "numberFormat": {
                       "unit": 17,
                       "options": {
                         "style": "decimal",
                         "maximumFractionDigits": 2
                       }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "This is your current estimated costs"
                     }
                   },
                   {
@@ -545,6 +1708,9 @@
                         "style": "decimal",
                         "maximumFractionDigits": 2
                       }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "This is the potential cost if the tier is changed"
                     }
                   },
                   {
@@ -560,6 +1726,10 @@
                   }
                 ],
                 "labelSettings": [
+                  {
+                    "columnId": "ServiceName",
+                    "label": "Service"
+                  },
                   {
                     "columnId": "CurrentTier",
                     "label": "Current Tier"
@@ -577,7 +1747,7 @@
                     "label": "Recommended Tier cost"
                   },
                   {
-                    "columnId": "CostDifferences",
+                    "columnId": "CostDifference",
                     "label": "Cost Difference"
                   }
                 ]
@@ -588,27 +1758,37 @@
                 ]
               }
             },
-            "name": "query - 2 - copy"
+            "name": "query - Unified - Overview - Commitment Tier Recommendations"
           }
         ]
       },
-      "conditionalVisibility": {
-        "parameterName": "TabSelection",
-        "comparison": "isEqualTo",
-        "value": "Overview"
-      },
-      "name": "group - Overview"
+      "name": "group - Unified - Overview"
     },
     {
       "type": 12,
       "content": {
         "version": "NotebookGroup/1.0",
         "groupType": "editable",
+        "title": "Charts",
+        "expandable": true,
         "items": [
           {
             "type": 1,
             "content": {
-              "json": "# Commitment Tier Parameters\r\n\r\nThese charts require two parameters. Both have the same values, but reflect Cost Tiers for Sentinel and Log Analytics. The reason for this is because enabling Commitment Tiers for Sentinel and Log Analytics are seperate and are cost effective at different thresholds. These parameters allow you to simulate the cost for each service with a selection of combinations\r\n\r\n> TIP: You can select all the tiers at once, but it is recommend to select your current tier, the recommended tier and at least one other (the next one up or down). For example if your current tier is 100 and the recommend tier is 200, select 100, 200 and 300. Check the Overview page for the current recommendation based on your selected time range.\r\n\r\n- Details for changing Microsoft Sentinel Commitment Tiers: https://learn.microsoft.com/en-us/azure/sentinel/billing-reduce-costs#set-or-change-pricing-tier\r\n- Details for changing Log Analytics Commitment Tiers : https://learn.microsoft.com/en-US/azure/azure-monitor/logs/change-pricing-tier?tabs=azure-portal\r\n\r\n### All prices shown are based on the current retail prices. This does not account for any discounts you may have been provided. This has been provided as a guide into your data and converted to cost, as opposed to just data ingested\r\n\r\n### This workbook has not been tested against any legacy tiers for Log Analytics or dedicated clusters.",
+              "json": "# DEMO DATA\r\n## This workbook is currently displaying usage data for demonstration purposes. Ensure you turn this parameter off in production",
+              "style": "warning"
+            },
+            "conditionalVisibility": {
+              "parameterName": "UseDemoData",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "text - Main Page - Demo Data Warning - Copy"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "# Commitment Tier Parameters\r\n\r\nThese charts require the selection of the Commitment tier parameter. By default, the current tier is selected. With the unified pricing model, this tier selection displays the combined price of Log Analytics and Microsoft Sentinel. \r\n\r\n> TIP: You can select all the tiers at once, but it is recommend to select your current tier, the recommended tier and at least one other (the next one up or down). For example if your current tier is 100 and the recommend tier is 200, select 100, 200 and 300. Check the Overview page for the current recommendation based on your selected time range.\r\n\r\n- Details for changing Microsoft Sentinel Commitment Tiers: https://learn.microsoft.com/en-us/azure/sentinel/billing-reduce-costs#set-or-change-pricing-tier\r\n\r\n### All prices shown are based on the current retail prices. This does not account for any discounts you may have been provided. This has been provided as a guide into your data and converted to cost, as opposed to just data ingested\r\n\r\n### This workbook has not been tested against any legacy tiers for Log Analytics or dedicated clusters.",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -622,6 +1802,9 @@
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
               "parameters": [
                 {
                   "id": "ba82e042-daaf-4d29-85a8-d87bfe3bbb33",
@@ -629,50 +1812,87 @@
                   "name": "SentinelCT",
                   "label": "Sentinel Commitment Tier",
                   "type": 2,
+                  "isRequired": true,
                   "multiSelect": true,
                   "quote": "'",
                   "delimiter": ",",
+                  "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| join kind = fullouter (\r\n    resources\r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product == \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId has \"{Workspace}\"\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name))\r\n    | project value = case(\r\n        sentinelSku == \"Unified\", \"Pay-as-you-go\",\r\n        sentinelSku == \"PerGB\", \"Pay-as-you-go\",\r\n        sentinelSku == \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n        \"Not Supported in this workbook\"\r\n        )\r\n    | extend selected = true\r\n) on value\r\n| project value, label = value, selected, Order\r\n| order by Order asc\r\n\r\n",
+                  "crossComponentResources": [
+                    "{Subscriptions}"
+                  ],
                   "typeSettings": {
                     "additionalResourceOptions": [],
                     "showDefault": false
                   },
-                  "jsonData": "[\r\n    \"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"\r\n]",
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "value": [
-                    "100",
-                    "Pay-as-you-go"
-                  ]
-                },
-                {
-                  "id": "43a00ce0-c7d6-48c0-b9e0-69e1b131427d",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "LogAnalyticsCT",
-                  "type": 2,
-                  "multiSelect": true,
-                  "quote": "'",
-                  "delimiter": ",",
-                  "typeSettings": {
-                    "additionalResourceOptions": [],
-                    "showDefault": false
-                  },
-                  "jsonData": "[\r\n    \"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"\r\n]",
-                  "timeContext": {
-                    "durationMs": 86400000
-                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
                   "value": [
                     "Pay-as-you-go",
                     "100"
-                  ],
-                  "label": "Log Analytics Commitment Tier"
+                  ]
                 }
               ],
               "style": "pills",
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces"
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
             },
-            "name": "parameters - 4"
+            "conditionalVisibility": {
+              "parameterName": "ShowSentinel",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "parameters - Sentinel"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
+              "parameters": [
+                {
+                  "id": "ad76436d-135b-499c-ab9f-4c994dbb35d6",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "LogAnalyticsCT",
+                  "label": "Log Analytics Commitment Tier",
+                  "type": 2,
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| join kind = fullouter (\r\n    resources\r\n    | where type =~ \"microsoft.operationsmanagement/workspaces\"\r\n    | where id =~ \"{Workspace}\"\r\n    | extend sku   = trim(' ', tostring(properties.sku.name))\r\n    | project value = case(\r\n        sku == \"PerGB2018\", \"Pay-as-you-go\",\r\n        sku == \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n        \"Not Supported in this workbook\"\r\n        )\r\n    | extend selected = true\r\n) on value\r\n| project value, label = value, selected, Order\r\n| order by Order asc\r\n\r\n",
+                  "crossComponentResources": [
+                    "{Subscriptions}"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": [
+                    "Pay-as-you-go",
+                    "100"
+                  ]
+                }
+              ],
+              "style": "pills",
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
+            },
+            "conditionalVisibility": {
+              "parameterName": "ShowLogAnalytics",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "parameters - Log Analytics"
           },
           {
             "type": 1,
@@ -814,7 +2034,7 @@
           {
             "type": 1,
             "content": {
-              "json": "# Sum of Daily Costs\r\n\r\nThese charts show the retail cost for Sentinel (left) and Log Analytics (Right) based on the selected commitment tiers and current usage. \r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the left chart would display two series for each selected tier. Each series would reflect the retail prices that would have been paid based on the selected tiers.\r\n\r\nWhen trying to interpret these costs , the legend shows the total cost for the selected time range, with the most expensive tier on the left and the best value on the right. ",
+              "json": "# Sum of Daily Costs\r\n\r\nThis chart show the retail cost for Microsoft Sentinel based on the selected commitment tiers and current usage. \r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the chart would display two series for each selected tier. Each series would reflect the retail prices that would have been paid based on the selected tiers.\r\n\r\nWhen trying to interpret these costs , the legend shows the total cost for the selected time range, with the most expensive tier on the left and the best value on the right. ",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -828,11 +2048,12 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{SentinelCT}]);\r\nlet PriceInputs = {SentinelExternalData}\r\n| summarize arg_max(TimeGenerated, *) by Tier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| join kind = inner (\r\n    PriceInputs\r\n    | where Tier in (SelectedTiers)\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend CostAtTier = iff(Quantity_GB > TierVolumeGB, Quantity_GB * EffectivePricePerGB, RetailPrice)\r\n| make-series CostAtTier = sum(CostAtTier), Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier\r\n| extend CostMovingAverage = series_fir(CostAtTier, repeat(1, 7), true, true)\r\n| extend Quantity_GBMovingAverage = series_fir(Quantity_GB, repeat(1, 7), true, true)\r\n| render timechart ",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{SentinelCT}]);\r\nlet PriceInputs = {SentinelPrices}\r\n| summarize arg_max(TimeGenerated, *) by Tier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| join kind = inner (\r\n    PriceInputs\r\n    | where Tier in (SelectedTiers)\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend CostAtTier = iff(Quantity_GB > TierVolumeGB, Quantity_GB * EffectivePricePerGB, RetailPrice)\r\n| make-series CostAtTier = sum(CostAtTier), Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier\r\n| extend MovingAverageFilter = iif(array_length(CostAtTier) < 7, array_length(CostAtTier), 7)\r\n| extend CostMovingAverage = series_fir(CostAtTier, repeat(1, MovingAverageFilter), true, false)\r\n| extend Quantity_GBMovingAverage = series_fir(Quantity_GB, repeat(1, MovingAverageFilter), true, false)\r\n| render timechart ",
               "size": 0,
               "showAnalytics": true,
               "title": "Sum of Daily Sentinel Cost ({CurrencyCode})",
               "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -843,6 +2064,7 @@
                 "yAxis": [
                   "CostAtTier"
                 ],
+                "showLegend": true,
                 "seriesLabelSettings": [
                   {
                     "seriesName": "Pay-as-you-go",
@@ -894,21 +2116,24 @@
                 }
               }
             },
-            "customWidth": "50",
-            "name": "Sentinel Ingestion Metrics",
-            "styleSettings": {
-              "maxWidth": "50"
-            }
+            "conditionalVisibility": {
+              "parameterName": "ShowSentinel",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "showPin": true,
+            "name": "Sentinel Ingestion Metrics"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{LogAnalyticsCT}]);\r\nlet PriceInputs = {AzureMonitorExternalData}\r\n| summarize arg_max(TimeGenerated, *) by Tier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| join kind = inner (\r\n    PriceInputs\r\n    | where Tier in (SelectedTiers)\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend CostAtTier = iff(Quantity_GB > TierVolumeGB, Quantity_GB * EffectivePricePerGB, RetailPrice)\r\n| make-series CostAtTier = sum(CostAtTier), Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier\r\n| extend CostMovingAverage = series_fir(CostAtTier, repeat(1, 7), true, true)\r\n| extend Quantity_GBMovingAverage = series_fir(Quantity_GB, repeat(1, 7), true, true)\r\n| render timechart ",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{LogAnalyticsCT}]);\r\nlet PriceInputs = {AzureMonitorPrices}\r\n| summarize arg_max(TimeGenerated, *) by Tier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| join kind = inner (\r\n    PriceInputs\r\n    | where Tier in (SelectedTiers)\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend CostAtTier = iff(Quantity_GB > TierVolumeGB, Quantity_GB * EffectivePricePerGB, RetailPrice)\r\n| make-series CostAtTier = sum(CostAtTier), Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier\r\n| extend CostMovingAverage = series_fir(CostAtTier, repeat(1, 7), true, false)\r\n| extend Quantity_GBMovingAverage = series_fir(Quantity_GB, repeat(1, 7), true, false)\r\n| render timechart ",
               "size": 0,
               "showAnalytics": true,
-              "title": "Sum of Log Analytics Cost ({CurrencyCode})",
+              "title": "Sum of Daily Log Analytics Cost ({CurrencyCode})",
               "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -970,16 +2195,18 @@
                 }
               }
             },
-            "customWidth": "50",
-            "name": "Log Analytics Ingestion Metrics",
-            "styleSettings": {
-              "maxWidth": "50"
-            }
+            "conditionalVisibility": {
+              "parameterName": "ShowLogAnalytics",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "showPin": true,
+            "name": "query - Classic - Charts - Log Analytics Ingestion "
           },
           {
             "type": 1,
             "content": {
-              "json": "# Moving Average Costs\r\n\r\nThese charts show the moving average costs for Sentinel (left) and Log Analytics (Right) based on the selected commitment tiers and current usage. \r\n\r\nIn statistics, a moving average is a calculation to analyze data points by creating a series of averages of different subsets of the full data set. This is used in this example to smooth out short term fluctuations in the data and to highlight weekly trends\r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the left chart would display two series for each selected tier. Each series would reflect the moving averages cost based on the selected tiers.",
+              "json": "# Moving Average Costs\r\n\r\nThis chart show the moving average costs for Microsoft Sentinel based on the selected commitment tiers and current usage. \r\n\r\nIn statistics, a moving average is a calculation to analyze data points by creating a series of averages of different subsets of the full data set. This is used in this example to smooth out short term fluctuations in the data and to highlight weekly trends\r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the chart would display two series for each selected tier. Each series would reflect the moving averages cost based on the selected tiers.",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -993,13 +2220,15 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"Sentinel Ingestion Metrics\"}],\"projectRename\":[{\"originalName\":\"[Sentinel Ingestion Metrics].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - 1].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost ].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GBMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GB\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Index\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Tier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Index\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GBMovingAverage\"}]}",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"Sentinel Ingestion Metrics\"}],\"projectRename\":[{\"originalName\":\"[Sentinel Ingestion Metrics].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].MovingAverageFilter\",\"mergedName\":\"MovingAverageFilter\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - 1].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost ].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GBMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GB\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Index\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Tier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Index\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GBMovingAverage\"}]}",
               "size": 0,
               "aggregation": 3,
               "title": "Sentinel 7 Day Moving Average Cost ({CurrencyCode})",
+              "showRefreshButton": true,
               "queryType": 7,
               "visualization": "timechart",
               "chartSettings": {
+                "showLegend": true,
                 "seriesLabelSettings": [
                   {
                     "seriesName": "Pay-as-you-go",
@@ -1051,20 +2280,22 @@
                 }
               }
             },
-            "customWidth": "50",
-            "name": "Sentinel Moving Average",
-            "styleSettings": {
-              "maxWidth": "50"
-            }
+            "conditionalVisibility": {
+              "parameterName": "ShowSentinel",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "Sentinel Moving Average"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"Log Analytics Ingestion Metrics\"}],\"projectRename\":[{\"originalName\":\"[Log Analytics Ingestion Metrics].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Log Analytics Ingestion Metrics].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Log Analytics Ingestion Metrics].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - 1].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost ].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GBMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GB\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Index\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Tier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Index\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GBMovingAverage\"},{\"originalName\":\"[Log Analytics Ingestion Metrics].Index\"},{\"originalName\":\"[Log Analytics Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Log Analytics Ingestion Metrics].Quantity_GB\"},{\"originalName\":\"[Log Analytics Ingestion Metrics].Quantity_GBMovingAverage\"}]}",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"query - Classic - Charts - Log Analytics Ingestion \"}],\"projectRename\":[{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - 1].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost ].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GBMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GB\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Index\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Tier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Index\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].Quantity_GB\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Quantity_GB\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Quantity_GBMovingAverage\"}]}",
               "size": 0,
               "aggregation": 3,
               "title": "Log Analytics 7 Day Moving Average Cost ({CurrencyCode})",
+              "showRefreshButton": true,
               "queryType": 7,
               "visualization": "timechart",
               "chartSettings": {
@@ -1119,16 +2350,17 @@
                 }
               }
             },
-            "customWidth": "50",
-            "name": "Log Analytics Moving Average",
-            "styleSettings": {
-              "maxWidth": "50"
-            }
+            "conditionalVisibility": {
+              "parameterName": "ShowLogAnalytics",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "query - Classic - Charts - Log Analytics Moving Average"
           },
           {
             "type": 1,
             "content": {
-              "json": "# GB Ingested and Thresholds\r\n\r\nThese charts show the actual and average ingestion of billable data for Sentinel (left) and Log Analytics (right). It also visualises the thresholds which the selected commitment tiers become cost effective. \r\n\r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the left chart would display two series for each selected tier. It would also display two series called *\"Actual_Usage_GB\"* and *\"Average_Usage_GB\"*\r\n\r\nIf the Actual_Usage_GB and / or Average_Usage_GB is higher than a displayed commitment tier, then it would be highly likely that moving to the next tier would be cost effective.",
+              "json": "# GB Ingested and Thresholds\r\n\r\nThis chart show the actual and average ingestion of billable data for Microsoft Sentinel. It also visualises the thresholds which the selected commitment tiers become cost effective. \r\n\r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the chart would display two series for each selected tier. It would also display two series called *\"Actual_Usage_GB\"* and *\"Average_Usage_GB\"*\r\n\r\nIf the Actual_Usage_GB and / or Average_Usage_GB is higher than a displayed commitment tier, then it would be highly likely that moving to the next tier would be cost effective.",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -1142,10 +2374,12 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{SentinelCT}]);\r\nlet PriceInputs = {SentinelExternalData}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | where Tier != \"Pay-as-you-go\"\r\n    | where Tier in (SelectedTiers)\r\n    | extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nlet Actual_Usage_GB = \r\n    UsageMetrics\r\n    | make-series Quantity_GB = toreal(round(sum(Quantity_GB),3)) default = toreal(0) on StartTime step 1d // Daily Usage\r\n    | project \r\n        SeriesName = \"Actual_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB;\r\nlet Average_Usage_GB = \r\n    Actual_Usage_GB\r\n    | extend Stats = series_stats_dynamic(Quantity_GB)\r\n    | project\r\n        SeriesName = \"Average_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB = repeat(toreal(Stats.avg), array_length(Quantity_GB))\r\n;\r\nlet UsageTimeRange =\r\n    toscalar(Actual_Usage_GB\r\n    | project StartTime);\r\nlet CommitmentTierCalculations = PriceInputs\r\n    | extend StartTime = UsageTimeRange\r\n    | extend Quantity_GB = repeat(toreal(EffectiveCommitmentTierThresholdGB), array_length(StartTime))\r\n    | project \r\n        SeriesName = tostring(Tier), \r\n        StartTime, \r\n        Quantity_GB\r\n;\r\nunion CommitmentTierCalculations, Actual_Usage_GB, Average_Usage_GB\r\n| render timechart ",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{SentinelCT}]);\r\nlet PriceInputs = {SentinelPrices}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | where Tier != \"Pay-as-you-go\"\r\n    | where Tier in (SelectedTiers)\r\n    | extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nlet Actual_Usage_GB = \r\n    UsageMetrics\r\n    | make-series Quantity_GB = toreal(round(sum(Quantity_GB),3)) default = toreal(0) on StartTime step 1d // Daily Usage\r\n    | project \r\n        SeriesName = \"Actual_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB;\r\nlet Average_Usage_GB = \r\n    Actual_Usage_GB\r\n    | extend Stats = series_stats_dynamic(Quantity_GB)\r\n    | project\r\n        SeriesName = \"Average_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB = repeat(toreal(Stats.avg), array_length(Quantity_GB))\r\n;\r\nlet UsageTimeRange =\r\n    toscalar(Actual_Usage_GB\r\n    | project StartTime);\r\nlet CommitmentTierCalculations = PriceInputs\r\n    | extend StartTime = UsageTimeRange\r\n    | extend Quantity_GB = repeat(toreal(EffectiveCommitmentTierThresholdGB), array_length(StartTime))\r\n    | project \r\n        SeriesName = tostring(Tier), \r\n        StartTime, \r\n        Quantity_GB\r\n;\r\nunion CommitmentTierCalculations, Actual_Usage_GB, Average_Usage_GB\r\n| render timechart ",
               "size": 0,
+              "showAnalytics": true,
               "title": "Sentinel GB Ingested and Commitment Tier Thresholds",
               "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -1153,6 +2387,7 @@
               ],
               "visualization": "timechart",
               "chartSettings": {
+                "showLegend": true,
                 "seriesLabelSettings": [
                   {
                     "seriesName": "Pay-as-you-go",
@@ -1189,24 +2424,38 @@
                   {
                     "seriesName": "5000",
                     "color": "lightBlue"
+                  },
+                  {
+                    "seriesName": "Actual_Usage_GB",
+                    "label": "Actual Usage GB",
+                    "color": "amethyst"
+                  },
+                  {
+                    "seriesName": "Average_Usage_GB",
+                    "label": "Average Usage GB",
+                    "color": "pink"
                   }
                 ]
               }
             },
-            "customWidth": "50",
-            "name": "Sentinel GB Ingested and Commitment Tier Thresholds",
-            "styleSettings": {
-              "maxWidth": "50"
-            }
+            "conditionalVisibility": {
+              "parameterName": "ShowSentinel",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "showPin": true,
+            "name": "Sentinel GB Ingested and Commitment Tier Thresholds"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{LogAnalyticsCT}]);\r\nlet PriceInputs = {AzureMonitorExternalData}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | where Tier != \"Pay-as-you-go\"\r\n    | where Tier in (SelectedTiers)\r\n    | extend JoinColumn = 1;\r\n    // UsageMetrics\r\n{UsageDataQuery}\r\nlet Actual_Usage_GB = \r\n    UsageMetrics\r\n    | make-series Quantity_GB = toreal(round(sum(Quantity_GB),3)) default = toreal(0) on StartTime step 1d // Daily Usage\r\n    | project \r\n        SeriesName = \"Actual_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB;\r\nlet Average_Usage_GB = \r\n    Actual_Usage_GB\r\n    | extend Stats = series_stats_dynamic(Quantity_GB)\r\n    | project\r\n        SeriesName = \"Average_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB = repeat(toreal(Stats.avg), array_length(Quantity_GB))\r\n;\r\nlet UsageTimeRange =\r\n    toscalar(Actual_Usage_GB\r\n    | project StartTime);\r\nlet CommitmentTierCalculations = PriceInputs\r\n    | extend StartTime = UsageTimeRange\r\n    | extend Quantity_GB = repeat(toreal(EffectiveCommitmentTierThresholdGB), array_length(StartTime))\r\n    | project \r\n        SeriesName = tostring(Tier), \r\n        StartTime, \r\n        Quantity_GB\r\n;\r\nunion CommitmentTierCalculations, Actual_Usage_GB, Average_Usage_GB\r\n| render timechart ",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{LogAnalyticsCT}]);\r\nlet PriceInputs = {AzureMonitorPrices}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | where Tier != \"Pay-as-you-go\"\r\n    | where Tier in (SelectedTiers)\r\n    | extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nlet Actual_Usage_GB = \r\n    UsageMetrics\r\n    | make-series Quantity_GB = toreal(round(sum(Quantity_GB),3)) default = toreal(0) on StartTime step 1d // Daily Usage\r\n    | project \r\n        SeriesName = \"Actual_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB;\r\nlet Average_Usage_GB = \r\n    Actual_Usage_GB\r\n    | extend Stats = series_stats_dynamic(Quantity_GB)\r\n    | project\r\n        SeriesName = \"Average_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB = repeat(toreal(Stats.avg), array_length(Quantity_GB))\r\n;\r\nlet UsageTimeRange =\r\n    toscalar(Actual_Usage_GB\r\n    | project StartTime);\r\nlet CommitmentTierCalculations = PriceInputs\r\n    | extend StartTime = UsageTimeRange\r\n    | extend Quantity_GB = repeat(toreal(EffectiveCommitmentTierThresholdGB), array_length(StartTime))\r\n    | project \r\n        SeriesName = tostring(Tier), \r\n        StartTime, \r\n        Quantity_GB\r\n;\r\nunion CommitmentTierCalculations, Actual_Usage_GB, Average_Usage_GB\r\n| render timechart ",
               "size": 0,
-              "title": "Log Analytics GB Ingested and CT Thresholds",
+              "showAnalytics": true,
+              "title": "Log Analytics GB Ingested and Commitment Tier Thresholds",
               "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -1254,31 +2503,43 @@
                 ]
               }
             },
-            "customWidth": "50",
-            "name": "Log Analytics GB Ingested and Commitment Tier Thresholds",
-            "styleSettings": {
-              "maxWidth": "50"
-            }
+            "conditionalVisibility": {
+              "parameterName": "ShowLogAnalytics",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "showPin": true,
+            "name": "query - Classic - Charts - Log Analytics GB Ingested and Commitment Tier Thresholds"
           }
         ]
       },
-      "conditionalVisibility": {
-        "parameterName": "TabSelection",
-        "comparison": "isEqualTo",
-        "value": "Charts"
-      },
-      "name": "group - Charts"
+      "name": "group - Unified - Charts"
     },
     {
       "type": 12,
       "content": {
         "version": "NotebookGroup/1.0",
         "groupType": "editable",
+        "title": "Forecasting",
+        "expandable": true,
         "items": [
           {
             "type": 1,
             "content": {
-              "json": "# GB Pricing Forecasted\r\n\r\nThese charts show the current ingestion cost the forecasted ingestion costs based of billable data for Sentinel (left) and Log Analytics (right). It also visualises the thresholds which the selected commitment tiers become cost effective. \r\n\r\nThese charts require you to select the Sentinel and Log Analytics tiers that will be displayed for forecasting.\r\n\r\nYou are also required to select a value from the parameter **Days Forecasted**.\r\n\r\nWhen making forecasting predictions, the more data you have historically, the more accurate the forecasting is. It is also worth noting the further in the future the data goes, the less accurate the prediction is.\r\n\r\nWhen observing these charts, you will see two series. \r\n- **CostAtTier**: This represents the current cost based on the pricing unputs and current usage. At the end of the selected time range, it will drop to 0.\r\n- **Forecasted**: This reflects the trend of data, with anomalous data samples removed. This is why it does not match the *CostAtTier* series exactly. At the end of the selected time range, it will continue further for the number of days selected in the parameter **Days Forecasted**, providing a calculated prection of the data based on historcal data.\r\n\r\n>Note: Forecasting cannot predict for unexpected changes that have not happened regularlly in the historical data, such as onboarding of new data sources. Also if seasonality cannot be detected (This means regular patterns, such as peaks and troughs in the data relating to user working hours), then it will display a line of best fit.",
+              "json": "# DEMO DATA\r\n## This workbook is currently displaying usage data for demonstration purposes. Ensure you turn this parameter off in production",
+              "style": "warning"
+            },
+            "conditionalVisibility": {
+              "parameterName": "UseDemoData",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "text - Main Page - Demo Data Warning - Copy"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "# GB Pricing Forecasted\r\n\r\nThese charts show the current ingestion cost the forecasted ingestion costs based of billable data for Microsoft Sentinel. It also visualises the thresholds which the selected commitment tiers become cost effective. \r\n\r\nThese charts require you to select the Microsoft Sentinel tiers that will be displayed for forecasting. By default the current tier will be selected.\r\n\r\nYou are also required to select a value from the parameter **Days Forecasted**.\r\n\r\nWhen making forecasting predictions, the more data you have historically, the more accurate the forecasting is. It is also worth noting the further in the future the data goes, the less accurate the prediction is.\r\n\r\nWhen observing these charts, you will see two series. \r\n- **CostAtTier**: This represents the current cost based on the pricing unputs and current usage. At the end of the selected time range, it will drop to 0.\r\n- **Forecasted**: This reflects the trend of data, with anomalous data samples removed. This is why it does not match the *CostAtTier* series exactly. At the end of the selected time range, it will continue further for the number of days selected in the parameter **Days Forecasted**, providing a calculated prection of the data based on historcal data.\r\n\r\n>Note: Forecasting cannot predict for unexpected changes that have not happened regularlly in the historical data, such as onboarding of new data sources. Also if seasonality cannot be detected (This means regular patterns, such as peaks and troughs in the data relating to user working hours), then it will display a line of best fit.",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -1287,13 +2548,6 @@
               "value": "true"
             },
             "name": "text - help - Pricing Forecasted"
-          },
-          {
-            "type": 1,
-            "content": {
-              "json": "---\r\n# Forecasting\r\n"
-            },
-            "name": "text - seperator"
           },
           {
             "type": 9,
@@ -1325,6 +2579,9 @@
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
               "parameters": [
                 {
                   "id": "2e6952da-1530-4fdd-8ba2-a5b3328f5260",
@@ -1333,113 +2590,259 @@
                   "label": "Sentinel Tier",
                   "type": 10,
                   "isRequired": true,
+                  "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| join kind = fullouter (\r\n    resources\r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product == \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId has \"{Workspace}\"\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name))\r\n    | project value = case(\r\n        sentinelSku == \"Unified\", \"Pay-as-you-go\",\r\n        sentinelSku == \"PerGB\", \"Pay-as-you-go\",\r\n        sentinelSku == \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n        \"Not Supported in this workbook\"\r\n        )\r\n    | extend selected = true\r\n) on value\r\n| project value, label = value, selected, Order\r\n| order by Order asc\r\n\r\n",
+                  "crossComponentResources": [
+                    "{Subscriptions}"
+                  ],
                   "typeSettings": {
                     "additionalResourceOptions": [],
                     "showDefault": false
                   },
-                  "jsonData": "[\r\n    {\r\n        \"value\":  \"Pay-as-you-go\",\r\n        \"label\":  \"Pay-as-you-go\",\r\n\t\t\"selected\" :true\r\n    },\r\n    {\r\n        \"value\":  \"100\",\r\n        \"label\":  \"100\"\r\n    },\r\n    {\r\n        \"value\":  \"200\",\r\n        \"label\":  \"200\"\r\n    },\r\n    {\r\n        \"value\":  \"300\",\r\n        \"label\":  \"300\"\r\n    },\r\n    {\r\n        \"value\":  \"400\",\r\n        \"label\":  \"400\"\r\n    },\r\n    {\r\n        \"value\":  \"500\",\r\n        \"label\":  \"500\"\r\n    },\r\n    {\r\n        \"value\":  \"1000\",\r\n        \"label\":  \"1000\"\r\n    },\r\n    {\r\n        \"value\":  \"2000\",\r\n        \"label\":  \"2000\"\r\n    },\r\n    {\r\n        \"value\":  \"5000\",\r\n        \"label\":  \"5000\"\r\n    }\r\n]\r\n",
                   "timeContext": {
                     "durationMs": 86400000
-                  }
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": "100"
                 }
               ],
               "style": "above",
-              "queryType": 8
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
             },
-            "customWidth": "50",
+            "conditionalVisibility": {
+              "parameterName": "ShowSentinel",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
             "name": "parameters - Forecasting - Sentinel"
           },
           {
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
+              "crossComponentResources": [
+                "{Subscriptions}"
+              ],
               "parameters": [
                 {
-                  "id": "c5ee99ea-d45a-4c44-b072-cb56a4ab54ed",
+                  "id": "59049206-5f1b-4f13-ad47-815fb2764e0f",
                   "version": "KqlParameterItem/1.0",
                   "name": "LogAnalyticsSelectedForecastTier",
-                  "label": "Log Analytics Tier",
+                  "label": "LogAnalyticsTier",
                   "type": 10,
                   "isRequired": true,
+                  "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| join kind = fullouter (\r\n    resources\r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product == \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId has \"{Workspace}\"\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name))\r\n    | project value = case(\r\n        sentinelSku == \"Unified\", \"Pay-as-you-go\",\r\n        sentinelSku == \"PerGB\", \"Pay-as-you-go\",\r\n        sentinelSku == \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n        \"Not Supported in this workbook\"\r\n        )\r\n    | extend selected = true\r\n) on value\r\n| project value, label = value, selected, Order\r\n| order by Order asc\r\n\r\n",
+                  "crossComponentResources": [
+                    "{Subscriptions}"
+                  ],
                   "typeSettings": {
                     "additionalResourceOptions": [],
                     "showDefault": false
                   },
-                  "jsonData": "[\r\n    {\r\n        \"value\":  \"Pay-as-you-go\",\r\n        \"label\":  \"Pay-as-you-go\",\r\n\t\t\"selected\" :true\r\n    },\r\n    {\r\n        \"value\":  \"100\",\r\n        \"label\":  \"100\"\r\n    },\r\n    {\r\n        \"value\":  \"200\",\r\n        \"label\":  \"200\"\r\n    },\r\n    {\r\n        \"value\":  \"300\",\r\n        \"label\":  \"300\"\r\n    },\r\n    {\r\n        \"value\":  \"400\",\r\n        \"label\":  \"400\"\r\n    },\r\n    {\r\n        \"value\":  \"500\",\r\n        \"label\":  \"500\"\r\n    },\r\n    {\r\n        \"value\":  \"1000\",\r\n        \"label\":  \"1000\"\r\n    },\r\n    {\r\n        \"value\":  \"2000\",\r\n        \"label\":  \"2000\"\r\n    },\r\n    {\r\n        \"value\":  \"5000\",\r\n        \"label\":  \"5000\"\r\n    }\r\n]\r\n",
                   "timeContext": {
                     "durationMs": 86400000
-                  }
+                  },
+                  "queryType": 1,
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": "100"
                 }
               ],
               "style": "above",
-              "queryType": 8
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources"
             },
-            "customWidth": "50",
+            "conditionalVisibility": {
+              "parameterName": "ShowLogAnalytics",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
             "name": "parameters - Forecasting - Log Analytics"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet PriceInputs = {SentinelExternalData}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd)\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n\r\n",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet PriceInputs = {SentinelPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n\r\n",
               "size": 0,
+              "showAnalytics": true,
               "title": "Sentinel Forecasted Cost for Tier \"{SentinelSelectedForecastTier}\" in {CurrencyCode}",
               "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
                 "{Workspace}"
-              ]
+              ],
+              "chartSettings": {
+                "showLegend": true,
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "CostAtTier",
+                    "label": "Current Cost",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "Forecasted",
+                    "label": "Forecasted Cost",
+                    "color": "pink"
+                  }
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 17,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true
+                    }
+                  }
+                }
+              }
             },
-            "customWidth": "50",
+            "conditionalVisibility": {
+              "parameterName": "ShowSentinel",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "showPin": true,
             "name": "Sentinel Forecasted Cost"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{LogAnalyticsSelectedForecastTier}\";\r\nlet PriceInputs = {AzureMonitorExternalData}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd)\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{LogAnalyticsSelectedForecastTier}\";\r\nlet PriceInputs = {AzureMonitorPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n\r\n",
               "size": 0,
+              "showAnalytics": true,
               "title": "Log Analytics Forecasted Cost for Tier \"{LogAnalyticsSelectedForecastTier}\" in {CurrencyCode}",
               "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
                 "{Workspace}"
-              ]
+              ],
+              "chartSettings": {
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 17,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true
+                    }
+                  }
+                }
+              }
             },
-            "customWidth": "50",
-            "name": "Log Analytics Forecasted Cost"
+            "conditionalVisibility": {
+              "parameterName": "ShowLogAnalytics",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "showPin": true,
+            "name": "query - Forecasting - Log Analytics"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet PriceInputs = {SentinelPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend CostAtTier = series_fir(CostAtTier, repeat(1, 7), true, false)\r\n| extend Forecasted = series_fir(Forecasted, repeat(1, 7), true, false)\r\n| render timechart \r\n\r\n",
+              "size": 0,
+              "showAnalytics": true,
+              "title": "Sentinel Forecasted 7 Day Moving Average Cost for Tier \"{SentinelSelectedForecastTier}\" in {CurrencyCode}",
+              "showRefreshButton": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "visualization": "timechart",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "CostAtTier",
+                    "label": "Current Moving Average",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "Forecasted",
+                    "label": "Forecasted Moving Average",
+                    "color": "pink"
+                  }
+                ]
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "ShowSentinel",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "showPin": true,
+            "name": "Sentinel Forecasted 7 Day Moving Average"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{LogAnalyticsSelectedForecastTier}\";\r\nlet PriceInputs = {AzureMonitorPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend CostAtTier = series_fir(CostAtTier, repeat(1, 7), true, false)\r\n| extend Forecasted = series_fir(Forecasted, repeat(1, 7), true, false)\r\n| render timechart \r\n\r\n",
+              "size": 0,
+              "showAnalytics": true,
+              "title": "Log Analytics Forecasted 7 Day Moving Average Cost for Tier \"{LogAnalyticsSelectedForecastTier}\" in {CurrencyCode}",
+              "showRefreshButton": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "visualization": "timechart"
+            },
+            "conditionalVisibility": {
+              "parameterName": "ShowLogAnalytics",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "showPin": true,
+            "name": "Log Analytics Forecasted 7 Day Moving Average - Copy"
           }
         ]
       },
-      "conditionalVisibility": {
-        "parameterName": "TabSelection",
-        "comparison": "isEqualTo",
-        "value": "Forecasting"
-      },
-      "name": "group - Forecasting"
+      "name": "group - Unified - Forecasting"
     },
     {
       "type": 12,
       "content": {
         "version": "NotebookGroup/1.0",
         "groupType": "editable",
+        "title": "Troubleshooting",
+        "expandable": true,
         "items": [
           {
             "type": 1,
             "content": {
-              "json": "# Troubleshooting"
+              "json": "This troubleshooting guide takes you through the steps for resolving the external pricing data. For all other issues, ensure you have read access to you Azure Log Analytics workspace were Microsoft Sentinel resides.\r\n\r\nRead access is also required to Microsoft Sentinel, if the workspace is enabled with Microsoft Sentinel.",
+              "style": "info"
             },
-            "name": "text - 0"
+            "name": "text - Classic - Troubleshooting - Help"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "This troubleshooting table displays the following information\r\n\r\n- **ServiceName** : This will either be \"Azure Monitor\" or \"Sentinel\". \r\n\t- If you are expecting Sentinel to be display and it is not, review your permissions.\r\n\r\n\r\n- **PricingModel** :This will be either \"Unified\",  \"Classic\" or \"Log Analytics\"\r\n\t- **Unified** will show if you have a Microsoft Sentinel enabled workspace on the [new pricing model](https://techcommunity.microsoft.com/t5/microsoft-sentinel-blog/introducing-the-new-microsoft-sentinel-simplified-pricing/ba-p/3869145#:~:text=We%20are%20excited%20to%20announce%20the%20new%20simplified,is%20rolling%20out%20for%20all%20regions%20throughout%20July.).\r\n\t- **Classic** will show if you have not moved to the new pricing model.\r\n\t- **Log Analytics** will show if Microsoft Sentinel is not enabled on your workspace **OR** you do not have read permissions to the SecurityInsights solution.\r\n\r\n\r\n- **CurrencyCode**: This is your selected currency code. The currency codes are as per the [supported currencies](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices#supported-currencies).\r\n\r\n\r\n- **ArmRegionName**: This should be the Azure Region name for your Log Analytics Workspace.\r\n\r\n\r\n- **IsData**: This validates that the data can be loaded with the [External Data](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/externaldata-operator?pivots=azuremonitor) function.\r\n\r\n\r\n- **Url**: This is the url for the repository where the pricing will be looked up from. You should be able to follow the link and view the raw CSV. \r\n\r\nIf the url does not work, identify the fault (if possible) or submit an issue [here](https://github.com/TheAlistairRoss/MicrosoftSentinel/issues). Ensure you provide all the details shown in the table below.\r\n\r\nIf the results shows a warning message, this may suggests that the external data query has not been loaded as the url is incorrect or the file is inaccessible. Identify which URL is failing. This can be done by observing the **IsData** column and looking for those that are **False**. If possible, try and identify the issue and submit all the details from the table [here](https://github.com/TheAlistairRoss/MicrosoftSentinel/issues). ",
+              "style": "info"
+            },
+            "name": "text - Classic - Troubleshooting - Url Help"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let sentinelData = {SentinelExternalData};\r\nlet azureMonitorData = {AzureMonitorExternalData};\r\nlet currencyCode = \"{CurrencyCode}\";\r\nlet armRegionName = \"{WorkspaceLocation}\";\r\nlet Service = dynamic([{\"ServiceName\": \"Sentinel\", \"Url\" : \"{SentinelPricesCSVURL}\"},{\"ServiceName\": \"Azure Monitor\", \"Url\" : \"{AzureMonitorPricesCSVURL}\"}]);\r\nlet WarningMessage = \"The CSV cannot be found. Review the URL and contact the repo admin\";\r\nlet externalDataTest = union azureMonitorData, sentinelData\r\n    | distinct ServiceName\r\n    | extend IsData = true;\r\nprint\r\n    ServiceName = Service,\r\n    CurrencyCode = currencyCode,\r\n    ArmRegionName = armRegionName \r\n| mvexpand ServiceName\r\n | evaluate bag_unpack(ServiceName)\r\n| join kind=fullouter (externalDataTest) on ServiceName\r\n| project-away ServiceName1\r\n| extend IsData = iif(IsData == true, true, false)\r\n| extend Info = iif(IsData == false, WarningMessage,\"\")\r\n| order by ServiceName desc\r\n",
+              "query": "let sentinelData = {SentinelExternalData};\r\nlet azureMonitorData = {AzureMonitorExternalData};\r\nlet currencyCode = \"{CurrencyCode}\";\r\nlet armRegionName = \"{WorkspaceLocation}\";\r\nlet Service = dynamic([{\"ServiceName\": \"Sentinel\", \"Url\" : \"{SentinelPricesCSVURL}\"},{\"ServiceName\": \"Azure Monitor\", \"Url\" : \"{AzureMonitorPricesCSVURL}\"}]);\r\nlet externalDataTest = union azureMonitorData, sentinelData\r\n    | distinct ServiceName\r\n    | extend IsData = true;\r\nprint\r\n    ServiceName = Service,\r\n    CurrencyCode = currencyCode,\r\n    ArmRegionName = armRegionName \r\n| mvexpand ServiceName\r\n | evaluate bag_unpack(ServiceName)\r\n| join kind=fullouter (externalDataTest) on ServiceName\r\n| project-away ServiceName1\r\n| extend IsData = iif(IsData == true, true, false)\r\n| extend PricingModel = \"{PricingModel}\"\r\n| extend Info = \"info\"\r\n| order by ServiceName asc\r\n| project Info, ServiceName, PricingModel, CurrencyCode, ArmRegionName, IsData, Url\r\n",
               "size": 4,
+              "showAnalytics": true,
+              "title": "URL Details",
               "timeContextFromParameter": "TimeRange",
+              "showExportToExcel": true,
+              "exportToExcelOptions": "all",
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -1447,6 +2850,15 @@
               ],
               "gridSettings": {
                 "formatters": [
+                  {
+                    "columnMatch": "Info",
+                    "formatter": 11,
+                    "formatOptions": {
+                      "linkTarget": "GenericDetails",
+                      "linkIsContextBlade": true,
+                      "customColumnWidthSetting": "16ch"
+                    }
+                  },
                   {
                     "columnMatch": "ServiceName",
                     "formatter": 0,
@@ -1565,18 +2977,10 @@
                     "columnMatch": "Region",
                     "formatter": 17,
                     "formatOptions": {
-                      "customColumnWidthSetting": "12ch"
+                      "customColumnWidthSetting": "20ch"
                     },
                     "tooltipFormat": {
                       "tooltip": "Azure Region"
-                    }
-                  },
-                  {
-                    "columnMatch": "Url",
-                    "formatter": 7,
-                    "formatOptions": {
-                      "linkTarget": "Url",
-                      "linkIsContextBlade": false
                     }
                   },
                   {
@@ -1607,11 +3011,12 @@
                     }
                   },
                   {
-                    "columnMatch": "Info",
+                    "columnMatch": "Url",
                     "formatter": 7,
                     "formatOptions": {
-                      "linkTarget": "GenericDetails",
-                      "linkIsContextBlade": true
+                      "linkTarget": "Url",
+                      "linkIsContextBlade": false,
+                      "customColumnWidthSetting": "50%"
                     }
                   },
                   {
@@ -1631,13 +3036,64 @@
                 ]
               }
             },
-            "name": "query - 2"
+            "name": "query - Unified - Troubleshooting - URL Validation"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "# Azure Monitor Data\r\n\r\nThis should show the data from the URL above. This verifies the data is successfully imported using the following ExternalData query:\r\n\r\n```{AzureMonitorPrices}```\r\n\r\n> If the results shows a warning message, this may suggests that the external data query has not been loaded as the url is incorrect or the file is inaccessible. ",
+              "style": "info"
+            },
+            "name": "text - Unified - Troubleshooting - External Data Help - Copy"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{SentinelExternalData}",
+              "query": "{AzureMonitorPrices}",
+              "size": 0,
+              "title": "Azure Pricing Monitor Data for Region: {WorkspaceLocation}, Currency Code: {CurrencyCode}",
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "TimeGenerated",
+                    "formatter": 6,
+                    "dateFormat": {
+                      "showUtcTime": null,
+                      "formatName": "shortDateTimePattern"
+                    }
+                  },
+                  {
+                    "columnMatch": "EffectiveStartDate",
+                    "formatter": 6,
+                    "dateFormat": {
+                      "formatName": "shortDateTimePattern"
+                    }
+                  }
+                ]
+              }
+            },
+            "name": "query - Troubleshooting - Azure Monitor Results"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "# Microsoft Sentinel Data\r\nThis should show the data from the URL above. This verifies the data is successfully imported using the following ExternalData query:\r\n\r\n```{SentinelPrices}```\r\n\r\n> If the results shows a warning message, this may suggests that the external data query has not been loaded as the url is incorrect or the file is inaccessible. ",
+              "style": "info"
+            },
+            "name": "text - Unified - Troubleshooting - External Data Help"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{SentinelPrices}",
               "size": 0,
               "title": "Sentinel Pricing Data for Region: {WorkspaceLocation}, Currency Code: {CurrencyCode}",
               "timeContextFromParameter": "TimeRange",
@@ -1666,37 +3122,15 @@
                 ]
               }
             },
-            "name": "query - Troubleshooting - Sentinel"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "{AzureMonitorExternalData}",
-              "size": 0,
-              "title": "Azure Pricing Monitor Data for Region: {WorkspaceLocation}, Currency Code: {CurrencyCode}",
-              "timeContextFromParameter": "TimeRange",
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces",
-              "crossComponentResources": [
-                "{Workspace}"
-              ]
-            },
-            "name": "query - Troubleshooting - Azure Monitor Results"
+            "name": "query - Classic - Troubleshooting - External Data Sentinel"
           }
         ]
       },
-      "conditionalVisibility": {
-        "parameterName": "TabSelection",
-        "comparison": "isEqualTo",
-        "value": "Troubleshooting"
-      },
-      "name": "group - Troubleshooting"
+      "name": "group - Main Page - Troubleshooting"
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourcegroups/soc/providers/microsoft.operationalinsights/workspaces/cybersecuritysoc"
+    "azure monitor"
   ],
-  "fromTemplateId": "sentinel-UserWorkbook",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
