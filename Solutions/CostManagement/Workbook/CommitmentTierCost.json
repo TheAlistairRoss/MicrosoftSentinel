@@ -91,7 +91,8 @@
               "showDefault": false
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourceGroups/soc/providers/microsoft.operationalinsights/workspaces/cybersecuritysoc"
           },
           {
             "id": "4e04e9a7-1da3-4cfe-aa8a-35ad6229606b",
@@ -302,10 +303,28 @@
               }
             ],
             "id": "85f7fa57-7ff4-4511-bc24-3b6c4c95960e"
+          },
+          {
+            "id": "8047150b-e68c-402a-8051-f529f399aa12",
+            "version": "KqlParameterItem/1.0",
+            "name": "E5Seats",
+            "label": "E5 Seats",
+            "type": 1,
+            "description": "Microsoft 365 E5, A5, F5, and G5 and Microsoft 365 E5, A5, F5, and G5 Security customers can get a data grant of up to 5 MB per user per day of Microsoft 365 data ingestion into Microsoft Sentinel. Enter the number of the applied licences. ",
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "static",
+                  "resultVal": "0"
+                }
+              }
+            ]
           }
         ],
         "style": "pills",
-        "queryType": 12
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "name": "parameters - Main Page"
     },
@@ -1333,7 +1352,7 @@
           {
             "id": "013627cd-1109-4d54-9c5d-ee1f4a8b6319",
             "version": "KqlParameterItem/1.0",
-            "name": "BasicTablesQuery",
+            "name": "BasicTablesLookup",
             "type": 2,
             "isRequired": true,
             "multiSelect": true,
@@ -1354,19 +1373,18 @@
             "queryType": 12
           },
           {
-            "id": "d7adeecf-40bd-4e53-888c-6595f50bb74b",
+            "id": "bf6a223e-05cf-4e5e-b46e-1c71b0861509",
             "version": "KqlParameterItem/1.0",
-            "name": "BasicTablesOutput",
+            "name": "BasicTables",
             "type": 1,
-            "isHiddenWhenLocked": true,
             "criteriaData": [
               {
                 "criteriaContext": {
-                  "leftOperand": "BasicTablesQuery",
+                  "leftOperand": "BasicTablesLookup",
                   "operator": "isNotNull",
                   "rightValType": "param",
-                  "resultValType": "static",
-                  "resultVal": "{BasicTablesQuery}"
+                  "resultValType": "param",
+                  "resultVal": "BasicTablesLookup"
                 }
               },
               {
@@ -1382,9 +1400,49 @@
             }
           },
           {
+            "id": "08402f38-f371-41a5-96be-effe23982e70",
+            "version": "KqlParameterItem/1.0",
+            "name": "E5Tables",
+            "type": 2,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "{\"version\":\"1.0.0\",\"content\":\"[\\r\\n\\t\\\"SigninLogs\\\",\\r\\n\\t\\\"AuditLogs\\\",\\r\\n\\t\\\"AADNonInteractiveUserSignInLogs\\\",\\r\\n\\t\\\"AADServicePrincipalSignInLogs\\\",\\r\\n\\t\\\"AADManagedIdentitySignInLogs\\\",\\r\\n\\t\\\"AADProvisioningLogs\\\",\\r\\n\\t\\\"ADFSSignInLogs\\\",\\r\\n\\t\\\"McasShadowItReporting\\\",\\r\\n\\t\\\"InformationProtectionLogs_CL\\\",\\r\\n\\t\\\"DeviceEvents\\\",\\r\\n\\t\\\"DeviceFileEvents\\\",\\r\\n\\t\\\"DeviceImageLoadEvents\\\",\\r\\n\\t\\\"DeviceInfo\\\",\\r\\n\\t\\\"DeviceLogonEvents\\\",\\r\\n\\t\\\"DeviceNetworkEvents\\\",\\r\\n\\t\\\"DeviceNetworkInfo\\\",\\r\\n\\t\\\"DeviceProcessEvents\\\",\\r\\n\\t\\\"DeviceRegistryEvents\\\",\\r\\n\\t\\\"DeviceFileCertificateInfo\\\",\\r\\n\\t\\\"EmailAttachmentInfo\\\",\\r\\n\\t\\\"EmailEvents\\\",\\r\\n\\t\\\"EmailPostDeliveryEvents\\\",\\r\\n\\t\\\"EmailUrlInfo\\\",\\r\\n\\t\\\"IdentityLogonEvents\\\",\\r\\n\\t\\\"IdentityQueryEvents\\\",\\r\\n\\t\\\"IdentityDirectoryEvents\\\",\\r\\n\\t\\\"AlertEvidence\\\",\\r\\n\\t\\\"CloudAppEvents\\\"\\r\\n]\",\"transformers\":null}",
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "showDefault": false
+            },
+            "defaultValue": "value::all",
+            "queryType": 8
+          },
+          {
+            "version": "KqlParameterItem/1.0",
+            "name": "DefenderForCloudTables",
+            "type": 2,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "{\"version\":\"1.0.0\",\"content\":\"[\\r\\n    \\\"SecurityAlert\\\",\\r\\n    \\\"SecurityBaseline\\\",\\r\\n    \\\"SecurityBaselineSummary\\\",\\r\\n    \\\"SecurityDetection\\\",\\r\\n    \\\"SecurityEvent\\\",\\r\\n    \\\"WindowsFirewall\\\",\\r\\n    \\\"SysmonEvent\\\",\\r\\n    \\\"ProtectionStatus\\\"\\r\\n]\",\"transformers\":null}",
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "showDefault": false
+            },
+            "defaultValue": "value::all",
+            "queryType": 8,
+            "id": "ab98db4a-22f5-4fbe-9c8f-4d9adeb5401e"
+          },
+          {
             "id": "51ff305b-87db-4d58-96d5-5a4979d54ed7",
             "version": "KqlParameterItem/1.0",
-            "name": "UsageDataQuery",
+            "name": "UsageMetrics",
             "type": 1,
             "isRequired": true,
             "isHiddenWhenLocked": true,
@@ -1396,14 +1454,14 @@
                   "rightValType": "static",
                   "rightVal": "true",
                   "resultValType": "static",
-                  "resultVal": "let QuantityList = dynamic([115.95,37.806,37.59,114.276,116.766,113.172,114.684,115.164,37.5,37.542,108.75,116.016,119.868,111.504,111.366,37.164,37.084,113.922,114.384,115.026,115.44,113.706,36.894,36.77,111.852,113.13,116.55,114.726,114.468,37.044,36.908,113.616,114.396,111.426,121.542,114.426,36.356,36.572,112.764,118.56,114.738,113.946,112.086,36.218,36.018,109.56,120.504,110.526,108.708,107.946,35.494,35.634,129.432,110.79,107.766,105.966,104.478,34.194,34.238,103.458,104.448,106.602,105.48,107.988,34.378,34.264,104.544,107.304,111.582,108.438,108.18,36.114,34.698,105.786,108.414,113.196,129.57,109.866,38.388,35.92,111.036,114.792,114.72,111.33,109.284,36.02,35.604,108.756,111.282,113.844]); let UsageMetrics = print Quantity_GB = QuantityList | mv-expand Quantity_GB to typeof(real) | serialize  | extend StartTime = startofday(datetime_add(\"day\", -row_number(), now())) | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd | extend JoinColumn = 1;"
+                  "resultVal": "let QuantityList = dynamic([37.806, 37.59, 114.276, 116.766, 113.172, 114.684, 115.164, 37.5, 37.542, 108.75, 116.016, 119.868, 111.504, 111.366, 37.164, 37.084, 113.922, 114.384, 115.026, 115.44, 113.706, 36.894, 36.77, 111.852, 113.13, 116.55, 114.726, 114.468, 37.044, 36.908, 113.616, 114.396, 111.426, 121.542, 114.426, 36.356, 36.572, 112.764, 118.56, 114.738, 113.946, 112.086, 36.218, 36.018, 109.56, 120.504, 110.526, 108.708, 107.946, 35.494, 35.634, 129.432, 110.79, 107.766, 105.966, 104.478, 34.194, 34.238, 103.458, 104.448, 106.602, 105.48, 107.988, 34.378, 34.264, 104.544, 107.304, 111.582, 108.438, 108.18, 36.114, 34.698, 105.786, 108.414, 113.196, 129.57, 109.866, 38.388, 35.92, 111.036, 114.792, 114.72, 111.33, 109.284, 36.02, 35.604, 108.756, 111.282, 113.844, 115.95]); let UsageMetrics = print QuantityGB = QuantityList     | mv-expand QuantityGB to typeof(real)     | serialize     | extend StartTime = startofday(datetime_add(\"day\", -row_number(), now()))     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | extend QuantityMB = QuantityGB * 1e3     | extend DefenderForCloudReductionMB = iif(row_number() % 7 in (1,2), (QuantityMB / 100) * 30, (QuantityMB /100 * 20))     | extend E5ReductionMB = iif(row_number() % 7 in (1,2), (QuantityMB / 100) * 20, (QuantityMB /100 * 10))     | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB     | extend JoinColumn = 1; "
                 }
               },
               {
                 "criteriaContext": {
                   "operator": "Default",
                   "resultValType": "static",
-                  "resultVal": "let BasicTables = dynamic([{BasicTablesOutput}]); let UsageMetrics =      Usage     | where IsBillable == true     | where '*' == BasicTables[0] or DataType !in (BasicTables)     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | make-series Quantity = sum(Quantity) default = 0 on StartTime step 1d     | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)     | project Quantity_GB  = (Quantity / 1e3), StartTime     | extend JoinColumn = 1;"
+                  "resultVal": "let BasicTables = dynamic([{BasicTables}]); let E5Seats = {E5Seats}; let E5AllowancePerDayMB = E5Seats * 5; let E5Tables = dynamic([{E5Tables}]); let E5Usage = Usage     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | where IsBillable == true     | where DataType in (E5Tables)     | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)     | extend E5ReductionMB = iff(E5AllowancePerDayMB - Quantity > 0, Quantity, E5AllowancePerDayMB)     | project StartTime, E5ReductionMB; let DefenderForCloudPerDeviceAllowanceMB = 500; let DefenderForCloudTables = dynamic([{DefenderForCloudTables}]); let DefenderForCloudUpdateTables = dynamic([\"Update\", \"UpdateSummary\"]); let DefenderForCloudUsage = Heartbeat     | where TimeGenerated >= TimeRangeStart and TimeGenerated <= TimeRangeEnd     | where Solutions has \"\\\"security\\\"\"     | make-series DeviceCount = dcount(SourceComputerId, 4) default = 0 on TimeGenerated from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand DeviceCount to typeof(int), TimeGenerated to typeof(datetime)     | extend DefenderForCloudAllowancePerDayMB = DefenderForCloudPerDeviceAllowanceMB * DeviceCount     | project TimeGenerated, DefenderForCloudAllowancePerDayMB     | join kind = rightouter (Usage         | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd         | where IsBillable == true         | where DataType in (DefenderForCloudTables)         | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d         | mv-expand Quantity to typeof(long), StartTime to typeof(datetime))         on $left.TimeGenerated == $right.StartTime     | extend DefenderForCloudReductionMB = iff(DefenderForCloudAllowancePerDayMB - Quantity > 0, Quantity, DefenderForCloudAllowancePerDayMB)     | project StartTime, DefenderForCloudReductionMB; let UsageMetrics =  Usage     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | where IsBillable == true     | where '*' == BasicTables[0] or DataType !in (BasicTables)     | make-series kind=nonempty QuantityMB = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand QuantityMB to typeof(long), StartTime to typeof(datetime)     | join kind = leftouter (E5Usage) on StartTime     | join kind = leftouter (DefenderForCloudUsage) on StartTime     | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB     | extend JoinColumn = 1;"
                 }
               }
             ]
@@ -1484,8 +1542,7 @@
           }
         ],
         "style": "formHorizontal",
-        "queryType": 0,
-        "resourceType": "microsoft.operationalinsights/workspaces"
+        "queryType": 12
       },
       "conditionalVisibility": {
         "parameterName": "_",
@@ -1505,7 +1562,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "// Function for building tiles\r\nlet BuildTile = (tileOrder:int, tileTitle: string, tileSubtitle: string, tileLeft: string, tileRight: string, tileBottom: string) {\r\nprint \r\n    TileOrder = tileOrder, \r\n    title = tileTitle,\r\n    subtitle = tileSubtitle,\r\n    left = tileLeft,\r\n    right = tileRight,\r\n    bottom = tileBottom\r\n};\r\n// Commitment Tier Recommendations Query for Status Tile\r\nlet TimeRangeStart = startofday(todatetime({TimeRange:start}), 1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelPriceInputs = {SentinelPrices};\r\nlet LogAnalyticsPriceInputs = {AzureMonitorPrices};\r\nlet PriceInputs = union SentinelPriceInputs, LogAnalyticsPriceInputs \r\n    | summarize arg_max(TimeGenerated, *) by Tier, ServiceName  \r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))     \r\n    | project ServiceName, Tier, TierVolumeGB, RetailPrice, EffectivePricePerGB, EffectiveCommitmentTierThresholdGB  \r\n    | extend JoinColumn = 1;\r\n{UsageDataQuery} \r\nlet TierStats = UsageMetrics  \r\n    | join kind = inner (PriceInputs) \r\n    on JoinColumn  \r\n    | project Tier, Quantity_GB, EffectivePricePerGB, RetailPrice, TierVolumeGB, ServiceName  \r\n    | extend CostAtTier = iff(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", Quantity_GB * EffectivePricePerGB, RetailPrice)  \r\n    | summarize CostAtTier = sum(CostAtTier) by Tier, ServiceName  \r\n    | extend CostAtTier = round(CostAtTier, 2)  \r\n    | extend JoinColumn = 1;\r\nlet TierChange = toscalar(TierStats\r\n| where (ServiceName == \"Sentinel\" and Tier == SentinelCurrentTier and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and Tier == LogAnalyticsCurrentTier and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| join kind = inner(TierStats\r\n    | summarize arg_min(CostAtTier, Tier, JoinColumn) by ServiceName)\r\n    on ServiceName\r\n| extend Status = case(\r\n    Tier == Tier1, \"Good\", \"Change Tier\")\r\n| project\r\n    ServiceName,\r\n    Status\r\n| project Pack = pack_all());\r\n//Build Tiles\r\nlet IsCustomDataTile = BuildTile(0, \"Is Custom Prices\", \"\", {CustomPrices}, \"\",\"\" );\r\nlet PricingModelTile = BuildTile(1, \"Pricing Model\", \"\", \"{PricingModel}\", \"\", \"\");\r\nlet IsSentinelEnabledTile = BuildTile( 2, \"Sentinel Enabled\", \"\", {ShowSentinel},\"\",\"\");\r\nlet TierChangeTile = BuildTile(3, strcat(TierChange.['ServiceName'], \" Tier\"), \"Tier Status\", TierChange.['Status'],\"\",\"\");\r\nunion IsCustomDataTile, PricingModelTile, IsSentinelEnabledTile, TierChangeTile\r\n| order by TileOrder asc\r\n",
+              "query": "// Function for building tiles\r\nlet BuildTile = (tileOrder:int, tileTitle: string, tileSubtitle: string, tileLeft: string, tileRight: string, tileBottom: string) {\r\nprint \r\n    TileOrder = tileOrder, \r\n    title = tileTitle,\r\n    subtitle = tileSubtitle,\r\n    left = tileLeft,\r\n    right = tileRight,\r\n    bottom = tileBottom\r\n};\r\n//Build Tiles\r\nlet IsCustomDataTile = BuildTile(0, \"Is Custom Prices\", \"\", {CustomPrices}, \"\",\"\" );\r\nlet PricingModelTile = BuildTile(1, \"Pricing Model\", \"\", \"{PricingModel}\", \"\", \"\");\r\nlet IsSentinelEnabledTile = BuildTile( 2, \"Sentinel Enabled\", \"\", {ShowSentinel},\"\",\"\");\r\nunion IsCustomDataTile, PricingModelTile, IsSentinelEnabledTile\r\n| order by TileOrder asc\r\n",
               "size": 4,
               "timeContextFromParameter": "TimeRange",
               "queryType": 0,
@@ -1698,7 +1755,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}), 1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelPriceInputs = {SentinelPrices};\r\nlet LogAnalyticsPriceInputs = {AzureMonitorPrices};\r\nlet PriceInputs = union SentinelPriceInputs, LogAnalyticsPriceInputs \r\n    | summarize arg_max(TimeGenerated, *) by Tier, ServiceName  \r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))     \r\n    | project ServiceName, Tier, TierVolumeGB, RetailPrice, EffectivePricePerGB, EffectiveCommitmentTierThresholdGB  \r\n    | extend JoinColumn = 1;\r\n{UsageDataQuery} \r\nlet TierStats = UsageMetrics  \r\n    | join kind = inner (PriceInputs) \r\n    on JoinColumn  \r\n    | project Tier, Quantity_GB, EffectivePricePerGB, RetailPrice, TierVolumeGB, ServiceName  \r\n    | extend CostAtTier = iff(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", Quantity_GB * EffectivePricePerGB, RetailPrice)  \r\n    | summarize CostAtTier = sum(CostAtTier) by Tier, ServiceName  \r\n    | extend CostAtTier = round(CostAtTier, 2)  \r\n    | extend JoinColumn = 1;\r\nTierStats\r\n| where (ServiceName == \"Sentinel\" and Tier == SentinelCurrentTier and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and Tier == LogAnalyticsCurrentTier and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| join kind = inner(TierStats\r\n    | summarize arg_min(CostAtTier, Tier, JoinColumn) by ServiceName)\r\n    on ServiceName\r\n| extend Status = case(\r\n    Tier == Tier1, \"Good\", \"Change Tier\")\r\n| project-rename \r\n    CurrentTier = Tier,\r\n    RecommendedTier = Tier1,\r\n    CurrentTierCost = CostAtTier,\r\n    RecommendedTierCost = CostAtTier1\r\n| extend CostDifference = RecommendedTierCost - CurrentTierCost\r\n| project\r\n    ServiceName,\r\n    CurrentTier,\r\n    RecommendedTier,\r\n    Status,\r\n    CurrentTierCost,\r\n    RecommendedTierCost,\r\n    CostDifference",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}), 1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelPriceInputs = {SentinelPrices};\r\nlet LogAnalyticsPriceInputs = {AzureMonitorPrices};\r\nlet PriceInputs = union SentinelPriceInputs, LogAnalyticsPriceInputs \r\n    | summarize arg_max(TimeGenerated, *) by Tier, ServiceName  \r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))     \r\n    | project ServiceName, Tier, TierVolumeGB, RetailPrice, EffectivePricePerGB, EffectiveCommitmentTierThresholdGB  \r\n    | extend JoinColumn = 1;   \r\n{UsageMetrics} \r\nlet TierStats = \r\n    UsageMetrics  \r\n    | join kind = inner (PriceInputs) \r\n        on JoinColumn  \r\n    | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3\r\n    | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3\r\n    | extend QuantityGB = QuantityMB / 1e3\r\n    | extend QuantityGB = case(\r\n        ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), QuantityGB - E5ReductionGB - DefenderForCloudReductionGB, \r\n        QuantityGB - E5ReductionGB\r\n    )\r\n    | extend CostAtTier = iff(QuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", QuantityGB * EffectivePricePerGB, RetailPrice)  \r\n    | summarize CostAtTier = sum(CostAtTier), QuantityGB = sum(QuantityGB) by Tier, ServiceName  \r\n    | extend\r\n        CostAtTier = round(CostAtTier, 2), \r\n        QuantityGB = round(QuantityGB, 2) \r\n    | extend JoinColumn = 1;\r\nTierStats\r\n| where (ServiceName == \"Sentinel\" and Tier == SentinelCurrentTier and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and Tier == LogAnalyticsCurrentTier and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| join kind = inner(TierStats\r\n    | summarize arg_min(CostAtTier, Tier, JoinColumn) by ServiceName)\r\n    on ServiceName\r\n| extend Status = case(\r\n                      Tier == Tier1,\r\n                      \"Good\",\r\n                      \"Change Tier\"\r\n                  )\r\n| project-rename \r\n    CurrentTier = Tier,\r\n    RecommendedTier = Tier1,\r\n    CurrentTierCost = CostAtTier,\r\n    RecommendedTierCost = CostAtTier1\r\n| extend CostDifference = round(RecommendedTierCost - CurrentTierCost, 2)\r\n| project\r\n    Workspace = \"{Workspace}\",\r\n    ServiceName,\r\n    CurrentTier,\r\n    RecommendedTier,\r\n    Status,\r\n    QuantityGB,\r\n    CurrentTierCost,\r\n    RecommendedTierCost,\r\n    CostDifference",
               "size": 4,
               "showAnalytics": true,
               "title": "Commitment Tier Recommendations",
@@ -1711,6 +1768,22 @@
               ],
               "gridSettings": {
                 "formatters": [
+                  {
+                    "columnMatch": "$gen_group",
+                    "formatter": 13,
+                    "formatOptions": {
+                      "linkTarget": null,
+                      "showIcon": true
+                    }
+                  },
+                  {
+                    "columnMatch": "Workspace",
+                    "formatter": 5
+                  },
+                  {
+                    "columnMatch": "ServiceName",
+                    "formatter": 5
+                  },
                   {
                     "columnMatch": "Status",
                     "formatter": 18,
@@ -1747,8 +1820,21 @@
                     }
                   },
                   {
+                    "columnMatch": "QuantityGB",
+                    "formatter": 1,
+                    "numberFormat": {
+                      "unit": 39,
+                      "options": {
+                        "style": "decimal"
+                      }
+                    }
+                  },
+                  {
                     "columnMatch": "CurrentTierCost",
                     "formatter": 1,
+                    "formatOptions": {
+                      "aggregation": "Sum"
+                    },
                     "numberFormat": {
                       "unit": 17,
                       "options": {
@@ -1763,6 +1849,9 @@
                   {
                     "columnMatch": "RecommendedTierCost",
                     "formatter": 1,
+                    "formatOptions": {
+                      "aggregation": "Sum"
+                    },
                     "numberFormat": {
                       "unit": 17,
                       "options": {
@@ -1775,10 +1864,13 @@
                     }
                   },
                   {
-                    "columnMatch": "CostDifferences",
+                    "columnMatch": "CostDifference",
                     "formatter": 1,
+                    "formatOptions": {
+                      "aggregation": "Sum"
+                    },
                     "numberFormat": {
-                      "unit": 17,
+                      "unit": 0,
                       "options": {
                         "style": "decimal",
                         "maximumFractionDigits": 2
@@ -1786,6 +1878,14 @@
                     }
                   }
                 ],
+                "hierarchySettings": {
+                  "treeType": 1,
+                  "groupBy": [
+                    "Workspace"
+                  ],
+                  "expandTopLevel": true,
+                  "finalBy": "ServiceName"
+                },
                 "labelSettings": [
                   {
                     "columnId": "ServiceName",
@@ -1798,6 +1898,10 @@
                   {
                     "columnId": "RecommendedTier",
                     "label": "Recommended Tier"
+                  },
+                  {
+                    "columnId": "QuantityGB",
+                    "label": "Quantity"
                   },
                   {
                     "columnId": "CurrentTierCost",
@@ -1820,6 +1924,95 @@
               }
             },
             "name": "query - Unified - Overview - Commitment Tier Recommendations"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}), 1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelPriceInputs = {SentinelPrices};\r\nlet LogAnalyticsPriceInputs = {AzureMonitorPrices};\r\nlet PriceInputs = union SentinelPriceInputs, LogAnalyticsPriceInputs \r\n    | summarize arg_max(TimeGenerated, *) by Tier, ServiceName  \r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))     \r\n    | project ServiceName, Tier, TierVolumeGB, RetailPrice, EffectivePricePerGB, EffectiveCommitmentTierThresholdGB  \r\n    | extend JoinColumn = 1;\r\n{UsageMetrics}  \r\nUsageMetrics\r\n| extend ServiceName = dynamic([\"Azure Monitor\", \"Sentinel\"])\r\n| mv-expand ServiceName to typeof(string)\r\n| summarize\r\n    QuantityMB = sum(QuantityMB),\r\n    DefenderForCloudReductionMB = sum(DefenderForCloudReductionMB),\r\n    E5ReductionMB = sum(E5ReductionMB)\r\n    by ServiceName\r\n| extend QuantityGB = QuantityMB / 1e3\r\n| extend BillableQuantityGB = case(\r\n                                  ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"),\r\n                                  (QuantityMB - DefenderForCloudReductionMB - E5ReductionMB) / 1e3, \r\n                                  (QuantityMB - E5ReductionMB) / 1e3\r\n                              )\r\n| extend DefenderForCloudReductionGB = case(\r\n                                           ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"),\r\n                                           DefenderForCloudReductionMB / 1e3, \r\n                                           toreal(0)\r\n                                       )\r\n| extend E5ReductionGB = E5ReductionMB / 1e3\r\n| where (ServiceName == \"Sentinel\" and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| project\r\n    ServiceName,\r\n    QuantityGB = round(QuantityGB,2),\r\n    BillableQuantityGB = round(BillableQuantityGB,2),\r\n    DefenderForCloudReductionGB = round(DefenderForCloudReductionGB,2),\r\n    E5ReductionGB = round(E5ReductionGB,2) \r\n\r\n",
+              "size": 4,
+              "showAnalytics": true,
+              "title": "Ingestion",
+              "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workspace}"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "QuantityGB",
+                    "formatter": 0,
+                    "numberFormat": {
+                      "unit": 39,
+                      "options": {
+                        "style": "decimal"
+                      }
+                    }
+                  },
+                  {
+                    "columnMatch": "BillableQuantityGB",
+                    "formatter": 1,
+                    "numberFormat": {
+                      "unit": 39,
+                      "options": {
+                        "style": "decimal"
+                      }
+                    }
+                  },
+                  {
+                    "columnMatch": "DefenderForCloudReductionGB",
+                    "formatter": 1,
+                    "numberFormat": {
+                      "unit": 39,
+                      "options": {
+                        "style": "decimal"
+                      }
+                    }
+                  },
+                  {
+                    "columnMatch": "E5ReductionGB",
+                    "formatter": 1,
+                    "numberFormat": {
+                      "unit": 39,
+                      "options": {
+                        "style": "decimal"
+                      }
+                    }
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "ServiceName",
+                    "label": "Service"
+                  },
+                  {
+                    "columnId": "QuantityGB",
+                    "label": "Billable"
+                  },
+                  {
+                    "columnId": "BillableQuantityGB",
+                    "label": "Billed Amount"
+                  },
+                  {
+                    "columnId": "DefenderForCloudReductionGB",
+                    "label": "Defender For Cloud Allowance"
+                  },
+                  {
+                    "columnId": "E5ReductionGB",
+                    "label": "E5 Allowance"
+                  }
+                ]
+              },
+              "chartSettings": {
+                "yAxis": [
+                  "CostAtTier"
+                ]
+              }
+            },
+            "name": "query - Unified - Overview - Ingestion"
           }
         ]
       },
@@ -1832,6 +2025,7 @@
         "groupType": "editable",
         "title": "Charts",
         "expandable": true,
+        "expanded": true,
         "items": [
           {
             "type": 1,
@@ -2109,7 +2303,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{SentinelCT}]);\r\nlet PriceInputs = {SentinelPrices}\r\n| summarize arg_max(TimeGenerated, *) by Tier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| join kind = inner (\r\n    PriceInputs\r\n    | where Tier in (SelectedTiers)\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend CostAtTier = iff(Quantity_GB > TierVolumeGB, Quantity_GB * EffectivePricePerGB, RetailPrice)\r\n| make-series CostAtTier = sum(CostAtTier), Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier\r\n| extend MovingAverageFilter = iif(array_length(CostAtTier) < 7, array_length(CostAtTier), 7)\r\n| extend CostMovingAverage = series_fir(CostAtTier, repeat(1, MovingAverageFilter), true, false)\r\n| extend Quantity_GBMovingAverage = series_fir(Quantity_GB, repeat(1, MovingAverageFilter), true, false)\r\n| render timechart ",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{SentinelCT}]);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet PriceInputs = {SentinelPrices}\r\n| summarize arg_max(TimeGenerated, *) by Tier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageMetrics}\r\nUsageMetrics\r\n| join kind = inner (\r\n    PriceInputs\r\n    | where Tier in (SelectedTiers)\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3\r\n| extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3\r\n| extend QuantityGB = QuantityMB / 1e3\r\n| extend QuantityGB = case(\r\n        ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), QuantityGB - E5ReductionGB - DefenderForCloudReductionGB, \r\n        QuantityGB - E5ReductionGB\r\n    )\r\n| extend CostAtTier = iff(QuantityGB > TierVolumeGB, QuantityGB * EffectivePricePerGB, RetailPrice)\r\n| make-series CostAtTier = sum(CostAtTier), QuantityGB = sum(QuantityGB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier\r\n| extend MovingAverageFilter = iif(array_length(CostAtTier) < 7, array_length(CostAtTier), 7)\r\n| extend CostMovingAverage = series_fir(CostAtTier, repeat(1, MovingAverageFilter), true, false)\r\n| extend QuantityGBMovingAverage = series_fir(QuantityGB, repeat(1, MovingAverageFilter), true, false)\r\n| render timechart \r\n",
               "size": 0,
               "showAnalytics": true,
               "title": "Sum of Daily Sentinel Cost ({CurrencyCode})",
@@ -2189,7 +2383,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{LogAnalyticsCT}]);\r\nlet PriceInputs = {AzureMonitorPrices}\r\n| summarize arg_max(TimeGenerated, *) by Tier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| join kind = inner (\r\n    PriceInputs\r\n    | where Tier in (SelectedTiers)\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend CostAtTier = iff(Quantity_GB > TierVolumeGB, Quantity_GB * EffectivePricePerGB, RetailPrice)\r\n| make-series CostAtTier = sum(CostAtTier), Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier\r\n| extend CostMovingAverage = series_fir(CostAtTier, repeat(1, 7), true, false)\r\n| extend Quantity_GBMovingAverage = series_fir(Quantity_GB, repeat(1, 7), true, false)\r\n| render timechart ",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{LogAnalyticsCT}]);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet PriceInputs = {AzureMonitorPrices}\r\n| summarize arg_max(TimeGenerated, *) by Tier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageMetrics}\r\nUsageMetrics\r\n| join kind = inner (\r\n    PriceInputs\r\n    | where Tier in (SelectedTiers)\r\n    )\r\n    on JoinColumn\r\n| project-away JoinColumn, JoinColumn1\r\n| extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3\r\n| extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3\r\n| extend QuantityGB = QuantityMB / 1e3\r\n| extend QuantityGB = case(\r\n        ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), QuantityGB - E5ReductionGB - DefenderForCloudReductionGB, \r\n        QuantityGB - E5ReductionGB\r\n    )\r\n| extend CostAtTier = iff(QuantityGB > TierVolumeGB, QuantityGB * EffectivePricePerGB, RetailPrice)\r\n| make-series CostAtTier = sum(CostAtTier), QuantityGB = sum(QuantityGB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier\r\n| extend MovingAverageFilter = iif(array_length(CostAtTier) < 7, array_length(CostAtTier), 7)\r\n| extend CostMovingAverage = series_fir(CostAtTier, repeat(1, MovingAverageFilter), true, false)\r\n| extend QuantityGBMovingAverage = series_fir(QuantityGB, repeat(1, MovingAverageFilter), true, false)\r\n| render timechart \r\n",
               "size": 0,
               "showAnalytics": true,
               "title": "Sum of Daily Log Analytics Cost ({CurrencyCode})",
@@ -2281,7 +2475,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"Sentinel Ingestion Metrics\"}],\"projectRename\":[{\"originalName\":\"[Sentinel Ingestion Metrics].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].MovingAverageFilter\",\"mergedName\":\"MovingAverageFilter\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - 1].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost ].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GBMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GB\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Index\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Tier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Index\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GBMovingAverage\"}]}",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"Sentinel Ingestion Metrics\"}],\"projectRename\":[{\"originalName\":\"[Sentinel Ingestion Metrics].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].MovingAverageFilter\",\"mergedName\":\"MovingAverageFilter\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].QuantityGB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].QuantityGBMovingAverage\"}]}",
               "size": 0,
               "aggregation": 3,
               "title": "Sentinel 7 Day Moving Average Cost ({CurrencyCode})",
@@ -2352,7 +2546,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"query - Classic - Charts - Log Analytics Ingestion \"}],\"projectRename\":[{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - 1].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost ].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GBMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GB\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Index\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Tier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Index\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].Quantity_GB\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Quantity_GB\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Quantity_GBMovingAverage\"}]}",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"query - Classic - Charts - Log Analytics Ingestion \"}],\"projectRename\":[{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].QuantityGBMovingAverage\",\"mergedName\":\"QuantityGBMovingAverage\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - 1].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost ].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GBMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GB\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Index\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Tier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Index\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].Quantity_GB\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Quantity_GB\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].QuantityGB\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].MovingAverageFilter\"}]}",
               "size": 0,
               "aggregation": 3,
               "title": "Log Analytics 7 Day Moving Average Cost ({CurrencyCode})",
@@ -2435,10 +2629,10 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{SentinelCT}]);\r\nlet PriceInputs = {SentinelPrices}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | where Tier != \"Pay-as-you-go\"\r\n    | where Tier in (SelectedTiers)\r\n    | extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nlet Actual_Usage_GB = \r\n    UsageMetrics\r\n    | make-series Quantity_GB = toreal(round(sum(Quantity_GB),3)) default = toreal(0) on StartTime step 1d // Daily Usage\r\n    | project \r\n        SeriesName = \"Actual_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB;\r\nlet Average_Usage_GB = \r\n    Actual_Usage_GB\r\n    | extend Stats = series_stats_dynamic(Quantity_GB)\r\n    | project\r\n        SeriesName = \"Average_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB = repeat(toreal(Stats.avg), array_length(Quantity_GB))\r\n;\r\nlet UsageTimeRange =\r\n    toscalar(Actual_Usage_GB\r\n    | project StartTime);\r\nlet CommitmentTierCalculations = PriceInputs\r\n    | extend StartTime = UsageTimeRange\r\n    | extend Quantity_GB = repeat(toreal(EffectiveCommitmentTierThresholdGB), array_length(StartTime))\r\n    | project \r\n        SeriesName = tostring(Tier), \r\n        StartTime, \r\n        Quantity_GB\r\n;\r\nunion CommitmentTierCalculations, Actual_Usage_GB, Average_Usage_GB\r\n| render timechart ",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{SentinelCT}]);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet ServiceName = \"Sentinel\";\r\nlet PriceInputs = {SentinelPrices}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | where Tier != \"Pay-as-you-go\"\r\n    | where Tier in (SelectedTiers)\r\n    | extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageMetrics}\r\nlet Actual_Usage_GB = \r\n    UsageMetrics\r\n    | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3\r\n    | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3\r\n    | extend QuantityGB = QuantityMB / 1e3\r\n    | extend QuantityGB = case(\r\n        ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), QuantityGB - E5ReductionGB - DefenderForCloudReductionGB, \r\n        QuantityGB - E5ReductionGB\r\n    )\r\n    | make-series QuantityGB = toreal(round(sum(QuantityGB),3)) default = toreal(0) on StartTime step 1d // Daily Usage\r\n    | project \r\n        SeriesName = \"Actual_Usage_GB\",\r\n        StartTime,\r\n        QuantityGB;\r\nlet Average_Usage_GB = \r\n    Actual_Usage_GB\r\n    | extend Stats = series_stats_dynamic(QuantityGB)\r\n    | project\r\n        SeriesName = \"Average_Usage_GB\",\r\n        StartTime,\r\n        QuantityGB = repeat(toreal(Stats.avg), array_length(QuantityGB))\r\n;\r\nlet UsageTimeRange =\r\n    toscalar(Actual_Usage_GB\r\n    | project StartTime);\r\nlet CommitmentTierCalculations = PriceInputs\r\n    | extend StartTime = UsageTimeRange\r\n    | extend QuantityGB = repeat(toreal(EffectiveCommitmentTierThresholdGB), array_length(StartTime))\r\n    | project \r\n        SeriesName = tostring(Tier), \r\n        StartTime, \r\n        QuantityGB\r\n;\r\nunion CommitmentTierCalculations, Actual_Usage_GB, Average_Usage_GB\r\n| render timechart ",
               "size": 0,
               "showAnalytics": true,
-              "title": "Sentinel GB Ingested and Commitment Tier Thresholds",
+              "title": "Sentinel Billable Data Ingested and Commitment Tier Thresholds",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
               "queryType": 0,
@@ -2488,15 +2682,25 @@
                   },
                   {
                     "seriesName": "Actual_Usage_GB",
-                    "label": "Actual Usage GB",
+                    "label": "Actual Usage",
                     "color": "amethyst"
                   },
                   {
                     "seriesName": "Average_Usage_GB",
-                    "label": "Average Usage GB",
+                    "label": "Average Usage",
                     "color": "pink"
                   }
-                ]
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 39,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true,
+                      "maximumFractionDigits": 2
+                    }
+                  }
+                }
               }
             },
             "conditionalVisibility": {
@@ -2505,16 +2709,16 @@
               "value": "true"
             },
             "showPin": true,
-            "name": "Sentinel GB Ingested and Commitment Tier Thresholds"
+            "name": "Sentinel Billable Data Ingested and Commitment Tier Thresholds"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{LogAnalyticsCT}]);\r\nlet PriceInputs = {AzureMonitorPrices}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | where Tier != \"Pay-as-you-go\"\r\n    | where Tier in (SelectedTiers)\r\n    | extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nlet Actual_Usage_GB = \r\n    UsageMetrics\r\n    | make-series Quantity_GB = toreal(round(sum(Quantity_GB),3)) default = toreal(0) on StartTime step 1d // Daily Usage\r\n    | project \r\n        SeriesName = \"Actual_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB;\r\nlet Average_Usage_GB = \r\n    Actual_Usage_GB\r\n    | extend Stats = series_stats_dynamic(Quantity_GB)\r\n    | project\r\n        SeriesName = \"Average_Usage_GB\",\r\n        StartTime,\r\n        Quantity_GB = repeat(toreal(Stats.avg), array_length(Quantity_GB))\r\n;\r\nlet UsageTimeRange =\r\n    toscalar(Actual_Usage_GB\r\n    | project StartTime);\r\nlet CommitmentTierCalculations = PriceInputs\r\n    | extend StartTime = UsageTimeRange\r\n    | extend Quantity_GB = repeat(toreal(EffectiveCommitmentTierThresholdGB), array_length(StartTime))\r\n    | project \r\n        SeriesName = tostring(Tier), \r\n        StartTime, \r\n        Quantity_GB\r\n;\r\nunion CommitmentTierCalculations, Actual_Usage_GB, Average_Usage_GB\r\n| render timechart ",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet SelectedTiers = dynamic([{LogAnalyticsCT}]);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet ServiceName = \"Azure Monitor\";\r\nlet PriceInputs = {AzureMonitorPrices}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | where Tier != \"Pay-as-you-go\"\r\n    | where Tier in (SelectedTiers)\r\n    | extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageMetrics}\r\nlet Actual_Usage_GB = \r\n    UsageMetrics\r\n    | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3\r\n    | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3\r\n    | extend QuantityGB = QuantityMB / 1e3\r\n    | extend QuantityGB = case(\r\n        ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), QuantityGB - E5ReductionGB - DefenderForCloudReductionGB, \r\n        QuantityGB - E5ReductionGB\r\n    )\r\n    | make-series QuantityGB = toreal(round(sum(QuantityGB),3)) default = toreal(0) on StartTime step 1d // Daily Usage\r\n    | project \r\n        SeriesName = \"Actual_Usage_GB\",\r\n        StartTime,\r\n        QuantityGB;\r\nlet Average_Usage_GB = \r\n    Actual_Usage_GB\r\n    | extend Stats = series_stats_dynamic(QuantityGB)\r\n    | project\r\n        SeriesName = \"Average_Usage_GB\",\r\n        StartTime,\r\n        QuantityGB = repeat(toreal(Stats.avg), array_length(QuantityGB))\r\n;\r\nlet UsageTimeRange =\r\n    toscalar(Actual_Usage_GB\r\n    | project StartTime);\r\nlet CommitmentTierCalculations = PriceInputs\r\n    | extend StartTime = UsageTimeRange\r\n    | extend QuantityGB = repeat(toreal(EffectiveCommitmentTierThresholdGB), array_length(StartTime))\r\n    | project \r\n        SeriesName = tostring(Tier), \r\n        StartTime, \r\n        QuantityGB\r\n;\r\nunion CommitmentTierCalculations, Actual_Usage_GB, Average_Usage_GB\r\n| render timechart ",
               "size": 0,
               "showAnalytics": true,
-              "title": "Log Analytics GB Ingested and Commitment Tier Thresholds",
+              "title": "Log Analytics Billable Data Ingested and Commitment Tier Thresholds",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
               "queryType": 0,
@@ -2560,8 +2764,26 @@
                   {
                     "seriesName": "5000",
                     "color": "lightBlue"
+                  },
+                  {
+                    "seriesName": "Actual_Usage_GB",
+                    "label": "Actual Usage"
+                  },
+                  {
+                    "seriesName": "Average_Usage_GB",
+                    "label": "Average Usage"
                   }
-                ]
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 39,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true,
+                      "maximumFractionDigits": 2
+                    }
+                  }
+                }
               }
             },
             "conditionalVisibility": {
@@ -2570,7 +2792,7 @@
               "value": "true"
             },
             "showPin": true,
-            "name": "query - Classic - Charts - Log Analytics GB Ingested and Commitment Tier Thresholds"
+            "name": "Log Analytics Billable Data Ingested and Commitment Tier Thresholds"
           }
         ]
       },
@@ -2583,6 +2805,7 @@
         "groupType": "editable",
         "title": "Forecasting",
         "expandable": true,
+        "expanded": true,
         "items": [
           {
             "type": 1,
@@ -2705,8 +2928,7 @@
                     "durationMs": 86400000
                   },
                   "queryType": 1,
-                  "resourceType": "microsoft.resourcegraph/resources",
-                  "value": "100"
+                  "resourceType": "microsoft.resourcegraph/resources"
                 }
               ],
               "style": "above",
@@ -2724,7 +2946,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet PriceInputs = {SentinelPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n\r\n",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet PricingModel = \"{PricingModel}\";\r\nlet ServiceName = \"Sentinel\";\r\nlet PriceInputs = {SentinelPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageMetrics}\r\nUsageMetrics\r\n| extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3\r\n    | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3\r\n    | extend QuantityGB = QuantityMB / 1e3\r\n    | extend QuantityGB = case(\r\n        ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), QuantityGB - E5ReductionGB - DefenderForCloudReductionGB, \r\n        QuantityGB - E5ReductionGB\r\n    )\r\n| make-series QuantityGB = sum(QuantityGB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend QuantityGB_Forecasted = series_decompose_forecast(QuantityGB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    QuantityGB to typeof(real),\r\n    QuantityGB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, QuantityGB, Tier, QuantityGB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(QuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(QuantityGB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(QuantityGB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(QuantityGB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n\r\n",
               "size": 0,
               "showAnalytics": true,
               "title": "Sentinel Forecasted Cost for Tier \"{SentinelSelectedForecastTier}\" in {CurrencyCode}",
@@ -2772,7 +2994,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{LogAnalyticsSelectedForecastTier}\";\r\nlet PriceInputs = {AzureMonitorPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n\r\n",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{LogAnalyticsSelectedForecastTier}\";\r\nlet PricingModel = \"{PricingModel}\";\r\nlet ServiceName = \"Azure Monitor\";\r\nlet PriceInputs = {AzureMonitorPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageMetrics}\r\nUsageMetrics\r\n| extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3\r\n    | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3\r\n    | extend QuantityGB = QuantityMB / 1e3\r\n    | extend QuantityGB = case(\r\n        ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), QuantityGB - E5ReductionGB - DefenderForCloudReductionGB, \r\n        QuantityGB - E5ReductionGB\r\n    )\r\n| make-series QuantityGB = sum(QuantityGB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend QuantityGB_Forecasted = series_decompose_forecast(QuantityGB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    QuantityGB to typeof(real),\r\n    QuantityGB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, QuantityGB, Tier, QuantityGB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(QuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(QuantityGB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(QuantityGB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(QuantityGB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| render timechart \r\n\r\n",
               "size": 0,
               "showAnalytics": true,
               "title": "Log Analytics Forecasted Cost for Tier \"{LogAnalyticsSelectedForecastTier}\" in {CurrencyCode}",
@@ -2807,7 +3029,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet PriceInputs = {SentinelPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend CostAtTier = series_fir(CostAtTier, repeat(1, 7), true, false)\r\n| extend Forecasted = series_fir(Forecasted, repeat(1, 7), true, false)\r\n| render timechart \r\n\r\n",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet PricingModel = \"{PricingModel}\";\r\nlet ServiceName = \"Sentinel\";\r\nlet PriceInputs = {SentinelPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageMetrics}\r\nUsageMetrics\r\n| extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3\r\n    | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3\r\n    | extend QuantityGB = QuantityMB / 1e3\r\n    | extend QuantityGB = case(\r\n        ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), QuantityGB - E5ReductionGB - DefenderForCloudReductionGB, \r\n        QuantityGB - E5ReductionGB\r\n    )\r\n| make-series QuantityGB = sum(QuantityGB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend QuantityGB_Forecasted = series_decompose_forecast(QuantityGB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    QuantityGB to typeof(real),\r\n    QuantityGB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, QuantityGB, Tier, QuantityGB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(QuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(QuantityGB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(QuantityGB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(QuantityGB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend CostAtTier = series_fir(CostAtTier, repeat(1, 7), true, false)\r\n| extend Forecasted = series_fir(Forecasted, repeat(1, 7), true, false)\r\n| render timechart \r\n\r\n",
               "size": 0,
               "showAnalytics": true,
               "title": "Sentinel Forecasted 7 Day Moving Average Cost for Tier \"{SentinelSelectedForecastTier}\" in {CurrencyCode}",
@@ -2845,7 +3067,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{LogAnalyticsSelectedForecastTier}\";\r\nlet PriceInputs = {AzureMonitorPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageDataQuery}\r\nUsageMetrics\r\n| make-series Quantity_GB = sum(Quantity_GB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend Quantity_GB_Forecasted = series_decompose_forecast(Quantity_GB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    Quantity_GB to typeof(real),\r\n    Quantity_GB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, Quantity_GB, Tier, Quantity_GB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(Quantity_GB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(Quantity_GB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(Quantity_GB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend CostAtTier = series_fir(CostAtTier, repeat(1, 7), true, false)\r\n| extend Forecasted = series_fir(Forecasted, repeat(1, 7), true, false)\r\n| render timechart \r\n\r\n",
+              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1);\r\nlet DaysForecastedPastEnd = {DaysInFuture};\r\nlet SelectedTier = \"{LogAnalyticsSelectedForecastTier}\";\r\nlet PricingModel = \"{PricingModel}\";\r\nlet ServiceName = \"Azure Monitor\";\r\nlet PriceInputs = {AzureMonitorPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n// UsageMetrics\r\n{UsageMetrics}\r\nUsageMetrics\r\n| extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3\r\n    | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3\r\n    | extend QuantityGB = QuantityMB / 1e3\r\n    | extend QuantityGB = case(\r\n        ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), QuantityGB - E5ReductionGB - DefenderForCloudReductionGB, \r\n        QuantityGB - E5ReductionGB\r\n    )\r\n| make-series QuantityGB = sum(QuantityGB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend QuantityGB_Forecasted = series_decompose_forecast(QuantityGB, DaysForecastedPastEnd, -1,'avg')\r\n| render timechart\r\n| mv-expand\r\n    QuantityGB to typeof(real),\r\n    QuantityGB_Forecasted to typeof(real),\r\n    StartTime to typeof(datetime)\r\n| extend JoinColumn = 1\r\n| join kind = inner (\r\n    PriceInputs\r\n    )\r\n    on JoinColumn\r\n| project StartTime, QuantityGB, Tier, QuantityGB_Forecasted, TierVolumeGB, EffectivePricePerGB, RetailPrice\r\n| extend CostAtTier = iif(QuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(QuantityGB * EffectivePricePerGB), toreal(RetailPrice))\r\n| extend CostAtTier_Forecasted = iff(QuantityGB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(QuantityGB_Forecasted * EffectivePricePerGB), toreal(RetailPrice))\r\n| make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d \r\n| extend CostAtTier = series_fir(CostAtTier, repeat(1, 7), true, false)\r\n| extend Forecasted = series_fir(Forecasted, repeat(1, 7), true, false)\r\n| render timechart \r\n\r\n",
               "size": 0,
               "showAnalytics": true,
               "title": "Log Analytics Forecasted 7 Day Moving Average Cost for Tier \"{LogAnalyticsSelectedForecastTier}\" in {CurrencyCode}",
@@ -3191,7 +3413,8 @@
     }
   ],
   "fallbackResourceIds": [
-    "azure monitor"
+    "Azure Monitor"
   ],
+  "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02453.3208-230920-012911/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
