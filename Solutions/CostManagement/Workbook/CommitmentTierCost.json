@@ -175,6 +175,23 @@
             "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6"
           },
           {
+            "id": "8047150b-e68c-402a-8051-f529f399aa12",
+            "version": "KqlParameterItem/1.0",
+            "name": "E5Seats",
+            "label": "E5 Seats",
+            "type": 1,
+            "description": "Microsoft 365 E5, A5, F5, and G5 and Microsoft 365 E5, A5, F5, and G5 Security customers can get a data grant of up to 5 MB per user per day of Microsoft 365 data ingestion into Microsoft Sentinel. Enter the number of the applied licences. ",
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "static",
+                  "resultVal": "0"
+                }
+              }
+            ]
+          },
+          {
             "id": "6e2979ef-af24-467a-afc5-13ee2012c838",
             "version": "KqlParameterItem/1.0",
             "name": "PricingModel",
@@ -293,23 +310,6 @@
               }
             ],
             "id": "85f7fa57-7ff4-4511-bc24-3b6c4c95960e"
-          },
-          {
-            "id": "8047150b-e68c-402a-8051-f529f399aa12",
-            "version": "KqlParameterItem/1.0",
-            "name": "E5Seats",
-            "label": "E5 Seats",
-            "type": 1,
-            "description": "Microsoft 365 E5, A5, F5, and G5 and Microsoft 365 E5, A5, F5, and G5 Security customers can get a data grant of up to 5 MB per user per day of Microsoft 365 data ingestion into Microsoft Sentinel. Enter the number of the applied licences. ",
-            "criteriaData": [
-              {
-                "criteriaContext": {
-                  "operator": "Default",
-                  "resultValType": "static",
-                  "resultVal": "0"
-                }
-              }
-            ]
           }
         ],
         "style": "pills",
@@ -3537,7 +3537,6 @@
         "groupType": "editable",
         "title": "Forecasting",
         "expandable": true,
-        "expanded": true,
         "items": [
           {
             "type": 1,
@@ -4196,7 +4195,6 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourcegroups/soc/providers/microsoft.operationalinsights/workspaces/cybersecuritysoc"
   ],
   "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02459.3229-230925-201317/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
