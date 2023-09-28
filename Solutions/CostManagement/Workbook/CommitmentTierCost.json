@@ -12,6 +12,9 @@
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
         "parameters": [
           {
             "id": "46c56e28-782c-460a-92a2-2537d1f0a231",
@@ -71,9 +74,7 @@
               "showDefault": false
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources",
-            "value": "/subscriptions/1ce1f03c-2a36-4401-86eb-76fa17f85995/resourceGroups/workbooktesting/providers/Microsoft.OperationalInsights/workspaces/workbooktesting"
-          },
+            "resourceType": "microsoft.resourcegraph/resources"          },
           {
             "id": "2d196500-bcb5-45a2-8d9a-cff65e053a06",
             "version": "KqlParameterItem/1.0",
@@ -121,8 +122,7 @@
             "timeContext": {
               "durationMs": 86400000
             },
-            "label": "Currency Code",
-            "value": "GBP"
+            "label": "Currency Code"
           },
           {
             "id": "e7fe4e9e-f94c-49ef-aae3-f93bc7cb6cf5",
@@ -310,9 +310,9 @@
             "id": "85f7fa57-7ff4-4511-bc24-3b6c4c95960e"
           }
         ],
-        "style": "pills",
-        "queryType": 0,
-        "resourceType": "microsoft.operationalinsights/workspaces"
+        "style": "above",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources"
       },
       "name": "parameters - Main Page"
     },
@@ -340,437 +340,6 @@
         "value": "_"
       },
       "name": "text - 8"
-    },
-    {
-      "type": 12,
-      "content": {
-        "version": "NotebookGroup/1.0",
-        "groupType": "editable",
-        "loadType": "always",
-        "items": [
-          {
-            "type": 1,
-            "content": {
-              "json": "# Default Parameters\r\n\r\nThese values are always left hidden and not ammended. They are here to force the parameter to have a value, even when not used. To use these parameters. Select the Input Custom Prices parameter."
-            },
-            "conditionalVisibility": {
-              "parameterName": "_",
-              "comparison": "isEqualTo",
-              "value": "_"
-            },
-            "name": "text - default custom prices parameters"
-          },
-          {
-            "type": 9,
-            "content": {
-              "version": "KqlParameterItem/1.0",
-              "parameters": [
-                {
-                  "id": "1dd98ee2-bec6-4728-859c-75be9722314e",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorPayasyougo",
-                  "label": "Pay-as-you-go",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "47d4951d-d47b-4b44-922c-f41cb601902a",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorOneHundred",
-                  "label": "100 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "abea1ff5-c49a-4019-af8b-dffdd6e28cff",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorTwoHundred",
-                  "label": "200 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "95fe558a-a0bc-442d-a42d-b5ba74b7c6d3",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorThreeHundred",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  },
-                  "label": "300 GB"
-                },
-                {
-                  "id": "081cde4b-0f37-432d-b54a-a54a7c4c5c25",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorFourHundred",
-                  "label": "400 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "a977e58b-3e34-4fd2-aa20-c1b0525c4cb2",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorFiveHundred",
-                  "label": "500 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "c50ca221-d1ad-4816-9f90-b0d15f12219b",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorOneThousand",
-                  "label": "1000 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "defd265e-554d-4302-988e-373e130c7aed",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorTwoThousand",
-                  "label": "2000 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "d8aa9a65-bfec-4b6f-8cb9-d63c99fbbcea",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorFiveThousand",
-                  "label": "5000 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                }
-              ],
-              "style": "above",
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces"
-            },
-            "name": "parameters - Microsoft Azure Monitor Custom Pricing - Copy"
-          },
-          {
-            "type": 9,
-            "content": {
-              "version": "KqlParameterItem/1.0",
-              "parameters": [
-                {
-                  "id": "9bc05fda-2b6e-49a8-9f23-792041b3bb8d",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorPayasyougo",
-                  "label": "Pay-as-you-go",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "471e01c5-5b31-4940-bdac-497c775d1d63",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorOneHundred",
-                  "label": "100 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "0f577e1d-ce38-41d0-8e1f-f01438c08d9c",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorTwoHundred",
-                  "label": "200 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "f050fcdf-0bd0-4e1d-bb85-2fe165613b07",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorThreeHundred",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  },
-                  "label": "300 GB"
-                },
-                {
-                  "id": "4dc9ad0f-03fa-480e-bda3-7b23244664f9",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorFourHundred",
-                  "label": "400 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "c662558c-4744-4463-b80e-93152ed3ded2",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorFiveHundred",
-                  "label": "500 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "18b2169e-540e-4b57-b87c-e25749711231",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorOneThousand",
-                  "label": "1000 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "d58ddfd7-16f4-46ab-b794-82c2a3794292",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorTwoThousand",
-                  "label": "2000 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                },
-                {
-                  "id": "274b155b-429b-4ef6-b6a4-2403531c26b0",
-                  "version": "KqlParameterItem/1.0",
-                  "name": "AzureMonitorFiveThousand",
-                  "label": "5000 GB",
-                  "type": 1,
-                  "isRequired": true,
-                  "isHiddenWhenLocked": true,
-                  "criteriaData": [
-                    {
-                      "criteriaContext": {
-                        "operator": "Default",
-                        "resultValType": "static",
-                        "resultVal": "0"
-                      }
-                    }
-                  ],
-                  "timeContext": {
-                    "durationMs": 86400000
-                  }
-                }
-              ],
-              "style": "above",
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces"
-            },
-            "name": "parameters - Microsoft Azure Monitor Custom Pricing - Copy"
-          }
-        ],
-        "exportParameters": true
-      },
-      "conditionalVisibility": {
-        "parameterName": "_",
-        "comparison": "isEqualTo",
-        "value": "_"
-      },
-      "name": "group - default prices parameters"
     },
     {
       "type": 9,
@@ -825,6 +394,16 @@
             "isRequired": true,
             "isHiddenWhenLocked": true,
             "criteriaData": [
+              {
+                "criteriaContext": {
+                  "leftOperand": "PricingModel",
+                  "operator": "==",
+                  "rightValType": "static",
+                  "rightVal": "Log Analytics",
+                  "resultValType": "static",
+                  "resultVal": "{RepositoryURL}/Classic/Sentinel/{WorkspaceLocation}/{CurrencyCode}_Prices.csv"
+                }
+              },
               {
                 "criteriaContext": {
                   "operator": "Default",
@@ -976,14 +555,15 @@
                 "criteriaContext": {
                   "operator": "Default",
                   "resultValType": "static",
-                  "resultVal": "let BasicTables = toscalar(print Basic = \"{BasicTables}\"     | extend Basic = split(substring(Basic, 1, strlen(Basic) - 2), ',')); let E5Seats = {E5Seats}; let E5AllowancePerDayMB = E5Seats * 5; let E5Tables = dynamic([{E5Tables}]); let E5Usage = Usage     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | where IsBillable == true     | where DataType in (E5Tables)     | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)     | extend E5ReductionMB = iff(E5AllowancePerDayMB - Quantity > 0, Quantity, E5AllowancePerDayMB)     | extend E5ReductionMB = iff(isempty(E5ReductionMB), 0, E5ReductionMB)     | project StartTime, E5ReductionMB; let DefenderForCloudPerDeviceAllowanceMB = 500; let DefenderForCloudTables = dynamic([{DefenderForCloudTables}]); let DefenderForCloudUpdateTables = dynamic([\"Update\", \"UpdateSummary\"]); let DefenderForCloudUsage = Heartbeat     | where TimeGenerated >= TimeRangeStart and TimeGenerated <= TimeRangeEnd     | where Solutions has \"\\\"security\\\"\"     | make-series DeviceCount = dcount(SourceComputerId, 4) default = 0 on TimeGenerated from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand DeviceCount to typeof(int), TimeGenerated to typeof(datetime)     | extend DefenderForCloudAllowancePerDayMB = DefenderForCloudPerDeviceAllowanceMB * DeviceCount     | project TimeGenerated, DefenderForCloudAllowancePerDayMB     | join kind = rightouter (Usage         | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd         | where IsBillable == true         | where DataType in (DefenderForCloudTables)         | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d         | mv-expand Quantity to typeof(long), StartTime to typeof(datetime))         on $left.TimeGenerated == $right.StartTime     | extend DefenderForCloudReductionMB = iff(DefenderForCloudAllowancePerDayMB - Quantity > 0, Quantity, DefenderForCloudAllowancePerDayMB)     | extend DefenderForCloudReductionMB = iff(isempty(DefenderForCloudReductionMB), 0, DefenderForCloudReductionMB)     | project StartTime, DefenderForCloudReductionMB; let UsageMetrics =  Usage     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | where IsBillable == true     | where '*' == BasicTables[0] or DataType !in (BasicTables)     | make-series kind=nonempty QuantityMB = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand QuantityMB to typeof(long), StartTime to typeof(datetime)     | join kind = leftouter (E5Usage) on StartTime     | join kind = leftouter (DefenderForCloudUsage) on StartTime     | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB     | extend JoinColumn = 1;"
+                  "resultVal": "let BasicTables = toscalar(print Basic = \"{BasicTables}\"     | extend Basic = split(substring(Basic, 1, strlen(Basic) - 2), ',')); let E5Seats = {E5Seats}; let E5AllowancePerDayMB = E5Seats * 5; let E5Tables = dynamic([{E5Tables}]); let E5Usage = Usage     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | where IsBillable == true     | where DataType in (E5Tables)     | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)     | extend E5ReductionMB = iff(E5AllowancePerDayMB - Quantity > 0, Quantity, E5AllowancePerDayMB)     | project StartTime, E5ReductionMB; let DefenderForCloudPerDeviceAllowanceMB = 500; let DefenderForCloudTables = dynamic([{DefenderForCloudTables}]); let DefenderForCloudUpdateTables = dynamic([\"Update\", \"UpdateSummary\"]); let DefenderForCloudUsage = Heartbeat     | where TimeGenerated >= TimeRangeStart and TimeGenerated <= TimeRangeEnd     | where Solutions has \"\\\"security\\\"\"     | make-series DeviceCount = dcount(SourceComputerId, 4) default = 0 on TimeGenerated from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand DeviceCount to typeof(int), TimeGenerated to typeof(datetime)     | extend DefenderForCloudAllowancePerDayMB = DefenderForCloudPerDeviceAllowanceMB * DeviceCount     | project TimeGenerated, DefenderForCloudAllowancePerDayMB     | join kind = rightouter (Usage         | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd         | where IsBillable == true         | where DataType in (DefenderForCloudTables)         | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d         | mv-expand Quantity to typeof(long), StartTime to typeof(datetime))         on $left.TimeGenerated == $right.StartTime     | extend DefenderForCloudReductionMB = iff(DefenderForCloudAllowancePerDayMB - Quantity > 0, Quantity, DefenderForCloudAllowancePerDayMB)     | project StartTime, DefenderForCloudReductionMB; let UsageMetrics =  Usage     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | where IsBillable == true     | where '*' == BasicTables[0] or DataType !in (BasicTables)     | make-series kind=nonempty QuantityMB = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand QuantityMB to typeof(long), StartTime to typeof(datetime)     | join kind = leftouter (E5Usage) on StartTime     | join kind = leftouter (DefenderForCloudUsage) on StartTime     | extend E5ReductionMB = iff(isempty(E5ReductionMB), 0, E5ReductionMB)     | extend DefenderForCloudReductionMB = iff(isempty(DefenderForCloudReductionMB), 0, DefenderForCloudReductionMB)     | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB     | extend JoinColumn = 1;"
                 }
               }
             ]
           }
         ],
         "style": "formHorizontal",
-        "queryType": 0
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "conditionalVisibility": {
         "parameterName": "_",
@@ -999,6 +579,7 @@
         "groupType": "editable",
         "title": "Input Custom Prices",
         "expandable": true,
+        "expanded": true,
         "loadType": "always",
         "items": [
           {
@@ -1030,7 +611,7 @@
                   }
                 }
               ],
-              "style": "pills",
+              "style": "above",
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces"
             },
@@ -1067,6 +648,7 @@
                         "name": "SentinelPayasyougoFixed",
                         "label": "Pay-as-you-go",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1097,6 +679,7 @@
                         "name": "SentinelOneHundredFixed",
                         "label": "100 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1127,6 +710,7 @@
                         "name": "SentinelTwoHundredFixed",
                         "label": "200 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1156,6 +740,7 @@
                         "version": "KqlParameterItem/1.0",
                         "name": "SentinelThreeHundredFixed",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1187,6 +772,7 @@
                         "name": "SentinelFourHundredFixed",
                         "label": "400 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1217,6 +803,7 @@
                         "name": "SentinelFiveHundredFixed",
                         "label": "500 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1247,6 +834,7 @@
                         "name": "SentinelOneThousandFixed",
                         "label": "1000 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1277,6 +865,7 @@
                         "name": "SentinelTwoThousandFixed",
                         "label": "2000 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1307,6 +896,7 @@
                         "name": "SentinelFiveThousandFixed",
                         "label": "5000 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1355,6 +945,7 @@
                         "name": "SentinelPayasyougoPercent",
                         "label": "Pay-as-you-go",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": [],
@@ -1363,7 +954,8 @@
                         "jsonData": "[\r\n  {\r\n    \"label\": \"0\",\r\n    \"value\": \"0\",\r\n    \"selected\": true\r\n  },\r\n  {\r\n    \"label\": \"1\",\r\n    \"value\": \"1\"\r\n  },\r\n  {\r\n    \"label\": \"2\",\r\n    \"value\": \"2\"\r\n  },\r\n  {\r\n    \"label\": \"3\",\r\n    \"value\": \"3\"\r\n  },\r\n  {\r\n    \"label\": \"4\",\r\n    \"value\": \"4\"\r\n  },\r\n  {\r\n    \"label\": \"5\",\r\n    \"value\": \"5\"\r\n  },\r\n  {\r\n    \"label\": \"6\",\r\n    \"value\": \"6\"\r\n  },\r\n  {\r\n    \"label\": \"7\",\r\n    \"value\": \"7\"\r\n  },\r\n  {\r\n    \"label\": \"8\",\r\n    \"value\": \"8\"\r\n  },\r\n  {\r\n    \"label\": \"9\",\r\n    \"value\": \"9\"\r\n  },\r\n  {\r\n    \"label\": \"10\",\r\n    \"value\": \"10\"\r\n  },\r\n  {\r\n    \"label\": \"11\",\r\n    \"value\": \"11\"\r\n  },\r\n  {\r\n    \"label\": \"12\",\r\n    \"value\": \"12\"\r\n  },\r\n  {\r\n    \"label\": \"13\",\r\n    \"value\": \"13\"\r\n  },\r\n  {\r\n    \"label\": \"14\",\r\n    \"value\": \"14\"\r\n  },\r\n  {\r\n    \"label\": \"15\",\r\n    \"value\": \"15\"\r\n  },\r\n  {\r\n    \"label\": \"16\",\r\n    \"value\": \"16\"\r\n  },\r\n  {\r\n    \"label\": \"17\",\r\n    \"value\": \"17\"\r\n  },\r\n  {\r\n    \"label\": \"18\",\r\n    \"value\": \"18\"\r\n  },\r\n  {\r\n    \"label\": \"19\",\r\n    \"value\": \"19\"\r\n  },\r\n  {\r\n    \"label\": \"20\",\r\n    \"value\": \"20\"\r\n  },\r\n  {\r\n    \"label\": \"21\",\r\n    \"value\": \"21\"\r\n  },\r\n  {\r\n    \"label\": \"22\",\r\n    \"value\": \"22\"\r\n  },\r\n  {\r\n    \"label\": \"23\",\r\n    \"value\": \"23\"\r\n  },\r\n  {\r\n    \"label\": \"24\",\r\n    \"value\": \"24\"\r\n  },\r\n  {\r\n    \"label\": \"25\",\r\n    \"value\": \"25\"\r\n  },\r\n  {\r\n    \"label\": \"26\",\r\n    \"value\": \"26\"\r\n  },\r\n  {\r\n    \"label\": \"27\",\r\n    \"value\": \"27\"\r\n  },\r\n  {\r\n    \"label\": \"28\",\r\n    \"value\": \"28\"\r\n  },\r\n  {\r\n    \"label\": \"29\",\r\n    \"value\": \"29\"\r\n  },\r\n  {\r\n    \"label\": \"30\",\r\n    \"value\": \"30\"\r\n  },\r\n  {\r\n    \"label\": \"31\",\r\n    \"value\": \"31\"\r\n  },\r\n  {\r\n    \"label\": \"32\",\r\n    \"value\": \"32\"\r\n  },\r\n  {\r\n    \"label\": \"33\",\r\n    \"value\": \"33\"\r\n  },\r\n  {\r\n    \"label\": \"34\",\r\n    \"value\": \"34\"\r\n  },\r\n  {\r\n    \"label\": \"35\",\r\n    \"value\": \"35\"\r\n  },\r\n  {\r\n    \"label\": \"36\",\r\n    \"value\": \"36\"\r\n  },\r\n  {\r\n    \"label\": \"37\",\r\n    \"value\": \"37\"\r\n  },\r\n  {\r\n    \"label\": \"38\",\r\n    \"value\": \"38\"\r\n  },\r\n  {\r\n    \"label\": \"39\",\r\n    \"value\": \"39\"\r\n  },\r\n  {\r\n    \"label\": \"40\",\r\n    \"value\": \"40\"\r\n  },\r\n  {\r\n    \"label\": \"41\",\r\n    \"value\": \"41\"\r\n  },\r\n  {\r\n    \"label\": \"42\",\r\n    \"value\": \"42\"\r\n  },\r\n  {\r\n    \"label\": \"43\",\r\n    \"value\": \"43\"\r\n  },\r\n  {\r\n    \"label\": \"44\",\r\n    \"value\": \"44\"\r\n  },\r\n  {\r\n    \"label\": \"45\",\r\n    \"value\": \"45\"\r\n  },\r\n  {\r\n    \"label\": \"46\",\r\n    \"value\": \"46\"\r\n  },\r\n  {\r\n    \"label\": \"47\",\r\n    \"value\": \"47\"\r\n  },\r\n  {\r\n    \"label\": \"48\",\r\n    \"value\": \"48\"\r\n  },\r\n  {\r\n    \"label\": \"49\",\r\n    \"value\": \"49\"\r\n  },\r\n  {\r\n    \"label\": \"50\",\r\n    \"value\": \"50\"\r\n  },\r\n  {\r\n    \"label\": \"51\",\r\n    \"value\": \"51\"\r\n  },\r\n  {\r\n    \"label\": \"52\",\r\n    \"value\": \"52\"\r\n  },\r\n  {\r\n    \"label\": \"53\",\r\n    \"value\": \"53\"\r\n  },\r\n  {\r\n    \"label\": \"54\",\r\n    \"value\": \"54\"\r\n  },\r\n  {\r\n    \"label\": \"55\",\r\n    \"value\": \"55\"\r\n  },\r\n  {\r\n    \"label\": \"56\",\r\n    \"value\": \"56\"\r\n  },\r\n  {\r\n    \"label\": \"57\",\r\n    \"value\": \"57\"\r\n  },\r\n  {\r\n    \"label\": \"58\",\r\n    \"value\": \"58\"\r\n  },\r\n  {\r\n    \"label\": \"59\",\r\n    \"value\": \"59\"\r\n  },\r\n  {\r\n    \"label\": \"60\",\r\n    \"value\": \"60\"\r\n  },\r\n  {\r\n    \"label\": \"61\",\r\n    \"value\": \"61\"\r\n  },\r\n  {\r\n    \"label\": \"62\",\r\n    \"value\": \"62\"\r\n  },\r\n  {\r\n    \"label\": \"63\",\r\n    \"value\": \"63\"\r\n  },\r\n  {\r\n    \"label\": \"64\",\r\n    \"value\": \"64\"\r\n  },\r\n  {\r\n    \"label\": \"65\",\r\n    \"value\": \"65\"\r\n  },\r\n  {\r\n    \"label\": \"66\",\r\n    \"value\": \"66\"\r\n  },\r\n  {\r\n    \"label\": \"67\",\r\n    \"value\": \"67\"\r\n  },\r\n  {\r\n    \"label\": \"68\",\r\n    \"value\": \"68\"\r\n  },\r\n  {\r\n    \"label\": \"69\",\r\n    \"value\": \"69\"\r\n  },\r\n  {\r\n    \"label\": \"70\",\r\n    \"value\": \"70\"\r\n  },\r\n  {\r\n    \"label\": \"71\",\r\n    \"value\": \"71\"\r\n  },\r\n  {\r\n    \"label\": \"72\",\r\n    \"value\": \"72\"\r\n  },\r\n  {\r\n    \"label\": \"73\",\r\n    \"value\": \"73\"\r\n  },\r\n  {\r\n    \"label\": \"74\",\r\n    \"value\": \"74\"\r\n  },\r\n  {\r\n    \"label\": \"75\",\r\n    \"value\": \"75\"\r\n  },\r\n  {\r\n    \"label\": \"76\",\r\n    \"value\": \"76\"\r\n  },\r\n  {\r\n    \"label\": \"77\",\r\n    \"value\": \"77\"\r\n  },\r\n  {\r\n    \"label\": \"78\",\r\n    \"value\": \"78\"\r\n  },\r\n  {\r\n    \"label\": \"79\",\r\n    \"value\": \"79\"\r\n  },\r\n  {\r\n    \"label\": \"80\",\r\n    \"value\": \"80\"\r\n  },\r\n  {\r\n    \"label\": \"81\",\r\n    \"value\": \"81\"\r\n  },\r\n  {\r\n    \"label\": \"82\",\r\n    \"value\": \"82\"\r\n  },\r\n  {\r\n    \"label\": \"83\",\r\n    \"value\": \"83\"\r\n  },\r\n  {\r\n    \"label\": \"84\",\r\n    \"value\": \"84\"\r\n  },\r\n  {\r\n    \"label\": \"85\",\r\n    \"value\": \"85\"\r\n  },\r\n  {\r\n    \"label\": \"86\",\r\n    \"value\": \"86\"\r\n  },\r\n  {\r\n    \"label\": \"87\",\r\n    \"value\": \"87\"\r\n  },\r\n  {\r\n    \"label\": \"88\",\r\n    \"value\": \"88\"\r\n  },\r\n  {\r\n    \"label\": \"89\",\r\n    \"value\": \"89\"\r\n  },\r\n  {\r\n    \"label\": \"90\",\r\n    \"value\": \"90\"\r\n  },\r\n  {\r\n    \"label\": \"91\",\r\n    \"value\": \"91\"\r\n  },\r\n  {\r\n    \"label\": \"92\",\r\n    \"value\": \"92\"\r\n  },\r\n  {\r\n    \"label\": \"93\",\r\n    \"value\": \"93\"\r\n  },\r\n  {\r\n    \"label\": \"94\",\r\n    \"value\": \"94\"\r\n  },\r\n  {\r\n    \"label\": \"95\",\r\n    \"value\": \"95\"\r\n  },\r\n  {\r\n    \"label\": \"96\",\r\n    \"value\": \"96\"\r\n  },\r\n  {\r\n    \"label\": \"97\",\r\n    \"value\": \"97\"\r\n  },\r\n  {\r\n    \"label\": \"98\",\r\n    \"value\": \"98\"\r\n  },\r\n  {\r\n    \"label\": \"99\",\r\n    \"value\": \"99\"\r\n  },\r\n  {\r\n    \"label\": \"100\",\r\n    \"value\": \"100\"\r\n  }\r\n]\r\n",
                         "timeContext": {
                           "durationMs": 86400000
-                        }
+                        },
+                        "value": "16"
                       },
                       {
                         "id": "46a84065-0374-4fa4-99f2-fa7056d9fe28",
@@ -1371,6 +963,7 @@
                         "name": "SentinelOneHundredPercent",
                         "label": "100 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1378,7 +971,8 @@
                         "jsonData": "[\r\n  {\r\n    \"label\": \"0\",\r\n    \"value\": \"0\",\r\n    \"selected\": true\r\n  },\r\n  {\r\n    \"label\": \"1\",\r\n    \"value\": \"1\"\r\n  },\r\n  {\r\n    \"label\": \"2\",\r\n    \"value\": \"2\"\r\n  },\r\n  {\r\n    \"label\": \"3\",\r\n    \"value\": \"3\"\r\n  },\r\n  {\r\n    \"label\": \"4\",\r\n    \"value\": \"4\"\r\n  },\r\n  {\r\n    \"label\": \"5\",\r\n    \"value\": \"5\"\r\n  },\r\n  {\r\n    \"label\": \"6\",\r\n    \"value\": \"6\"\r\n  },\r\n  {\r\n    \"label\": \"7\",\r\n    \"value\": \"7\"\r\n  },\r\n  {\r\n    \"label\": \"8\",\r\n    \"value\": \"8\"\r\n  },\r\n  {\r\n    \"label\": \"9\",\r\n    \"value\": \"9\"\r\n  },\r\n  {\r\n    \"label\": \"10\",\r\n    \"value\": \"10\"\r\n  },\r\n  {\r\n    \"label\": \"11\",\r\n    \"value\": \"11\"\r\n  },\r\n  {\r\n    \"label\": \"12\",\r\n    \"value\": \"12\"\r\n  },\r\n  {\r\n    \"label\": \"13\",\r\n    \"value\": \"13\"\r\n  },\r\n  {\r\n    \"label\": \"14\",\r\n    \"value\": \"14\"\r\n  },\r\n  {\r\n    \"label\": \"15\",\r\n    \"value\": \"15\"\r\n  },\r\n  {\r\n    \"label\": \"16\",\r\n    \"value\": \"16\"\r\n  },\r\n  {\r\n    \"label\": \"17\",\r\n    \"value\": \"17\"\r\n  },\r\n  {\r\n    \"label\": \"18\",\r\n    \"value\": \"18\"\r\n  },\r\n  {\r\n    \"label\": \"19\",\r\n    \"value\": \"19\"\r\n  },\r\n  {\r\n    \"label\": \"20\",\r\n    \"value\": \"20\"\r\n  },\r\n  {\r\n    \"label\": \"21\",\r\n    \"value\": \"21\"\r\n  },\r\n  {\r\n    \"label\": \"22\",\r\n    \"value\": \"22\"\r\n  },\r\n  {\r\n    \"label\": \"23\",\r\n    \"value\": \"23\"\r\n  },\r\n  {\r\n    \"label\": \"24\",\r\n    \"value\": \"24\"\r\n  },\r\n  {\r\n    \"label\": \"25\",\r\n    \"value\": \"25\"\r\n  },\r\n  {\r\n    \"label\": \"26\",\r\n    \"value\": \"26\"\r\n  },\r\n  {\r\n    \"label\": \"27\",\r\n    \"value\": \"27\"\r\n  },\r\n  {\r\n    \"label\": \"28\",\r\n    \"value\": \"28\"\r\n  },\r\n  {\r\n    \"label\": \"29\",\r\n    \"value\": \"29\"\r\n  },\r\n  {\r\n    \"label\": \"30\",\r\n    \"value\": \"30\"\r\n  },\r\n  {\r\n    \"label\": \"31\",\r\n    \"value\": \"31\"\r\n  },\r\n  {\r\n    \"label\": \"32\",\r\n    \"value\": \"32\"\r\n  },\r\n  {\r\n    \"label\": \"33\",\r\n    \"value\": \"33\"\r\n  },\r\n  {\r\n    \"label\": \"34\",\r\n    \"value\": \"34\"\r\n  },\r\n  {\r\n    \"label\": \"35\",\r\n    \"value\": \"35\"\r\n  },\r\n  {\r\n    \"label\": \"36\",\r\n    \"value\": \"36\"\r\n  },\r\n  {\r\n    \"label\": \"37\",\r\n    \"value\": \"37\"\r\n  },\r\n  {\r\n    \"label\": \"38\",\r\n    \"value\": \"38\"\r\n  },\r\n  {\r\n    \"label\": \"39\",\r\n    \"value\": \"39\"\r\n  },\r\n  {\r\n    \"label\": \"40\",\r\n    \"value\": \"40\"\r\n  },\r\n  {\r\n    \"label\": \"41\",\r\n    \"value\": \"41\"\r\n  },\r\n  {\r\n    \"label\": \"42\",\r\n    \"value\": \"42\"\r\n  },\r\n  {\r\n    \"label\": \"43\",\r\n    \"value\": \"43\"\r\n  },\r\n  {\r\n    \"label\": \"44\",\r\n    \"value\": \"44\"\r\n  },\r\n  {\r\n    \"label\": \"45\",\r\n    \"value\": \"45\"\r\n  },\r\n  {\r\n    \"label\": \"46\",\r\n    \"value\": \"46\"\r\n  },\r\n  {\r\n    \"label\": \"47\",\r\n    \"value\": \"47\"\r\n  },\r\n  {\r\n    \"label\": \"48\",\r\n    \"value\": \"48\"\r\n  },\r\n  {\r\n    \"label\": \"49\",\r\n    \"value\": \"49\"\r\n  },\r\n  {\r\n    \"label\": \"50\",\r\n    \"value\": \"50\"\r\n  },\r\n  {\r\n    \"label\": \"51\",\r\n    \"value\": \"51\"\r\n  },\r\n  {\r\n    \"label\": \"52\",\r\n    \"value\": \"52\"\r\n  },\r\n  {\r\n    \"label\": \"53\",\r\n    \"value\": \"53\"\r\n  },\r\n  {\r\n    \"label\": \"54\",\r\n    \"value\": \"54\"\r\n  },\r\n  {\r\n    \"label\": \"55\",\r\n    \"value\": \"55\"\r\n  },\r\n  {\r\n    \"label\": \"56\",\r\n    \"value\": \"56\"\r\n  },\r\n  {\r\n    \"label\": \"57\",\r\n    \"value\": \"57\"\r\n  },\r\n  {\r\n    \"label\": \"58\",\r\n    \"value\": \"58\"\r\n  },\r\n  {\r\n    \"label\": \"59\",\r\n    \"value\": \"59\"\r\n  },\r\n  {\r\n    \"label\": \"60\",\r\n    \"value\": \"60\"\r\n  },\r\n  {\r\n    \"label\": \"61\",\r\n    \"value\": \"61\"\r\n  },\r\n  {\r\n    \"label\": \"62\",\r\n    \"value\": \"62\"\r\n  },\r\n  {\r\n    \"label\": \"63\",\r\n    \"value\": \"63\"\r\n  },\r\n  {\r\n    \"label\": \"64\",\r\n    \"value\": \"64\"\r\n  },\r\n  {\r\n    \"label\": \"65\",\r\n    \"value\": \"65\"\r\n  },\r\n  {\r\n    \"label\": \"66\",\r\n    \"value\": \"66\"\r\n  },\r\n  {\r\n    \"label\": \"67\",\r\n    \"value\": \"67\"\r\n  },\r\n  {\r\n    \"label\": \"68\",\r\n    \"value\": \"68\"\r\n  },\r\n  {\r\n    \"label\": \"69\",\r\n    \"value\": \"69\"\r\n  },\r\n  {\r\n    \"label\": \"70\",\r\n    \"value\": \"70\"\r\n  },\r\n  {\r\n    \"label\": \"71\",\r\n    \"value\": \"71\"\r\n  },\r\n  {\r\n    \"label\": \"72\",\r\n    \"value\": \"72\"\r\n  },\r\n  {\r\n    \"label\": \"73\",\r\n    \"value\": \"73\"\r\n  },\r\n  {\r\n    \"label\": \"74\",\r\n    \"value\": \"74\"\r\n  },\r\n  {\r\n    \"label\": \"75\",\r\n    \"value\": \"75\"\r\n  },\r\n  {\r\n    \"label\": \"76\",\r\n    \"value\": \"76\"\r\n  },\r\n  {\r\n    \"label\": \"77\",\r\n    \"value\": \"77\"\r\n  },\r\n  {\r\n    \"label\": \"78\",\r\n    \"value\": \"78\"\r\n  },\r\n  {\r\n    \"label\": \"79\",\r\n    \"value\": \"79\"\r\n  },\r\n  {\r\n    \"label\": \"80\",\r\n    \"value\": \"80\"\r\n  },\r\n  {\r\n    \"label\": \"81\",\r\n    \"value\": \"81\"\r\n  },\r\n  {\r\n    \"label\": \"82\",\r\n    \"value\": \"82\"\r\n  },\r\n  {\r\n    \"label\": \"83\",\r\n    \"value\": \"83\"\r\n  },\r\n  {\r\n    \"label\": \"84\",\r\n    \"value\": \"84\"\r\n  },\r\n  {\r\n    \"label\": \"85\",\r\n    \"value\": \"85\"\r\n  },\r\n  {\r\n    \"label\": \"86\",\r\n    \"value\": \"86\"\r\n  },\r\n  {\r\n    \"label\": \"87\",\r\n    \"value\": \"87\"\r\n  },\r\n  {\r\n    \"label\": \"88\",\r\n    \"value\": \"88\"\r\n  },\r\n  {\r\n    \"label\": \"89\",\r\n    \"value\": \"89\"\r\n  },\r\n  {\r\n    \"label\": \"90\",\r\n    \"value\": \"90\"\r\n  },\r\n  {\r\n    \"label\": \"91\",\r\n    \"value\": \"91\"\r\n  },\r\n  {\r\n    \"label\": \"92\",\r\n    \"value\": \"92\"\r\n  },\r\n  {\r\n    \"label\": \"93\",\r\n    \"value\": \"93\"\r\n  },\r\n  {\r\n    \"label\": \"94\",\r\n    \"value\": \"94\"\r\n  },\r\n  {\r\n    \"label\": \"95\",\r\n    \"value\": \"95\"\r\n  },\r\n  {\r\n    \"label\": \"96\",\r\n    \"value\": \"96\"\r\n  },\r\n  {\r\n    \"label\": \"97\",\r\n    \"value\": \"97\"\r\n  },\r\n  {\r\n    \"label\": \"98\",\r\n    \"value\": \"98\"\r\n  },\r\n  {\r\n    \"label\": \"99\",\r\n    \"value\": \"99\"\r\n  },\r\n  {\r\n    \"label\": \"100\",\r\n    \"value\": \"100\"\r\n  }\r\n]\r\n",
                         "timeContext": {
                           "durationMs": 86400000
-                        }
+                        },
+                        "value": "15"
                       },
                       {
                         "id": "56f09db4-511a-4bf5-9901-195bddee1cb0",
@@ -1386,6 +980,7 @@
                         "name": "SentinelTwoHundredPercent",
                         "label": "200 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1393,7 +988,8 @@
                         "jsonData": "[\r\n  {\r\n    \"label\": \"0\",\r\n    \"value\": \"0\",\r\n    \"selected\": true\r\n  },\r\n  {\r\n    \"label\": \"1\",\r\n    \"value\": \"1\"\r\n  },\r\n  {\r\n    \"label\": \"2\",\r\n    \"value\": \"2\"\r\n  },\r\n  {\r\n    \"label\": \"3\",\r\n    \"value\": \"3\"\r\n  },\r\n  {\r\n    \"label\": \"4\",\r\n    \"value\": \"4\"\r\n  },\r\n  {\r\n    \"label\": \"5\",\r\n    \"value\": \"5\"\r\n  },\r\n  {\r\n    \"label\": \"6\",\r\n    \"value\": \"6\"\r\n  },\r\n  {\r\n    \"label\": \"7\",\r\n    \"value\": \"7\"\r\n  },\r\n  {\r\n    \"label\": \"8\",\r\n    \"value\": \"8\"\r\n  },\r\n  {\r\n    \"label\": \"9\",\r\n    \"value\": \"9\"\r\n  },\r\n  {\r\n    \"label\": \"10\",\r\n    \"value\": \"10\"\r\n  },\r\n  {\r\n    \"label\": \"11\",\r\n    \"value\": \"11\"\r\n  },\r\n  {\r\n    \"label\": \"12\",\r\n    \"value\": \"12\"\r\n  },\r\n  {\r\n    \"label\": \"13\",\r\n    \"value\": \"13\"\r\n  },\r\n  {\r\n    \"label\": \"14\",\r\n    \"value\": \"14\"\r\n  },\r\n  {\r\n    \"label\": \"15\",\r\n    \"value\": \"15\"\r\n  },\r\n  {\r\n    \"label\": \"16\",\r\n    \"value\": \"16\"\r\n  },\r\n  {\r\n    \"label\": \"17\",\r\n    \"value\": \"17\"\r\n  },\r\n  {\r\n    \"label\": \"18\",\r\n    \"value\": \"18\"\r\n  },\r\n  {\r\n    \"label\": \"19\",\r\n    \"value\": \"19\"\r\n  },\r\n  {\r\n    \"label\": \"20\",\r\n    \"value\": \"20\"\r\n  },\r\n  {\r\n    \"label\": \"21\",\r\n    \"value\": \"21\"\r\n  },\r\n  {\r\n    \"label\": \"22\",\r\n    \"value\": \"22\"\r\n  },\r\n  {\r\n    \"label\": \"23\",\r\n    \"value\": \"23\"\r\n  },\r\n  {\r\n    \"label\": \"24\",\r\n    \"value\": \"24\"\r\n  },\r\n  {\r\n    \"label\": \"25\",\r\n    \"value\": \"25\"\r\n  },\r\n  {\r\n    \"label\": \"26\",\r\n    \"value\": \"26\"\r\n  },\r\n  {\r\n    \"label\": \"27\",\r\n    \"value\": \"27\"\r\n  },\r\n  {\r\n    \"label\": \"28\",\r\n    \"value\": \"28\"\r\n  },\r\n  {\r\n    \"label\": \"29\",\r\n    \"value\": \"29\"\r\n  },\r\n  {\r\n    \"label\": \"30\",\r\n    \"value\": \"30\"\r\n  },\r\n  {\r\n    \"label\": \"31\",\r\n    \"value\": \"31\"\r\n  },\r\n  {\r\n    \"label\": \"32\",\r\n    \"value\": \"32\"\r\n  },\r\n  {\r\n    \"label\": \"33\",\r\n    \"value\": \"33\"\r\n  },\r\n  {\r\n    \"label\": \"34\",\r\n    \"value\": \"34\"\r\n  },\r\n  {\r\n    \"label\": \"35\",\r\n    \"value\": \"35\"\r\n  },\r\n  {\r\n    \"label\": \"36\",\r\n    \"value\": \"36\"\r\n  },\r\n  {\r\n    \"label\": \"37\",\r\n    \"value\": \"37\"\r\n  },\r\n  {\r\n    \"label\": \"38\",\r\n    \"value\": \"38\"\r\n  },\r\n  {\r\n    \"label\": \"39\",\r\n    \"value\": \"39\"\r\n  },\r\n  {\r\n    \"label\": \"40\",\r\n    \"value\": \"40\"\r\n  },\r\n  {\r\n    \"label\": \"41\",\r\n    \"value\": \"41\"\r\n  },\r\n  {\r\n    \"label\": \"42\",\r\n    \"value\": \"42\"\r\n  },\r\n  {\r\n    \"label\": \"43\",\r\n    \"value\": \"43\"\r\n  },\r\n  {\r\n    \"label\": \"44\",\r\n    \"value\": \"44\"\r\n  },\r\n  {\r\n    \"label\": \"45\",\r\n    \"value\": \"45\"\r\n  },\r\n  {\r\n    \"label\": \"46\",\r\n    \"value\": \"46\"\r\n  },\r\n  {\r\n    \"label\": \"47\",\r\n    \"value\": \"47\"\r\n  },\r\n  {\r\n    \"label\": \"48\",\r\n    \"value\": \"48\"\r\n  },\r\n  {\r\n    \"label\": \"49\",\r\n    \"value\": \"49\"\r\n  },\r\n  {\r\n    \"label\": \"50\",\r\n    \"value\": \"50\"\r\n  },\r\n  {\r\n    \"label\": \"51\",\r\n    \"value\": \"51\"\r\n  },\r\n  {\r\n    \"label\": \"52\",\r\n    \"value\": \"52\"\r\n  },\r\n  {\r\n    \"label\": \"53\",\r\n    \"value\": \"53\"\r\n  },\r\n  {\r\n    \"label\": \"54\",\r\n    \"value\": \"54\"\r\n  },\r\n  {\r\n    \"label\": \"55\",\r\n    \"value\": \"55\"\r\n  },\r\n  {\r\n    \"label\": \"56\",\r\n    \"value\": \"56\"\r\n  },\r\n  {\r\n    \"label\": \"57\",\r\n    \"value\": \"57\"\r\n  },\r\n  {\r\n    \"label\": \"58\",\r\n    \"value\": \"58\"\r\n  },\r\n  {\r\n    \"label\": \"59\",\r\n    \"value\": \"59\"\r\n  },\r\n  {\r\n    \"label\": \"60\",\r\n    \"value\": \"60\"\r\n  },\r\n  {\r\n    \"label\": \"61\",\r\n    \"value\": \"61\"\r\n  },\r\n  {\r\n    \"label\": \"62\",\r\n    \"value\": \"62\"\r\n  },\r\n  {\r\n    \"label\": \"63\",\r\n    \"value\": \"63\"\r\n  },\r\n  {\r\n    \"label\": \"64\",\r\n    \"value\": \"64\"\r\n  },\r\n  {\r\n    \"label\": \"65\",\r\n    \"value\": \"65\"\r\n  },\r\n  {\r\n    \"label\": \"66\",\r\n    \"value\": \"66\"\r\n  },\r\n  {\r\n    \"label\": \"67\",\r\n    \"value\": \"67\"\r\n  },\r\n  {\r\n    \"label\": \"68\",\r\n    \"value\": \"68\"\r\n  },\r\n  {\r\n    \"label\": \"69\",\r\n    \"value\": \"69\"\r\n  },\r\n  {\r\n    \"label\": \"70\",\r\n    \"value\": \"70\"\r\n  },\r\n  {\r\n    \"label\": \"71\",\r\n    \"value\": \"71\"\r\n  },\r\n  {\r\n    \"label\": \"72\",\r\n    \"value\": \"72\"\r\n  },\r\n  {\r\n    \"label\": \"73\",\r\n    \"value\": \"73\"\r\n  },\r\n  {\r\n    \"label\": \"74\",\r\n    \"value\": \"74\"\r\n  },\r\n  {\r\n    \"label\": \"75\",\r\n    \"value\": \"75\"\r\n  },\r\n  {\r\n    \"label\": \"76\",\r\n    \"value\": \"76\"\r\n  },\r\n  {\r\n    \"label\": \"77\",\r\n    \"value\": \"77\"\r\n  },\r\n  {\r\n    \"label\": \"78\",\r\n    \"value\": \"78\"\r\n  },\r\n  {\r\n    \"label\": \"79\",\r\n    \"value\": \"79\"\r\n  },\r\n  {\r\n    \"label\": \"80\",\r\n    \"value\": \"80\"\r\n  },\r\n  {\r\n    \"label\": \"81\",\r\n    \"value\": \"81\"\r\n  },\r\n  {\r\n    \"label\": \"82\",\r\n    \"value\": \"82\"\r\n  },\r\n  {\r\n    \"label\": \"83\",\r\n    \"value\": \"83\"\r\n  },\r\n  {\r\n    \"label\": \"84\",\r\n    \"value\": \"84\"\r\n  },\r\n  {\r\n    \"label\": \"85\",\r\n    \"value\": \"85\"\r\n  },\r\n  {\r\n    \"label\": \"86\",\r\n    \"value\": \"86\"\r\n  },\r\n  {\r\n    \"label\": \"87\",\r\n    \"value\": \"87\"\r\n  },\r\n  {\r\n    \"label\": \"88\",\r\n    \"value\": \"88\"\r\n  },\r\n  {\r\n    \"label\": \"89\",\r\n    \"value\": \"89\"\r\n  },\r\n  {\r\n    \"label\": \"90\",\r\n    \"value\": \"90\"\r\n  },\r\n  {\r\n    \"label\": \"91\",\r\n    \"value\": \"91\"\r\n  },\r\n  {\r\n    \"label\": \"92\",\r\n    \"value\": \"92\"\r\n  },\r\n  {\r\n    \"label\": \"93\",\r\n    \"value\": \"93\"\r\n  },\r\n  {\r\n    \"label\": \"94\",\r\n    \"value\": \"94\"\r\n  },\r\n  {\r\n    \"label\": \"95\",\r\n    \"value\": \"95\"\r\n  },\r\n  {\r\n    \"label\": \"96\",\r\n    \"value\": \"96\"\r\n  },\r\n  {\r\n    \"label\": \"97\",\r\n    \"value\": \"97\"\r\n  },\r\n  {\r\n    \"label\": \"98\",\r\n    \"value\": \"98\"\r\n  },\r\n  {\r\n    \"label\": \"99\",\r\n    \"value\": \"99\"\r\n  },\r\n  {\r\n    \"label\": \"100\",\r\n    \"value\": \"100\"\r\n  }\r\n]\r\n",
                         "timeContext": {
                           "durationMs": 86400000
-                        }
+                        },
+                        "value": "14"
                       },
                       {
                         "id": "5a3d9b06-c3f9-4e1a-b7b8-9b4da712cdf5",
@@ -1401,6 +997,7 @@
                         "name": "SentinelThreeHundredPercent",
                         "label": "300 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1416,6 +1013,7 @@
                         "name": "SentinelFourHundredPercent",
                         "label": "400 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1431,6 +1029,7 @@
                         "name": "SentinelFiveHundredPercent",
                         "label": "500 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1446,6 +1045,7 @@
                         "name": "SentinelOneThousandPercent",
                         "label": "1000 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": [],
@@ -1462,6 +1062,7 @@
                         "name": "SentinelTwoThousandPercent",
                         "label": "2000 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1477,6 +1078,7 @@
                         "name": "SentinelFiveThousandPercent",
                         "label": "5000 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1545,27 +1147,81 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let ServiceNameValue = \"Sentinel\";\r\nlet InputCustomPrices = {CustomPrices};\r\nlet FixedOrPercentage = \"{FixedOrPercentage}\";\r\nlet Inputs = datatable(TierOrder:int, Tier: string, CustomPriceValue:real, PercentageDiscountValue:int)[\r\n    0, \"Pay-as-you-go\", {SentinelPayasyougoFixed},      {SentinelPayasyougoPercent},\r\n    1, \"100\",           {SentinelOneHundredFixed},      {SentinelOneHundredPercent},  \r\n    2, \"200\",           {SentinelTwoHundredFixed},      {SentinelTwoHundredPercent},\r\n    3, \"300\",           {SentinelThreeHundredFixed},    {SentinelThreeHundredPercent},\r\n    4, \"400\",           {SentinelFourHundredFixed},     {SentinelFourHundredPercent},\r\n    5, \"500\",           {SentinelFiveHundredFixed},     {SentinelFiveHundredPercent},\r\n    6, \"1000\",          {SentinelOneThousandFixed},     {SentinelOneThousandPercent},\r\n    7, \"2000\",          {SentinelTwoThousandFixed},     {SentinelTwoThousandPercent},\r\n    8, \"5000\",          {SentinelFiveThousandFixed},    {SentinelFiveThousandPercent}\r\n];\r\nlet Prices = materialize(\r\n    {SentinelExternalData}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | project Tier, RetailPrice\r\n    | join kind = inner (\r\n        Inputs\r\n    ) on Tier\r\n    | project-away Tier1\r\n    | extend SkuPrice = case(\r\n        InputCustomPrices == true and FixedOrPercentage == \"Fixed\", CustomPriceValue,\r\n        InputCustomPrices == true and FixedOrPercentage == \"Percentage\", RetailPrice - ((RetailPrice / 100) * PercentageDiscountValue),\r\n        RetailPrice\r\n    )\r\n    | extend SkuEffectivePricePerGB = iff(\r\n                Tier == \"Pay-as-you-go\", SkuPrice, \r\n                SkuPrice / toint(Tier) \r\n    )\r\n    | project TierOrder, Tier, RetailPrice, SkuPrice, SkuEffectivePricePerGB\r\n);\r\nlet PricesBag = toscalar(\r\n    Prices\r\n    | extend Bag = bag_pack(tostring(TierOrder), bag_pack(\"SkuEffectivePricePerGB\", SkuEffectivePricePerGB, \"Tier\", Tier ))\r\n| summarize make_bag(Bag));\r\nPrices \r\n| extend PreviousTier = PricesBag.[tostring(TierOrder-1)].Tier\r\n| extend PreviousTierSkuEffectivePricePerGB = toreal(PricesBag[tostring(TierOrder-1)].SkuEffectivePricePerGB)\r\n| extend SkuEffectiveCommitmentTierThreshold = iff(\r\n    Tier == \"Pay-as-you-go\", toreal(0),\r\n    SkuPrice / PreviousTierSkuEffectivePricePerGB\r\n)\r\n| project Packed = pack_array(\r\n    Tier, \r\n    SkuRetailPrice = RetailPrice,\r\n    SkuPrice = round(SkuPrice, 4),\r\n    SkuEffectivePricePerGB = round(SkuEffectivePricePerGB, 4),\r\n    SkuEffectiveCommitmentTierThreshold = round(SkuEffectiveCommitmentTierThreshold, 4)\r\n)\r\n| summarize Packed = tostring(makelist(Packed))\r\n| project Output = strcat(\r\n    \"datatable(Tier:string, SkuRetailPrice: real, SkuPrice:real, SkuEffectivePricePerGB:real, SkuEffectiveCommitmentTierThreshold:real)\",\r\n    Packed,\r\n    \"| extend ServiceName = '\",ServiceNameValue,\"'\"\r\n)\r\n",
-              "size": 0,
-              "timeContext": {
-                "durationMs": 86400000
-              },
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces"
-            },
-            "name": "query - 10"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
               "query": "{SentinelPrices}",
               "size": 0,
               "timeContext": {
                 "durationMs": 86400000
               },
               "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces"
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Tier",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This is the Commitment Tiers"
+                    }
+                  },
+                  {
+                    "columnMatch": "SkuRetailPrice",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This is the current public retail price as advertised here https://azure.microsoft.com/en-ca/pricing/"
+                    }
+                  },
+                  {
+                    "columnMatch": "SkuPrice",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This is the customer price for the selected Sku, after any applicable discounts"
+                    }
+                  },
+                  {
+                    "columnMatch": "SkuEffectivePricePerGB",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This is the price per GB that you will pay for data that goes over the commitment tier"
+                    }
+                  },
+                  {
+                    "columnMatch": "SkuEffectiveCommitmentTierThreshold",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This is the value in GB which it is cost effective to move to the next tier"
+                    }
+                  },
+                  {
+                    "columnMatch": "ServiceName",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This will either be Azure Monitor or Sentinel"
+                    }
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "SkuRetailPrice",
+                    "label": "Retail Price"
+                  },
+                  {
+                    "columnId": "SkuPrice",
+                    "label": "Customer Price"
+                  },
+                  {
+                    "columnId": "SkuEffectivePricePerGB",
+                    "label": "Effective Price Per GB"
+                  },
+                  {
+                    "columnId": "SkuEffectiveCommitmentTierThreshold",
+                    "label": "Effective Commitment Tier Threshold GB"
+                  },
+                  {
+                    "columnId": "ServiceName",
+                    "label": "Service"
+                  }
+                ]
+              }
             },
             "customWidth": "0",
             "conditionalVisibility": {
@@ -1606,6 +1262,7 @@
                         "name": "AzureMonitorPayasyougoFixed",
                         "label": "Pay-as-you-go",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1636,6 +1293,7 @@
                         "name": "AzureMonitorOneHundredFixed",
                         "label": "100 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1666,6 +1324,7 @@
                         "name": "AzureMonitorTwoHundredFixed",
                         "label": "200 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1695,6 +1354,7 @@
                         "version": "KqlParameterItem/1.0",
                         "name": "AzureMonitorThreeHundredFixed",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1726,6 +1386,7 @@
                         "name": "AzureMonitorFourHundredFixed",
                         "label": "400 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1756,6 +1417,7 @@
                         "name": "AzureMonitorFiveHundredFixed",
                         "label": "500 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1786,6 +1448,7 @@
                         "name": "AzureMonitorOneThousandFixed",
                         "label": "1000 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1816,6 +1479,7 @@
                         "name": "AzureMonitorTwoThousandFixed",
                         "label": "2000 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1846,6 +1510,7 @@
                         "name": "AzureMonitorFiveThousandFixed",
                         "label": "5000 GB",
                         "type": 1,
+                        "description": "Enter the value of the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "criteriaData": [
                           {
@@ -1894,6 +1559,7 @@
                         "name": "AzureMonitorPayasyougoPercent",
                         "label": "Pay-as-you-go",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": [],
@@ -1910,6 +1576,7 @@
                         "name": "AzureMonitorOneHundredPercent",
                         "label": "100 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1925,6 +1592,7 @@
                         "name": "AzureMonitorTwoHundredPercent",
                         "label": "200 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1940,6 +1608,7 @@
                         "name": "AzureMonitorThreeHundredPercent",
                         "label": "300 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1955,6 +1624,7 @@
                         "name": "AzureMonitorFourHundredPercent",
                         "label": "400 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1970,6 +1640,7 @@
                         "name": "AzureMonitorFiveHundredPercent",
                         "label": "500 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -1985,6 +1656,7 @@
                         "name": "AzureMonitorOneThousandPercent",
                         "label": "1000 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": [],
@@ -2001,6 +1673,7 @@
                         "name": "AzureMonitorTwoThousandPercent",
                         "label": "2000 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -2016,6 +1689,7 @@
                         "name": "AzureMonitorFiveThousandPercent",
                         "label": "5000 GB",
                         "type": 2,
+                        "description": "Enter the percentage discount for the selected sku, as per your agreement with Microsoft",
                         "isRequired": true,
                         "typeSettings": {
                           "additionalResourceOptions": []
@@ -2090,7 +1764,75 @@
                 "durationMs": 86400000
               },
               "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces"
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Tier",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This is the Commitment Tiers"
+                    }
+                  },
+                  {
+                    "columnMatch": "SkuRetailPrice",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This is the current public retail price as advertised here https://azure.microsoft.com/en-ca/pricing/"
+                    }
+                  },
+                  {
+                    "columnMatch": "SkuPrice",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This is the customer price for the selected Sku, after any applicable discounts"
+                    }
+                  },
+                  {
+                    "columnMatch": "SkuEffectivePricePerGB",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This is the price per GB that you will pay for data that goes over the commitment tier"
+                    }
+                  },
+                  {
+                    "columnMatch": "SkuEffectiveCommitmentTierThreshold",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This is the value in GB which it is cost effective to move to the next tier"
+                    }
+                  },
+                  {
+                    "columnMatch": "ServiceName",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "This will either be Azure Monitor or Sentinel"
+                    }
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "SkuRetailPrice",
+                    "label": "Retail Price"
+                  },
+                  {
+                    "columnId": "SkuPrice",
+                    "label": "Customer Price"
+                  },
+                  {
+                    "columnId": "SkuEffectivePricePerGB",
+                    "label": "Effective Price Per GB"
+                  },
+                  {
+                    "columnId": "SkuEffectiveCommitmentTierThreshold",
+                    "label": "Effective Commitment Tier Threshold GB"
+                  },
+                  {
+                    "columnId": "ServiceName",
+                    "label": "Service"
+                  }
+                ]
+              }
             },
             "customWidth": "0",
             "conditionalVisibility": {
@@ -2581,11 +2323,11 @@
                   },
                   {
                     "columnId": "DefenderForCloudReductionGB",
-                    "label": "Defender For Cloud Allowance"
+                    "label": "Defender For Cloud Dedcuctions"
                   },
                   {
                     "columnId": "E5ReductionGB",
-                    "label": "E5 Allowance"
+                    "label": "E5 Deductions"
                   },
                   {
                     "columnId": "TotalReduction",
@@ -2659,7 +2401,6 @@
                   "name": "SentinelCT",
                   "label": "Sentinel Commitment Tier",
                   "type": 2,
-                  "isRequired": true,
                   "multiSelect": true,
                   "quote": "'",
                   "delimiter": ",",
@@ -2675,23 +2416,36 @@
                     "durationMs": 86400000
                   },
                   "queryType": 1,
-                  "resourceType": "microsoft.resourcegraph/resources"
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": [
+                    "Pay-as-you-go"
+                  ]
                 }
               ],
-              "style": "pills",
+              "style": "formVertical",
               "queryType": 1,
               "resourceType": "microsoft.resourcegraph/resources"
             },
-            "customWidth": "0",
+            "customWidth": "25",
             "conditionalVisibility": {
               "parameterName": "ShowSentinel",
               "comparison": "isEqualTo",
               "value": "true"
             },
-            "name": "parameters - Sentinel",
-            "styleSettings": {
-              "maxWidth": "50"
-            }
+            "name": "parameters - Sentinel"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": " "
+            },
+            "customWidth": "5",
+            "conditionalVisibility": {
+              "parameterName": "ShowSentinel",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "text - 18"
           },
           {
             "type": 9,
@@ -2707,7 +2461,6 @@
                   "name": "LogAnalyticsCT",
                   "label": "Log Analytics Commitment Tier",
                   "type": 2,
-                  "isRequired": true,
                   "multiSelect": true,
                   "quote": "'",
                   "delimiter": ",",
@@ -2726,20 +2479,17 @@
                   "resourceType": "microsoft.resourcegraph/resources"
                 }
               ],
-              "style": "pills",
+              "style": "formVertical",
               "queryType": 1,
               "resourceType": "microsoft.resourcegraph/resources"
             },
-            "customWidth": "0",
+            "customWidth": "25",
             "conditionalVisibility": {
               "parameterName": "ShowAzureMonitor",
               "comparison": "isEqualTo",
               "value": "true"
             },
-            "name": "parameters - Log Analytics",
-            "styleSettings": {
-              "maxWidth": "50"
-            }
+            "name": "parameters - Log Analytics"
           },
           {
             "type": 1,
@@ -2902,6 +2652,7 @@
                   "name": "IngestionCostQuery",
                   "type": 1,
                   "isRequired": true,
+                  "isHiddenWhenLocked": true,
                   "criteriaData": [
                     {
                       "criteriaContext": {
@@ -2921,6 +2672,7 @@
                   "name": "BillableIngestionAndCommitmentTierQuery",
                   "type": 1,
                   "isRequired": true,
+                  "isHiddenWhenLocked": true,
                   "criteriaData": [
                     {
                       "criteriaContext": {
@@ -2939,12 +2691,14 @@
                   "version": "KqlParameterItem/1.0",
                   "name": "LogIngestionAndAllowancesQuery",
                   "type": 1,
+                  "isRequired": true,
+                  "isHiddenWhenLocked": true,
                   "criteriaData": [
                     {
                       "criteriaContext": {
                         "operator": "Default",
                         "resultValType": "static",
-                        "resultVal": "let PricingModel = \"{PricingModel}\"; let TimeRangeStart = startofday(todatetime({TimeRange:start}), 1); let TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1); {UsageMetrics}   UsageMetrics | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3 | extend DefenderForCloudReductionGB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionGB, toreal(0)) | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3 | extend QuantityGB = QuantityMB / 1e3 | extend BillableQuantityGB =  QuantityGB - E5ReductionGB - DefenderForCloudReductionGB | project StartTime, BillableQuantityGB, DefenderForCloudReductionGB, E5ReductionGB"
+                        "resultVal": "let PricingModel = \"{PricingModel}\"; let TierValue = iff(     CurrentTier == \"Pay-as-you-go\", 0,     toint(CurrentTier) ); let TimeRangeStart = startofday(todatetime({TimeRange:start}), 1);  let TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1);  {UsageMetrics}    UsageMetrics  | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3  | extend DefenderForCloudReductionGB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionGB, toreal(0))  | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3  | extend QuantityGB = QuantityMB / 1e3  | extend BillableQuantityGB =  QuantityGB - E5ReductionGB - DefenderForCloudReductionGB  | extend AboveCommitmentTierGB = iff(BillableQuantityGB >= TierValue, BillableQuantityGB - TierValue, toreal(0)) | extend BelowCommitmentTierGB = BillableQuantityGB - AboveCommitmentTierGB | project StartTime, DefenderForCloudReductionGB, E5ReductionGB,AboveCommitmentTierGB, BelowCommitmentTierGB"
                       }
                     }
                   ],
@@ -2957,7 +2711,7 @@
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces"
             },
-            "name": "parameters - 17"
+            "name": "parameters - Charts - Queries"
           },
           {
             "type": 3,
@@ -3430,11 +3184,13 @@
                   },
                   {
                     "seriesName": "Actual_Usage_GB",
-                    "label": "Actual Usage"
+                    "label": "Actual Usage",
+                    "color": "amethyst"
                   },
                   {
                     "seriesName": "Average_Usage_GB",
-                    "label": "Average Usage"
+                    "label": "Average Usage",
+                    "color": "pink"
                   }
                 ],
                 "ySettings": {
@@ -3458,10 +3214,23 @@
             "name": "Azure Monitor Logs Billable Data Ingested and Commitment Tier Thresholds"
           },
           {
+            "type": 1,
+            "content": {
+              "json": "# Ingestion Allowances\r\n\r\nThere are various Microsoft solutions that offer discounts on data ingested into Azure Monitor Logs and Microsoft Sentinel. This chart breaks down the total daily ingestion and shows the following:\r\n\r\n- Daily [Defender for Servers Plan 2 data ingestion Deductions](https://learn.microsoft.com/en-ca/azure/defender-for-cloud/faq-defender-for-servers#is-the-500-mb-of-free-data-ingestion-allowance-applied-per-workspace-or-per-machine-). \r\n\r\n\r\n- Daily [Microsoft 365 E5, A5, F5 and G5 Deductions](https://azure.microsoft.com/en-ca/pricing/offers/sentinel-microsoft-365-offer/). \r\n\r\n- Data ingested daily below the current commitment tier\r\n\r\n- Data ingested daily above the current commitment tier.\r\n\r\nThis charts will also show a dashed threshold line to show the commitment tier value. This is not to be confused with the effective commitment tier thresholds in previous charts, which show when it is cost effective to move to the tier, but the actual commitment tier itself. For example the 100GB commitment tier would show the threshold line at 100GB. ",
+              "style": "info"
+            },
+            "conditionalVisibility": {
+              "parameterName": "ShowHelp",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "text - Charts - Ingestion Allowances Help"
+          },
+          {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "\r\nlet ServiceName = \"Sentinel\";\r\n{LogIngestionAndAllowancesQuery}\r\n",
+              "query": "let ServiceName = \"Sentinel\";\r\nlet CurrentTier = \"{SentinelCurrentTier}\";\r\n{LogIngestionAndAllowancesQuery}",
               "size": 0,
               "showAnalytics": true,
               "title": "Sentinel Ingestion and Allowances",
@@ -3477,21 +3246,31 @@
                 "showLegend": true,
                 "seriesLabelSettings": [
                   {
-                    "seriesName": "BillableQuantityGB",
-                    "label": "Billable Quantity",
-                    "color": "turquoise"
-                  },
-                  {
                     "seriesName": "DefenderForCloudReductionGB",
                     "label": "Defender For Cloud Allowance",
-                    "color": "redBright"
+                    "color": "orange"
                   },
                   {
                     "seriesName": "E5ReductionGB",
                     "label": "E5 Allowance",
                     "color": "amethyst"
+                  },
+                  {
+                    "seriesName": "AboveCommitmentTierGB",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "BelowCommitmentTierGB",
+                    "color": "green"
+                  },
+                  {
+                    "seriesName": "$_thresholdLine",
+                    "label": "Current Tier Threshold",
+                    "color": "redBright"
                   }
                 ],
+                "customThresholdLine": "{SentinelCurrentTier}",
+                "customThresholdLineStyle": 2,
                 "ySettings": {
                   "numberFormatSettings": {
                     "unit": 39,
@@ -3515,7 +3294,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "\r\nlet ServiceName = \"Azure Monitor\";\r\n{LogIngestionAndAllowancesQuery}\r\n",
+              "query": "\r\nlet ServiceName = \"Azure Monitor\";\r\nlet CurrentTier = \"{LogAnalyticsCurrentTier}\";\r\n{LogIngestionAndAllowancesQuery}",
               "size": 0,
               "showAnalytics": true,
               "title": "Azure Monitor Logs Ingestion and Allowances",
@@ -3531,21 +3310,31 @@
                 "showLegend": true,
                 "seriesLabelSettings": [
                   {
-                    "seriesName": "BillableQuantityGB",
-                    "label": "Billable Quantity",
-                    "color": "turquoise"
-                  },
-                  {
                     "seriesName": "DefenderForCloudReductionGB",
                     "label": "Defender For Cloud Allowance",
-                    "color": "redBright"
+                    "color": "orange"
                   },
                   {
                     "seriesName": "E5ReductionGB",
                     "label": "E5 Allowance",
                     "color": "amethyst"
+                  },
+                  {
+                    "seriesName": "AboveCommitmentTierGB",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "BelowCommitmentTierGB",
+                    "color": "green"
+                  },
+                  {
+                    "seriesName": "$_thresholdLine",
+                    "label": "Current Tier Threshold",
+                    "color": "redBright"
                   }
                 ],
+                "customThresholdLine": "{LogsAnalyticsCurrentTier}",
+                "customThresholdLineStyle": 2,
                 "ySettings": {
                   "numberFormatSettings": {
                     "unit": 39,
@@ -4233,8 +4022,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/1ce1f03c-2a36-4401-86eb-76fa17f85995/resourcegroups/workbooktesting/providers/microsoft.operationalinsights/workspaces/workbooktesting"
   ],
-  "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02459.3229-230925-201317/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
+  "fromTemplateId": "sentinel-UserWorkbook",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
