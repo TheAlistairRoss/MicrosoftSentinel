@@ -12,9 +12,6 @@
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
-        "crossComponentResources": [
-          "{Subscription}"
-        ],
         "parameters": [
           {
             "id": "46c56e28-782c-460a-92a2-2537d1f0a231",
@@ -123,8 +120,7 @@
             "timeContext": {
               "durationMs": 86400000
             },
-            "label": "Currency Code",
-            "value": "GBP"
+            "label": "Currency Code"
           },
           {
             "id": "e7fe4e9e-f94c-49ef-aae3-f93bc7cb6cf5",
@@ -313,8 +309,8 @@
           }
         ],
         "style": "pills",
-        "queryType": 1,
-        "resourceType": "microsoft.resourcegraph/resources"
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "name": "parameters - Main Page"
     },
@@ -1002,7 +998,6 @@
         "groupType": "editable",
         "title": "Input Custom Prices",
         "expandable": true,
-        "expanded": true,
         "loadType": "always",
         "items": [
           {
@@ -1525,7 +1520,7 @@
                   "name": "SentinelPrices",
                   "type": 1,
                   "isRequired": true,
-                  "query": "let ServiceNameValue = \"Sentinel\";\r\nlet InputCustomPrices = {CustomPrices};\r\nlet FixedOrPercentage = \"{FixedOrPercentage}\";\r\nlet Inputs = datatable(TierOrder:int, Tier: string, CustomPriceValue:real, PercentageDiscountValue:int)[\r\n    0, \"Pay-as-you-go\", {SentinelPayasyougoFixed},      {SentinelPayasyougoPercent},\r\n    1, \"100\",           {SentinelOneHundredFixed},      {SentinelOneHundredPercent},  \r\n    2, \"200\",           {SentinelTwoHundredFixed},      {SentinelTwoHundredPercent},\r\n    3, \"300\",           {SentinelThreeHundredFixed},    {SentinelThreeHundredPercent},\r\n    4, \"400\",           {SentinelFourHundredFixed},     {SentinelFourHundredPercent},\r\n    5, \"500\",           {SentinelFiveHundredFixed},     {SentinelFiveHundredPercent},\r\n    6, \"1000\",          {SentinelOneThousandFixed},     {SentinelOneThousandPercent},\r\n    7, \"2000\",          {SentinelTwoThousandFixed},     {SentinelTwoThousandPercent},\r\n    8, \"5000\",          {SentinelFiveThousandFixed},    {SentinelFiveThousandPercent}\r\n];\r\nlet Prices = materialize(\r\n    {SentinelExternalData}\r\n    | summarize arg_max(TimeGenerated, *) by ServiceName\r\n    | project Tier, RetailPrice\r\n    | join kind = inner (\r\n        Inputs\r\n    ) on Tier\r\n    | project-away Tier1\r\n    | extend SkuPrice = case(\r\n        InputCustomPrices == true and FixedOrPercentage == \"Fixed\", CustomPriceValue,\r\n        InputCustomPrices == true and FixedOrPercentage == \"Percentage\", RetailPrice - ((RetailPrice / 100) * PercentageDiscountValue),\r\n        RetailPrice\r\n    )\r\n    | extend SkuEffectivePricePerGB = iff(\r\n                Tier == \"Pay-as-you-go\", SkuPrice, \r\n                SkuPrice / toint(Tier) \r\n    )\r\n    | project TierOrder, Tier, RetailPrice, SkuPrice, SkuEffectivePricePerGB\r\n);\r\nlet PricesBag = toscalar(\r\n    Prices\r\n    | extend Bag = bag_pack(tostring(TierOrder), bag_pack(\"SkuEffectivePricePerGB\", SkuEffectivePricePerGB, \"Tier\", Tier ))\r\n| summarize make_bag(Bag));\r\nPrices \r\n| extend PreviousTier = PricesBag.[tostring(TierOrder-1)].Tier\r\n| extend PreviousTierSkuEffectivePricePerGB = toreal(PricesBag[tostring(TierOrder-1)].SkuEffectivePricePerGB)\r\n| extend SkuEffectiveCommitmentTierThreshold = iff(\r\n    Tier == \"Pay-as-you-go\", toreal(0),\r\n    SkuPrice / PreviousTierSkuEffectivePricePerGB\r\n)\r\n| project Packed = pack_array(\r\n    Tier, \r\n    SkuRetailPrice = RetailPrice,\r\n    SkuPrice = round(SkuPrice, 4),\r\n    SkuEffectivePricePerGB = round(SkuEffectivePricePerGB, 4),\r\n    SkuEffectiveCommitmentTierThreshold = round(SkuEffectiveCommitmentTierThreshold, 4)\r\n)\r\n| summarize Packed = tostring(makelist(Packed))\r\n| project Output = strcat(\r\n    \"datatable(Tier:string, SkuRetailPrice: real, SkuPrice:real, SkuEffectivePricePerGB:real, SkuEffectiveCommitmentTierThreshold:real)\",\r\n    Packed,\r\n    \"| extend ServiceName = '\",ServiceNameValue,\"'\"\r\n)\r\n",
+                  "query": "let ServiceNameValue = \"Sentinel\";\r\nlet InputCustomPrices = {CustomPrices};\r\nlet FixedOrPercentage = \"{FixedOrPercentage}\";\r\nlet Inputs = datatable(TierOrder:int, Tier: string, CustomPriceValue:real, PercentageDiscountValue:int)[\r\n    0, \"Pay-as-you-go\", {SentinelPayasyougoFixed},      {SentinelPayasyougoPercent},\r\n    1, \"100\",           {SentinelOneHundredFixed},      {SentinelOneHundredPercent},  \r\n    2, \"200\",           {SentinelTwoHundredFixed},      {SentinelTwoHundredPercent},\r\n    3, \"300\",           {SentinelThreeHundredFixed},    {SentinelThreeHundredPercent},\r\n    4, \"400\",           {SentinelFourHundredFixed},     {SentinelFourHundredPercent},\r\n    5, \"500\",           {SentinelFiveHundredFixed},     {SentinelFiveHundredPercent},\r\n    6, \"1000\",          {SentinelOneThousandFixed},     {SentinelOneThousandPercent},\r\n    7, \"2000\",          {SentinelTwoThousandFixed},     {SentinelTwoThousandPercent},\r\n    8, \"5000\",          {SentinelFiveThousandFixed},    {SentinelFiveThousandPercent}\r\n];\r\nlet Prices = materialize(\r\n    {SentinelExternalData}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | project Tier, RetailPrice\r\n    | join kind = inner (\r\n        Inputs\r\n    ) on Tier\r\n    | project-away Tier1\r\n    | extend SkuPrice = case(\r\n        InputCustomPrices == true and FixedOrPercentage == \"Fixed\", CustomPriceValue,\r\n        InputCustomPrices == true and FixedOrPercentage == \"Percentage\", RetailPrice - ((RetailPrice / 100) * PercentageDiscountValue),\r\n        RetailPrice\r\n    )\r\n    | extend SkuEffectivePricePerGB = iff(\r\n                Tier == \"Pay-as-you-go\", SkuPrice, \r\n                SkuPrice / toint(Tier) \r\n    )\r\n    | project TierOrder, Tier, RetailPrice, SkuPrice, SkuEffectivePricePerGB\r\n);\r\nlet PricesBag = toscalar(\r\n    Prices\r\n    | extend Bag = bag_pack(tostring(TierOrder), bag_pack(\"SkuEffectivePricePerGB\", SkuEffectivePricePerGB, \"Tier\", Tier ))\r\n| summarize make_bag(Bag));\r\nPrices \r\n| extend PreviousTier = PricesBag.[tostring(TierOrder-1)].Tier\r\n| extend PreviousTierSkuEffectivePricePerGB = toreal(PricesBag[tostring(TierOrder-1)].SkuEffectivePricePerGB)\r\n| extend SkuEffectiveCommitmentTierThreshold = iff(\r\n    Tier == \"Pay-as-you-go\", toreal(0),\r\n    SkuPrice / PreviousTierSkuEffectivePricePerGB\r\n)\r\n| project Packed = pack_array(\r\n    Tier, \r\n    SkuRetailPrice = RetailPrice,\r\n    SkuPrice = round(SkuPrice, 4),\r\n    SkuEffectivePricePerGB = round(SkuEffectivePricePerGB, 4),\r\n    SkuEffectiveCommitmentTierThreshold = round(SkuEffectiveCommitmentTierThreshold, 4)\r\n)\r\n| summarize Packed = tostring(makelist(Packed))\r\n| project Output = strcat(\r\n    \"datatable(Tier:string, SkuRetailPrice: real, SkuPrice:real, SkuEffectivePricePerGB:real, SkuEffectiveCommitmentTierThreshold:real)\",\r\n    Packed,\r\n    \"| extend ServiceName = '\",ServiceNameValue,\"'\"\r\n)\r\n",
                   "isHiddenWhenLocked": true,
                   "timeContext": {
                     "durationMs": 86400000
@@ -1544,6 +1539,20 @@
               "value": "_"
             },
             "name": "parameters - Prices Calculation - Sentinel Prices"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let ServiceNameValue = \"Sentinel\";\r\nlet InputCustomPrices = {CustomPrices};\r\nlet FixedOrPercentage = \"{FixedOrPercentage}\";\r\nlet Inputs = datatable(TierOrder:int, Tier: string, CustomPriceValue:real, PercentageDiscountValue:int)[\r\n    0, \"Pay-as-you-go\", {SentinelPayasyougoFixed},      {SentinelPayasyougoPercent},\r\n    1, \"100\",           {SentinelOneHundredFixed},      {SentinelOneHundredPercent},  \r\n    2, \"200\",           {SentinelTwoHundredFixed},      {SentinelTwoHundredPercent},\r\n    3, \"300\",           {SentinelThreeHundredFixed},    {SentinelThreeHundredPercent},\r\n    4, \"400\",           {SentinelFourHundredFixed},     {SentinelFourHundredPercent},\r\n    5, \"500\",           {SentinelFiveHundredFixed},     {SentinelFiveHundredPercent},\r\n    6, \"1000\",          {SentinelOneThousandFixed},     {SentinelOneThousandPercent},\r\n    7, \"2000\",          {SentinelTwoThousandFixed},     {SentinelTwoThousandPercent},\r\n    8, \"5000\",          {SentinelFiveThousandFixed},    {SentinelFiveThousandPercent}\r\n];\r\nlet Prices = materialize(\r\n    {SentinelExternalData}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | project Tier, RetailPrice\r\n    | join kind = inner (\r\n        Inputs\r\n    ) on Tier\r\n    | project-away Tier1\r\n    | extend SkuPrice = case(\r\n        InputCustomPrices == true and FixedOrPercentage == \"Fixed\", CustomPriceValue,\r\n        InputCustomPrices == true and FixedOrPercentage == \"Percentage\", RetailPrice - ((RetailPrice / 100) * PercentageDiscountValue),\r\n        RetailPrice\r\n    )\r\n    | extend SkuEffectivePricePerGB = iff(\r\n                Tier == \"Pay-as-you-go\", SkuPrice, \r\n                SkuPrice / toint(Tier) \r\n    )\r\n    | project TierOrder, Tier, RetailPrice, SkuPrice, SkuEffectivePricePerGB\r\n);\r\nlet PricesBag = toscalar(\r\n    Prices\r\n    | extend Bag = bag_pack(tostring(TierOrder), bag_pack(\"SkuEffectivePricePerGB\", SkuEffectivePricePerGB, \"Tier\", Tier ))\r\n| summarize make_bag(Bag));\r\nPrices \r\n| extend PreviousTier = PricesBag.[tostring(TierOrder-1)].Tier\r\n| extend PreviousTierSkuEffectivePricePerGB = toreal(PricesBag[tostring(TierOrder-1)].SkuEffectivePricePerGB)\r\n| extend SkuEffectiveCommitmentTierThreshold = iff(\r\n    Tier == \"Pay-as-you-go\", toreal(0),\r\n    SkuPrice / PreviousTierSkuEffectivePricePerGB\r\n)\r\n| project Packed = pack_array(\r\n    Tier, \r\n    SkuRetailPrice = RetailPrice,\r\n    SkuPrice = round(SkuPrice, 4),\r\n    SkuEffectivePricePerGB = round(SkuEffectivePricePerGB, 4),\r\n    SkuEffectiveCommitmentTierThreshold = round(SkuEffectiveCommitmentTierThreshold, 4)\r\n)\r\n| summarize Packed = tostring(makelist(Packed))\r\n| project Output = strcat(\r\n    \"datatable(Tier:string, SkuRetailPrice: real, SkuPrice:real, SkuEffectivePricePerGB:real, SkuEffectiveCommitmentTierThreshold:real)\",\r\n    Packed,\r\n    \"| extend ServiceName = '\",ServiceNameValue,\"'\"\r\n)\r\n",
+              "size": 0,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 10"
           },
           {
             "type": 3,
@@ -2050,7 +2059,7 @@
                   "name": "AzureMonitorPrices",
                   "type": 1,
                   "isRequired": true,
-                  "query": "let ServiceNameValue = \"Azure Monitor\";\r\nlet InputCustomPrices = {CustomPrices};\r\nlet FixedOrPercentage = \"{FixedOrPercentage}\";\r\nlet Inputs = datatable(TierOrder:int, Tier: string, CustomPriceValue:real, PercentageDiscountValue:int)[\r\n    0, \"Pay-as-you-go\", {AzureMonitorPayasyougoFixed},      {AzureMonitorPayasyougoPercent},\r\n    1, \"100\",           {AzureMonitorOneHundredFixed},      {AzureMonitorOneHundredPercent},  \r\n    2, \"200\",           {AzureMonitorTwoHundredFixed},      {AzureMonitorTwoHundredPercent},\r\n    3, \"300\",           {AzureMonitorThreeHundredFixed},    {AzureMonitorThreeHundredPercent},\r\n    4, \"400\",           {AzureMonitorFourHundredFixed},     {AzureMonitorFourHundredPercent},\r\n    5, \"500\",           {AzureMonitorFiveHundredFixed},     {AzureMonitorFiveHundredPercent},\r\n    6, \"1000\",          {AzureMonitorOneThousandFixed},     {AzureMonitorOneThousandPercent},\r\n    7, \"2000\",          {AzureMonitorTwoThousandFixed},     {AzureMonitorTwoThousandPercent},\r\n    8, \"5000\",          {AzureMonitorFiveThousandFixed},    {AzureMonitorFiveThousandPercent}\r\n];\r\nlet Prices = materialize(\r\n    {AzureMonitorExternalData}\r\n    | summarize arg_max(TimeGenerated, *) by ServiceName\r\n    | project Tier, RetailPrice\r\n    | join kind = inner (\r\n        Inputs\r\n    ) on Tier\r\n    | project-away Tier1\r\n    | extend SkuPrice = case(\r\n        InputCustomPrices == true and FixedOrPercentage == \"Fixed\", CustomPriceValue,\r\n        InputCustomPrices == true and FixedOrPercentage == \"Percentage\", RetailPrice - ((RetailPrice / 100) * PercentageDiscountValue),\r\n        RetailPrice\r\n    )\r\n    | extend SkuEffectivePricePerGB = iff(\r\n                Tier == \"Pay-as-you-go\", SkuPrice, \r\n                SkuPrice / toint(Tier) \r\n    )\r\n    | project TierOrder, Tier, RetailPrice, SkuPrice, SkuEffectivePricePerGB\r\n);\r\nlet PricesBag = toscalar(\r\n    Prices\r\n    | extend Bag = bag_pack(tostring(TierOrder), bag_pack(\"SkuEffectivePricePerGB\", SkuEffectivePricePerGB, \"Tier\", Tier ))\r\n| summarize make_bag(Bag));\r\nPrices \r\n| extend PreviousTier = PricesBag.[tostring(TierOrder-1)].Tier\r\n| extend PreviousTierSkuEffectivePricePerGB = toreal(PricesBag[tostring(TierOrder-1)].SkuEffectivePricePerGB)\r\n| extend SkuEffectiveCommitmentTierThreshold = iff(\r\n    Tier == \"Pay-as-you-go\", toreal(0),\r\n    SkuPrice / PreviousTierSkuEffectivePricePerGB\r\n)\r\n| project Packed = pack_array(\r\n    Tier, \r\n    SkuRetailPrice = RetailPrice,\r\n    SkuPrice = round(SkuPrice, 4),\r\n    SkuEffectivePricePerGB = round(SkuEffectivePricePerGB, 4),\r\n    SkuEffectiveCommitmentTierThreshold = round(SkuEffectiveCommitmentTierThreshold, 4)\r\n)\r\n| summarize Packed = tostring(makelist(Packed))\r\n| project Output = strcat(\r\n    \"datatable(Tier:string, SkuRetailPrice: real, SkuPrice:real, SkuEffectivePricePerGB:real, SkuEffectiveCommitmentTierThreshold:real)\",\r\n    Packed,\r\n    \"| extend ServiceName = '\",ServiceNameValue,\"'\"\r\n)\r\n",
+                  "query": "let ServiceNameValue = \"Azure Monitor\";\r\nlet InputCustomPrices = {CustomPrices};\r\nlet FixedOrPercentage = \"{FixedOrPercentage}\";\r\nlet Inputs = datatable(TierOrder:int, Tier: string, CustomPriceValue:real, PercentageDiscountValue:int)[\r\n    0, \"Pay-as-you-go\", {AzureMonitorPayasyougoFixed},      {AzureMonitorPayasyougoPercent},\r\n    1, \"100\",           {AzureMonitorOneHundredFixed},      {AzureMonitorOneHundredPercent},  \r\n    2, \"200\",           {AzureMonitorTwoHundredFixed},      {AzureMonitorTwoHundredPercent},\r\n    3, \"300\",           {AzureMonitorThreeHundredFixed},    {AzureMonitorThreeHundredPercent},\r\n    4, \"400\",           {AzureMonitorFourHundredFixed},     {AzureMonitorFourHundredPercent},\r\n    5, \"500\",           {AzureMonitorFiveHundredFixed},     {AzureMonitorFiveHundredPercent},\r\n    6, \"1000\",          {AzureMonitorOneThousandFixed},     {AzureMonitorOneThousandPercent},\r\n    7, \"2000\",          {AzureMonitorTwoThousandFixed},     {AzureMonitorTwoThousandPercent},\r\n    8, \"5000\",          {AzureMonitorFiveThousandFixed},    {AzureMonitorFiveThousandPercent}\r\n];\r\nlet Prices = materialize(\r\n    {AzureMonitorExternalData}\r\n    | summarize arg_max(TimeGenerated, *) by Tier\r\n    | project Tier, RetailPrice\r\n    | join kind = inner (\r\n        Inputs\r\n    ) on Tier\r\n    | project-away Tier1\r\n    | extend SkuPrice = case(\r\n        InputCustomPrices == true and FixedOrPercentage == \"Fixed\", CustomPriceValue,\r\n        InputCustomPrices == true and FixedOrPercentage == \"Percentage\", RetailPrice - ((RetailPrice / 100) * PercentageDiscountValue),\r\n        RetailPrice\r\n    )\r\n    | extend SkuEffectivePricePerGB = iff(\r\n                Tier == \"Pay-as-you-go\", SkuPrice, \r\n                SkuPrice / toint(Tier) \r\n    )\r\n    | project TierOrder, Tier, RetailPrice, SkuPrice, SkuEffectivePricePerGB\r\n);\r\nlet PricesBag = toscalar(\r\n    Prices\r\n    | extend Bag = bag_pack(tostring(TierOrder), bag_pack(\"SkuEffectivePricePerGB\", SkuEffectivePricePerGB, \"Tier\", Tier ))\r\n| summarize make_bag(Bag));\r\nPrices \r\n| extend PreviousTier = PricesBag.[tostring(TierOrder-1)].Tier\r\n| extend PreviousTierSkuEffectivePricePerGB = toreal(PricesBag[tostring(TierOrder-1)].SkuEffectivePricePerGB)\r\n| extend SkuEffectiveCommitmentTierThreshold = iff(\r\n    Tier == \"Pay-as-you-go\", toreal(0),\r\n    SkuPrice / PreviousTierSkuEffectivePricePerGB\r\n)\r\n| project Packed = pack_array(\r\n    Tier, \r\n    SkuRetailPrice = RetailPrice,\r\n    SkuPrice = round(SkuPrice, 4),\r\n    SkuEffectivePricePerGB = round(SkuEffectivePricePerGB, 4),\r\n    SkuEffectiveCommitmentTierThreshold = round(SkuEffectiveCommitmentTierThreshold, 4)\r\n)\r\n| summarize Packed = tostring(makelist(Packed))\r\n| project Output = strcat(\r\n    \"datatable(Tier:string, SkuRetailPrice: real, SkuPrice:real, SkuEffectivePricePerGB:real, SkuEffectiveCommitmentTierThreshold:real)\",\r\n    Packed,\r\n    \"| extend ServiceName = '\",ServiceNameValue,\"'\"\r\n)\r\n",
                   "isHiddenWhenLocked": true,
                   "timeContext": {
                     "durationMs": 86400000
@@ -2210,7 +2219,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "resources \r\n| where type =~ 'microsoft.operationalinsights/workspaces'\r\n| where id =~ \"{Workspace}\" \r\n| extend workspaceId = tolower(id)\r\n| extend logAnalyticsSku   = trim(' ', tostring(properties.sku.name))\r\n| extend logAnalyticsSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n| extend logAnalyticsTier = case(logAnalyticsSku =~ \"pergb2018\", \"Pay-as-you-go\", \"Free, PerNode and Standalone not supported in this workbook\")\r\n| join kind = leftouter(\r\n    resources \r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product =~ \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId startswith \"{Workspace}\"\r\n    | extend workspaceId = tolower(tostring(properties.workspaceResourceId))\r\n    | extend sentinelEnabled = true\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name)), sentinelSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n    | extend sentinelTier = case(sentinelSku =~ \"Unified\", \"Pay-as-you-go\", sentinelSku =~ \"PerGB\", \"Pay-as-you-go\", sentinelSku =~ \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel), \"Not Supported in this workbook\")\r\n    | project workspaceId, sentinelEnabled, sentinelSku, sentinelTier, sentinelSkuUpdate\r\n    )\r\n    on workspaceId\r\n| extend sentinelEnabled = iif(isnotnull(sentinelEnabled), true, false)\r\n| extend sentinelSku  = iif(strlen(sentinelSku) > 0, sentinelSku, \"\")\r\n| project workspaceId, logAnalyticsSku, logAnalyticsTier,sentinelEnabled, sentinelSku, sentinelTier\r\n",
+              "query": "resources \r\n| where type =~ 'microsoft.operationalinsights/workspaces'\r\n| where id =~ \"{Workspace}\" \r\n| extend workspaceId = tolower(id)\r\n| extend logAnalyticsSku   = trim(' ', tostring(properties.sku.name))\r\n| extend logAnalyticsSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n| extend logAnalyticsTier = case(\r\n    logAnalyticsSku =~ \"pergb2018\", \"Pay-as-you-go\", \r\n    logAnalyticsSku =~ \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n    \"Free, PerNode and Standalone not supported in this workbook\")\r\n| join kind = leftouter(\r\n    resources \r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product =~ \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId startswith \"{Workspace}\"\r\n    | extend workspaceId = tolower(tostring(properties.workspaceResourceId))\r\n    | extend sentinelEnabled = true\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name)), sentinelSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n    | extend sentinelTier = case(\r\n        sentinelSku =~ \"Unified\", \"Log Analytics Tier\", \r\n        sentinelSku =~ \"PerGB\", \"Pay-as-you-go\", \r\n        sentinelSku =~ \"CapacityReservation\", \r\n        tostring(properties.sku.capacityReservationLevel), \"Not Supported in this workbook\")\r\n    | project workspaceId, sentinelEnabled, sentinelSku, sentinelTier, sentinelSkuUpdate\r\n    )\r\n    on workspaceId\r\n| extend sentinelEnabled = iif(isnotnull(sentinelEnabled), true, false)\r\n| extend sentinelSku  = iif(strlen(sentinelSku) > 0, sentinelSku, \"\")\r\n| project workspaceId, logAnalyticsSku, logAnalyticsTier,sentinelEnabled, sentinelSku, sentinelTier\r\n",
               "size": 4,
               "showAnalytics": true,
               "title": "Workspace Details",
@@ -2224,24 +2233,7 @@
                 "formatters": [
                   {
                     "columnMatch": "logAnalyticsSku",
-                    "formatter": 18,
-                    "formatOptions": {
-                      "thresholdsOptions": "icons",
-                      "thresholdsGrid": [
-                        {
-                          "operator": "==",
-                          "thresholdValue": "pergb2018",
-                          "representation": "success",
-                          "text": "{0}{1}"
-                        },
-                        {
-                          "operator": "Default",
-                          "thresholdValue": null,
-                          "representation": "warning",
-                          "text": "{0}{1}"
-                        }
-                      ]
-                    }
+                    "formatter": 1
                   },
                   {
                     "columnMatch": "sentinelEnabled",
@@ -2625,7 +2617,6 @@
         "groupType": "editable",
         "title": "Charts",
         "expandable": true,
-        "expanded": true,
         "items": [
           {
             "type": 1,
@@ -3584,7 +3575,6 @@
         "groupType": "editable",
         "title": "Forecasting",
         "expandable": true,
-        "expanded": true,
         "items": [
           {
             "type": 1,
@@ -3927,7 +3917,6 @@
         "groupType": "editable",
         "title": "Troubleshooting",
         "expandable": true,
-        "expanded": true,
         "items": [
           {
             "type": 1,
@@ -4243,7 +4232,6 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/a460eb43-f297-44ec-a8c6-3de20c09439a/resourcegroups/permissionstesting/providers/microsoft.operationalinsights/workspaces/permissionstesting"
   ],
   "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02459.3229-230925-201317/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
