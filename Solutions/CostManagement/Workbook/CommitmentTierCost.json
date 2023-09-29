@@ -74,7 +74,9 @@
               "showDefault": false
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"          },
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourceGroups/soc/providers/Microsoft.OperationalInsights/workspaces/cybersecuritysoc"
+          },
           {
             "id": "2d196500-bcb5-45a2-8d9a-cff65e053a06",
             "version": "KqlParameterItem/1.0",
@@ -555,7 +557,7 @@
                 "criteriaContext": {
                   "operator": "Default",
                   "resultValType": "static",
-                  "resultVal": "let BasicTables = toscalar(print Basic = \"{BasicTables}\"     | extend Basic = split(substring(Basic, 1, strlen(Basic) - 2), ',')); let E5Seats = {E5Seats}; let E5AllowancePerDayMB = E5Seats * 5; let E5Tables = dynamic([{E5Tables}]); let E5Usage = Usage     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | where IsBillable == true     | where DataType in (E5Tables)     | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)     | extend E5ReductionMB = iff(E5AllowancePerDayMB - Quantity > 0, Quantity, E5AllowancePerDayMB)     | project StartTime, E5ReductionMB; let DefenderForCloudPerDeviceAllowanceMB = 500; let DefenderForCloudTables = dynamic([{DefenderForCloudTables}]); let DefenderForCloudUpdateTables = dynamic([\"Update\", \"UpdateSummary\"]); let DefenderForCloudUsage = Heartbeat     | where TimeGenerated >= TimeRangeStart and TimeGenerated <= TimeRangeEnd     | where Solutions has \"\\\"security\\\"\"     | make-series DeviceCount = dcount(SourceComputerId, 4) default = 0 on TimeGenerated from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand DeviceCount to typeof(int), TimeGenerated to typeof(datetime)     | extend DefenderForCloudAllowancePerDayMB = DefenderForCloudPerDeviceAllowanceMB * DeviceCount     | project TimeGenerated, DefenderForCloudAllowancePerDayMB     | join kind = rightouter (Usage         | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd         | where IsBillable == true         | where DataType in (DefenderForCloudTables)         | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d         | mv-expand Quantity to typeof(long), StartTime to typeof(datetime))         on $left.TimeGenerated == $right.StartTime     | extend DefenderForCloudReductionMB = iff(DefenderForCloudAllowancePerDayMB - Quantity > 0, Quantity, DefenderForCloudAllowancePerDayMB)     | project StartTime, DefenderForCloudReductionMB; let UsageMetrics =  Usage     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | where IsBillable == true     | where '*' == BasicTables[0] or DataType !in (BasicTables)     | make-series kind=nonempty QuantityMB = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d     | mv-expand QuantityMB to typeof(long), StartTime to typeof(datetime)     | join kind = leftouter (E5Usage) on StartTime     | join kind = leftouter (DefenderForCloudUsage) on StartTime     | extend E5ReductionMB = iff(isempty(E5ReductionMB), 0, E5ReductionMB)     | extend DefenderForCloudReductionMB = iff(isempty(DefenderForCloudReductionMB), 0, DefenderForCloudReductionMB)     | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB     | extend JoinColumn = 1;"
+                  "resultVal": "let BasicTables = toscalar(print Basic = \"{BasicTables}\"      | extend Basic = split(substring(Basic, 1, strlen(Basic) - 2), ',')); let E5Seats = {E5Seats}; let E5AllowancePerDayMB = E5Seats * 5; let E5Tables = dynamic([{E5Tables}]); let E5Usage = Usage      | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd      | where IsBillable == true      | where DataType in (E5Tables)      | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)      | extend E5ReductionMB = iff(E5AllowancePerDayMB - Quantity > 0, Quantity, E5AllowancePerDayMB)      | project StartTime, E5ReductionMB; let DefenderForCloudPerDeviceAllowanceMB = 500; let DefenderForCloudTables = dynamic([{DefenderForCloudTables}]); let DefenderForCloudUpdateTables = dynamic([\"Update\", \"UpdateSummary\"]); let DefenderForCloudUsage = Heartbeat      | where TimeGenerated >= TimeRangeStart and TimeGenerated <= TimeRangeEnd      | where Solutions has \"\\\"security\\\"\"      | make-series DeviceCount = dcount(SourceComputerId, 4) default = 0 on TimeGenerated from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand DeviceCount to typeof(int), TimeGenerated to typeof(datetime)      | extend DefenderForCloudAllowancePerDayMB = DefenderForCloudPerDeviceAllowanceMB * DeviceCount      | project TimeGenerated, DefenderForCloudAllowancePerDayMB      | join kind = rightouter (Usage          | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd          | where IsBillable == true          | where DataType in (DefenderForCloudTables)          | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d          | mv-expand Quantity to typeof(long), StartTime to typeof(datetime))         on $left.TimeGenerated == $right.StartTime      | extend DefenderForCloudReductionMB = iff(DefenderForCloudAllowancePerDayMB - Quantity > 0, Quantity, DefenderForCloudAllowancePerDayMB)      | project StartTime, DefenderForCloudReductionMB; let UsageMetrics =  Usage      | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd      | where IsBillable == true      | where '*' == BasicTables[0] or DataType !in (BasicTables)      | make-series kind=nonempty QuantityMB = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand QuantityMB to typeof(long), StartTime to typeof(datetime)      | join kind = leftouter (E5Usage) on StartTime      | join kind = leftouter (DefenderForCloudUsage) on StartTime      | extend E5ReductionMB = case(PricingModel == \"Log Analytics\", 0,isempty(E5ReductionMB), 0, E5ReductionMB)      | extend DefenderForCloudReductionMB = iff(isempty(DefenderForCloudReductionMB), 0, DefenderForCloudReductionMB)      | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB      | extend JoinColumn = 1;"
                 }
               }
             ]
@@ -3257,10 +3259,12 @@
                   },
                   {
                     "seriesName": "AboveCommitmentTierGB",
+                    "label": "Above Commitment Tier Threshold",
                     "color": "blue"
                   },
                   {
                     "seriesName": "BelowCommitmentTierGB",
+                    "label": "Below Commitment Tier Threshold",
                     "color": "green"
                   },
                   {
@@ -3321,10 +3325,12 @@
                   },
                   {
                     "seriesName": "AboveCommitmentTierGB",
+                    "label": "Above Commitment Tier Threshold",
                     "color": "blue"
                   },
                   {
                     "seriesName": "BelowCommitmentTierGB",
+                    "label": "Below Commitment Tier Threshold",
                     "color": "green"
                   },
                   {
@@ -3333,7 +3339,7 @@
                     "color": "redBright"
                   }
                 ],
-                "customThresholdLine": "{LogsAnalyticsCurrentTier}",
+                "customThresholdLine": "{SentinelCurrentTier}",
                 "customThresholdLineStyle": 2,
                 "ySettings": {
                   "numberFormatSettings": {
@@ -4022,7 +4028,8 @@
     }
   ],
   "fallbackResourceIds": [
+    "/subscriptions/d1d8779d-38d7-4f06-91db-9cbc8de0176f/resourcegroups/soc/providers/microsoft.operationalinsights/workspaces/cybersecuritysoc"
   ],
-  "fromTemplateId": "sentinel-UserWorkbook",
+  "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02459.3229-230925-201317/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
