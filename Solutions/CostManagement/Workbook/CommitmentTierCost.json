@@ -2054,22 +2054,18 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "// Function for building tiles\r\nlet BuildTile = (tileOrder:int, tileTitle: string, tileSubtitle: string, tileLeft: string, tileRight: string, tileBottom: string) {\r\nprint \r\n    TileOrder = tileOrder, \r\n    title = tileTitle,\r\n    subtitle = tileSubtitle,\r\n    left = tileLeft,\r\n    right = tileRight,\r\n    bottom = tileBottom\r\n};\r\n//Build Tiles\r\nlet IsCustomDataTile = BuildTile(0, \"Is Custom Prices\", \"\", {CustomPrices}, \"\",\"\" );\r\nlet PricingModelTile = BuildTile(1, \"Pricing Model\", \"\", \"{PricingModel}\", \"\", \"\");\r\nlet IsSentinelEnabledTile = BuildTile( 2, \"Sentinel Enabled\", \"\", {ShowSentinel},\"\",\"\");\r\nunion IsCustomDataTile, PricingModelTile, IsSentinelEnabledTile\r\n| order by TileOrder asc\r\n",
+              "query": "print  \r\n    title = \"Retail Or Custom Prices\",\r\n    subtitle = \"\",\r\n    left = iff({CustomPrices}, \"Custom\", \"Retail\"),\r\n    right = \"\",\r\n    bottom = \"\"",
               "size": 4,
-              "timeContextFromParameter": "TimeRange",
+              "timeContext": {
+                "durationMs": 86400000
+              },
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
-              "crossComponentResources": [
-                "{Workspace}"
-              ],
               "visualization": "tiles",
               "tileSettings": {
                 "titleContent": {
                   "columnMatch": "title",
-                  "formatter": 1,
-                  "tooltipFormat": {
-                    "tooltip": ""
-                  }
+                  "formatter": 1
                 },
                 "leftContent": {
                   "columnMatch": "left",
@@ -2079,56 +2075,20 @@
                     "thresholdsGrid": [
                       {
                         "operator": "==",
-                        "thresholdValue": "True",
-                        "representation": "success",
+                        "thresholdValue": "Custom",
+                        "representation": "Edit",
                         "text": "{0}{1}"
                       },
                       {
                         "operator": "==",
-                        "thresholdValue": "False",
-                        "representation": "2",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "==",
-                        "thresholdValue": "Log Analytics",
-                        "representation": "Log",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "==",
-                        "thresholdValue": "Classic",
-                        "representation": "Disconnect",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "==",
-                        "thresholdValue": "Unified",
-                        "representation": "Connect",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "==",
-                        "thresholdValue": "Good",
-                        "representation": "success",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "==",
-                        "thresholdValue": "Change Tier",
-                        "representation": "3",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "==",
-                        "thresholdValue": "No Value - Input Custom Prices value",
-                        "representation": "2",
+                        "thresholdValue": "Retail",
+                        "representation": "Normal",
                         "text": "{0}{1}"
                       },
                       {
                         "operator": "Default",
                         "thresholdValue": null,
-                        "representation": "unknown",
+                        "representation": "question",
                         "text": "{0}{1}"
                       }
                     ]
@@ -2137,7 +2097,114 @@
                 "showBorder": false
               }
             },
-            "name": "query - 7"
+            "customWidth": "0",
+            "name": "query - Overview - Retail Or Custom"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "print  \r\n    title = \"Pricing Model\",\r\n    subtitle = \"\",\r\n    left = \"{PricingModel}\",\r\n    right = \"\",\r\n    bottom = \"\"",
+              "size": 4,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "title",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "left",
+                  "formatter": 18,
+                  "formatOptions": {
+                    "thresholdsOptions": "icons",
+                    "thresholdsGrid": [
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Log Analytics",
+                        "representation": "Monitoring",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Classic",
+                        "representation": "Restore",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Unified",
+                        "representation": "Stop",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "Default",
+                        "thresholdValue": null,
+                        "representation": "question",
+                        "text": "{0}{1}"
+                      }
+                    ]
+                  }
+                },
+                "showBorder": false
+              }
+            },
+            "customWidth": "0",
+            "name": "query - Overview -Tiles - Pricing Model"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "print  \r\n    title = \"Sentinel Enabled\",\r\n    subtitle = \"\",\r\n    left = \"{ShowSentinel}\",\r\n    right = \"\",\r\n    bottom = \"\"",
+              "size": 4,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "title",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "left",
+                  "formatter": 18,
+                  "formatOptions": {
+                    "thresholdsOptions": "icons",
+                    "thresholdsGrid": [
+                      {
+                        "operator": "==",
+                        "thresholdValue": "false",
+                        "representation": "1",
+                        "text": "False"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "true",
+                        "representation": "success",
+                        "text": "True"
+                      },
+                      {
+                        "operator": "Default",
+                        "thresholdValue": null,
+                        "representation": "question",
+                        "text": "{0}{1}"
+                      }
+                    ]
+                  }
+                },
+                "showBorder": false
+              }
+            },
+            "customWidth": "0",
+            "name": "query - Overview - Tiles - Sentinel Enabled"
           },
           {
             "type": 3,
@@ -2284,6 +2351,10 @@
                   {
                     "columnMatch": "ServiceName",
                     "formatter": 1,
+                    "formatOptions": {
+                      "linkTarget": "GenericDetails",
+                      "linkIsContextBlade": true
+                    },
                     "tooltipFormat": {
                       "tooltip": "The name of the monitor service, this will either be \"Azure Monitor\" or \"Sentinel\""
                     }
@@ -2436,8 +2507,6 @@
                     "columnMatch": "Status",
                     "formatter": 18,
                     "formatOptions": {
-                      "linkTarget": "GenericDetails",
-                      "linkIsContextBlade": true,
                       "thresholdsOptions": "icons",
                       "thresholdsGrid": [
                         {
@@ -2556,6 +2625,61 @@
               }
             },
             "name": "query - Unified - Overview - Commitment Tier Recommendations"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"4a80b589-5195-48f3-8a50-c880514180b5\",\"mergeType\":\"table\",\"leftTable\":\"query - Unified - Overview - Commitment Tier Recommendations\"}],\"projectRename\":[{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].ServiceName\",\"mergedName\":\"Service\",\"fromId\":\"4a80b589-5195-48f3-8a50-c880514180b5\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CurrentTier\",\"mergedName\":\"Current Tier\",\"fromId\":\"4a80b589-5195-48f3-8a50-c880514180b5\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].Status\",\"mergedName\":\"Status\",\"fromId\":\"4a80b589-5195-48f3-8a50-c880514180b5\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CurrentTierCost\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].RecommendedTierCost\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].RecommendedTier\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CostDifference\"}]}",
+              "size": 4,
+              "title": "Change Tier",
+              "queryType": 7,
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "Service",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "Status",
+                  "formatter": 18,
+                  "formatOptions": {
+                    "thresholdsOptions": "icons",
+                    "thresholdsGrid": [
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Good",
+                        "representation": "success",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Change Tier",
+                        "representation": "2",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "Default",
+                        "thresholdValue": null,
+                        "representation": "Unknown",
+                        "text": "{0}{1}"
+                      }
+                    ]
+                  },
+                  "numberFormat": {
+                    "unit": 17,
+                    "options": {
+                      "style": "decimal",
+                      "maximumFractionDigits": 2,
+                      "maximumSignificantDigits": 3
+                    }
+                  }
+                },
+                "showBorder": false
+              }
+            },
+            "showPin": false,
+            "name": "query - 7"
           },
           {
             "type": 3,
@@ -2759,6 +2883,7 @@
         "groupType": "editable",
         "title": "Charts",
         "expandable": true,
+        "expanded": true,
         "items": [
           {
             "type": 1,
