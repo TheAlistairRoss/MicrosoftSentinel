@@ -74,7 +74,8 @@
               "showDefault": false
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"          },
+            "resourceType": "microsoft.resourcegraph/resources"
+          },
           {
             "id": "2d196500-bcb5-45a2-8d9a-cff65e053a06",
             "version": "KqlParameterItem/1.0",
@@ -2420,7 +2421,6 @@
         "groupType": "editable",
         "title": "Charts",
         "expandable": true,
-        "expanded": true,
         "items": [
           {
             "type": 1,
@@ -2479,7 +2479,9 @@
                   "queryType": 1,
                   "resourceType": "microsoft.resourcegraph/resources",
                   "value": [
-                    "Pay-as-you-go"
+                    "Pay-as-you-go",
+                    "100",
+                    "1000"
                   ]
                 }
               ],
@@ -2537,7 +2539,11 @@
                     "durationMs": 86400000
                   },
                   "queryType": 1,
-                  "resourceType": "microsoft.resourcegraph/resources"
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": [
+                    "Pay-as-you-go",
+                    "100"
+                  ]
                 }
               ],
               "style": "formVertical",
@@ -2953,7 +2959,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"Sentinel Ingestion Metrics\"}],\"projectRename\":[{\"originalName\":\"[Sentinel Ingestion Metrics].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].MovingAverageFilter\",\"mergedName\":\"MovingAverageFilter\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].BillableQuantityGB\",\"mergedName\":\"BillableQuantityGB\",\"fromId\":\"unknown\"},{\"originalName\":\"[Sentinel Ingestion Metrics].BillableQuantityGBMovingAverage\",\"mergedName\":\"BillableQuantityGBMovingAverage\",\"fromId\":\"unknown\"},{\"originalName\":\"[Sentinel Ingestion Metrics].QuantityGB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].QuantityGBMovingAverage\"}]}",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"Sentinel Ingestion Metrics\"}],\"projectRename\":[{\"originalName\":\"[Sentinel Ingestion Metrics].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[Sentinel Ingestion Metrics].QuantityGB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].QuantityGBMovingAverage\"},{\"originalName\":\"[Sentinel Ingestion Metrics].BillableQuantityGB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].BillableQuantityGBMovingAverage\"},{\"originalName\":\"[Sentinel Ingestion Metrics].MovingAverageFilter\"}]}",
               "size": 0,
               "aggregation": 3,
               "title": "Sentinel 7 Day Moving Average Cost ({CurrencyCode})",
@@ -3025,7 +3031,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"query - Classic - Charts - Azure Monitor Logs Ingestion \"}],\"projectRename\":[{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].QuantityGBMovingAverage\",\"mergedName\":\"QuantityGBMovingAverage\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].BillableQuantityGB\",\"mergedName\":\"BillableQuantityGB\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].BillableQuantityGBMovingAverage\",\"mergedName\":\"BillableQuantityGBMovingAverage\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].CostAtTier\",\"mergedName\":\"CostAtTier\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].BillableQuantityGB\",\"mergedName\":\"BillableQuantityGB\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].MovingAverageFilter\",\"mergedName\":\"MovingAverageFilter\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].BillableQuantityGBMovingAverage\",\"mergedName\":\"BillableQuantityGBMovingAverage\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - 1].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost ].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GBMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GB\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Index\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Tier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Index\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].Quantity_GB\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Quantity_GB\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].QuantityGB\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].MovingAverageFilter\"}]}",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1dba5cef-3c62-4614-a76a-f8c7b8e8812c\",\"mergeType\":\"table\",\"leftTable\":\"query - Classic - Charts - Azure Monitor Logs Ingestion \"}],\"projectRename\":[{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].Tier\",\"mergedName\":\"Tier\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].StartTime\",\"mergedName\":\"StartTime\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].CostMovingAverage\",\"mergedName\":\"CostMovingAverage\",\"fromId\":\"unknown\"},{\"originalName\":\"[query - 1].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost ].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostAtTier\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GBMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Quantity_GB\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Index\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].CostMovingAverage\"},{\"originalName\":\"[Sum of Daily Ingestion Cost].Tier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Index\"},{\"originalName\":\"[Sentinel Ingestion Metrics].CostAtTier\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GB\"},{\"originalName\":\"[Sentinel Ingestion Metrics].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].Quantity_GB\"},{\"originalName\":\"[query - Classic - Log Analytics Ingestion ].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Quantity_GB\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Quantity_GBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].QuantityGB\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].MovingAverageFilter\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].CostAtTier\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].BillableQuantityGB\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].BillableQuantityGBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].BillableQuantityGBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Azure Monitor Logs Ingestion ].MovingAverageFilter\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].QuantityGBMovingAverage\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].BillableQuantityGB\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].Tier\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].StartTime\"},{\"originalName\":\"[query - Classic - Charts - Log Analytics Ingestion ].CostMovingAverage\"}]}",
               "size": 0,
               "aggregation": 3,
               "title": "Azure Monitor Logs 7 Day Moving Average Cost ({CurrencyCode})",
@@ -4094,8 +4100,7 @@
       "name": "group - Main Page - Troubleshooting"
     }
   ],
-  "fallbackResourceIds": [
-  ],
+  "fallbackResourceIds": [],
   "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02459.3229-230925-201317/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
