@@ -581,7 +581,6 @@
         "groupType": "editable",
         "title": "Input Custom Prices",
         "expandable": true,
-        "expanded": true,
         "loadType": "always",
         "items": [
           {
@@ -2060,6 +2059,7 @@
               "title": "Commitment Tier Recommendations",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
+              "showExportToExcel": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -2223,6 +2223,7 @@
               "title": "Ingestion and Allowances",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
+              "showExportToExcel": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -2725,6 +2726,7 @@
               "title": "Sum of Daily Sentinel Cost ({CurrencyCode})",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
+              "showExportToExcel": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -2805,6 +2807,7 @@
               "title": "Sum of Daily Log Analytics Cost ({CurrencyCode})",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
+              "showExportToExcel": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -2897,6 +2900,7 @@
               "aggregation": 3,
               "title": "Sentinel 7 Day Moving Average Cost ({CurrencyCode})",
               "showRefreshButton": true,
+              "showExportToExcel": true,
               "queryType": 7,
               "visualization": "timechart",
               "chartSettings": {
@@ -2968,6 +2972,7 @@
               "aggregation": 3,
               "title": "Azure Monitor Logs 7 Day Moving Average Cost ({CurrencyCode})",
               "showRefreshButton": true,
+              "showExportToExcel": true,
               "queryType": 7,
               "visualization": "timechart",
               "chartSettings": {
@@ -3053,6 +3058,7 @@
               "title": "Sentinel Billable Data Ingested and Commitment Tier Thresholds",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
+              "showExportToExcel": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -3139,6 +3145,7 @@
               "title": "Azure Monitor Logs Billable Data Ingested and Commitment Tier Thresholds",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
+              "showExportToExcel": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
@@ -3238,6 +3245,7 @@
               "title": "Sentinel Ingestion and Allowances",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
+              "showExportToExcel": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "visualization": "barchart",
@@ -3304,6 +3312,7 @@
               "title": "Azure Monitor Logs Ingestion and Allowances",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
+              "showExportToExcel": true,
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "visualization": "barchart",
