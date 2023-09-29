@@ -12,9 +12,6 @@
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
-        "crossComponentResources": [
-          "{Subscription}"
-        ],
         "parameters": [
           {
             "id": "46c56e28-782c-460a-92a2-2537d1f0a231",
@@ -81,6 +78,7 @@
             "version": "KqlParameterItem/1.0",
             "name": "TimeRange",
             "type": 4,
+            "description": "Time Range (UTC)",
             "isRequired": true,
             "typeSettings": {
               "selectableValues": [
@@ -126,54 +124,6 @@
             "label": "Currency Code"
           },
           {
-            "id": "e7fe4e9e-f94c-49ef-aae3-f93bc7cb6cf5",
-            "version": "KqlParameterItem/1.0",
-            "name": "ShowHelp",
-            "label": "Show Help",
-            "type": 10,
-            "isRequired": true,
-            "typeSettings": {
-              "additionalResourceOptions": [],
-              "showDefault": false
-            },
-            "jsonData": "[\r\n    {\"value\":\"true\", \"label\": \"Yes\", \"selected\": false},\r\n    {\"value\":\"false\", \"label\": \"No\", \"selected\": true}\r\n]",
-            "timeContext": {
-              "durationMs": 86400000
-            }
-          },
-          {
-            "id": "bd7f3a5a-3a14-46a4-8241-f18615a0e636",
-            "version": "KqlParameterItem/1.0",
-            "name": "CustomPrices",
-            "label": "Input Custom Prices",
-            "type": 10,
-            "isRequired": true,
-            "query": "{\"version\":\"1.0.0\",\"content\":\"[\\r\\n    {\\\"value\\\":\\\"true\\\", \\\"label\\\": \\\"Yes\\\", \\\"selected\\\": false},\\r\\n    {\\\"value\\\":\\\"false\\\", \\\"label\\\": \\\"No\\\", \\\"selected\\\": true}\\r\\n]\",\"transformers\":null}",
-            "typeSettings": {
-              "additionalResourceOptions": []
-            },
-            "timeContext": {
-              "durationMs": 86400000
-            },
-            "queryType": 8
-          },
-          {
-            "version": "KqlParameterItem/1.0",
-            "name": "UseDemoData",
-            "label": "Use Demo Data",
-            "type": 10,
-            "isRequired": true,
-            "typeSettings": {
-              "additionalResourceOptions": [],
-              "showDefault": false
-            },
-            "jsonData": "[\r\n    {\"value\":\"true\", \"label\": \"Yes\", \"selected\": false},\r\n    {\"value\":\"false\", \"label\": \"No\", \"selected\": true}\r\n]",
-            "timeContext": {
-              "durationMs": 86400000
-            },
-            "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6"
-          },
-          {
             "id": "8047150b-e68c-402a-8051-f529f399aa12",
             "version": "KqlParameterItem/1.0",
             "name": "E5Seats",
@@ -189,6 +139,57 @@
                 }
               }
             ]
+          },
+          {
+            "id": "e7fe4e9e-f94c-49ef-aae3-f93bc7cb6cf5",
+            "version": "KqlParameterItem/1.0",
+            "name": "ShowHelp",
+            "label": "Show Help",
+            "type": 10,
+            "isRequired": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "jsonData": "[\r\n    {\"value\":\"true\", \"label\": \"Yes\", \"selected\": false},\r\n    {\"value\":\"false\", \"label\": \"No\", \"selected\": true}\r\n]",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": "true"
+          },
+          {
+            "id": "bd7f3a5a-3a14-46a4-8241-f18615a0e636",
+            "version": "KqlParameterItem/1.0",
+            "name": "CustomPrices",
+            "label": "Input Custom Prices",
+            "type": 10,
+            "isRequired": true,
+            "query": "{\"version\":\"1.0.0\",\"content\":\"[\\r\\n    {\\\"value\\\":\\\"true\\\", \\\"label\\\": \\\"Yes\\\", \\\"selected\\\": false},\\r\\n    {\\\"value\\\":\\\"false\\\", \\\"label\\\": \\\"No\\\", \\\"selected\\\": true}\\r\\n]\",\"transformers\":null}",
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "queryType": 8,
+            "value": "true"
+          },
+          {
+            "version": "KqlParameterItem/1.0",
+            "name": "UseDemoData",
+            "label": "Use Demo Data",
+            "type": 10,
+            "isRequired": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "jsonData": "[\r\n    {\"value\":\"true\", \"label\": \"Yes\", \"selected\": false},\r\n    {\"value\":\"false\", \"label\": \"No\", \"selected\": true}\r\n]",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6",
+            "value": "true"
           },
           {
             "id": "6e2979ef-af24-467a-afc5-13ee2012c838",
@@ -312,15 +313,15 @@
           }
         ],
         "style": "above",
-        "queryType": 1,
-        "resourceType": "microsoft.resourcegraph/resources"
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "name": "parameters - Main Page"
     },
     {
       "type": 1,
       "content": {
-        "json": "# Help\r\n\r\nWelcome to my Microsoft Sentinel Commitment Tier workbook. \r\n\r\nThe aim of this workbook is to help you make an informed desicion with regards to changing commitment tiers. These changes can have a negative impact if done incorrectly, but done correctly, they will unlock additional discounts as you ingest more data into you log analytics workspace. \r\n\r\n> **NOTE:** This workbook is dependant on an external GitHub repository (by default) found [here](https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Solutions/CostManagement/Prices). This is due to the fact that the prices api for Azure cannot be looked up directly from a workbook, so they are cached in this location. All prices are checked daily and are only updated if the has been a change, usually due to the exchange rate.\r\n\r\nThis workbook performs the follow:\r\n\r\n- Calculates your [Defender for Servers Plan 2 data ingestion Allowance](https://learn.microsoft.com/en-ca/azure/defender-for-cloud/faq-defender-for-servers#is-the-500-mb-of-free-data-ingestion-allowance-applied-per-workspace-or-per-machine-). This is worked out by calculating the number of distinct computers reporting to the workspace on a daily basis which have the *Security* solution listed in the Heartbeat table.\r\n\r\n\r\n- Calculates your [Microsoft 365 E5, A5, F5 and G5 Allowance](https://azure.microsoft.com/en-ca/pricing/offers/sentinel-microsoft-365-offer/). This is based on a fixed value that you input for the selected period. \r\n\r\n- Fetches the retail price for the current month for the selected currency and Azure region.\r\n\r\n- Applies any applicable discounts. \r\n\r\n- Calculates the commitment tier threshold and recommendations based on the previous values.\r\n\r\n\r\nYou need to ensure that the parameters above are set. \r\n\r\n- **Subscriptions**: This is the subscription where your log analytics workspace resides.\r\n- **Workspace**: This is the Log Analytics workspace you are analysing.\r\n- **Time Range**: This is the time period which you want to analyse in this workbook.\r\n- **CurrencyCode**: This should be the currency which you are invoiced. Not everyone can view the billing information, so this is not looked up automatically.\r\n\r\nThe following parameters are optional:\r\n- **Show Help**: You have already pressed this, otherwise you would not be here. This presents helpful information all throughout the workbook.\r\n- **E5 Seats**: This is the total number of E5, A%, F5 and G5 licences purchased.\r\n- **Input Custom Prices**: This gives you the option to input your own custom prices. This is typically used when you have additional discounts applied by Microsoft\r\n- **Use Demo Data**: Sometimes to realise value of workbooks, you need to simulate the data. This will change all the usage queries to use a simulated data which makes the recommendation to move to the 100 GB commitment tier. This has only been designed with a workspace at the pay-as-you-go tier.\r\n\r\n## NOTE: Input Custom Prices - If this option is selected, expand the heading immediatly below and input the values. They will default to zero, so consider saving the workbook to maintain these values.",
+        "json": "# Welcome to Microsoft Sentinel Commitment Tier workbook. \r\n## Authored by: [TheAlistairRoss](https://thealistairross0.wordpress.com/)\r\n\r\nChanging Commitment Tiers in Log Analytics and Microsoft Sentinel can be a daunting task. You have so many factors to take into account when making the calculation, including seasonality of your data, defender for servers plan 2 500MB per day allowance, E5, A5, F5 and G5 5MB per user per day allowance and the different table types. (Analytic and Basic logs). While the built in recommendation (on the commitment tier page) shows a simple table, I am constantly asked for more data to make an informed desicion. This workbook aims to address exactly that.\r\n\r\n### Where can I used this workbook.\r\nThis workbook has been designed for Azure Monitor Logs (Log Analytic) workspaces that are on the perGB or Commitment tier skus, as well as workspaces that are enabled with Microsoft Sentinel (Unified or classic pricing models). \r\n\r\nIt will not work for the legacy Free, Standalone and Per Node pricing tiers. \r\n\r\nIt will also not work for multiple workspaces at this stage, due to api limitations.\r\n\r\n### How does it work\r\nThis workbook calculates the recommendations and charts by performing the following:\r\n\r\n1. Calculates your total billable usage for analytic tables only.\r\n\r\n2. Calculates your [Defender for Servers Plan 2 data ingestion Allowance](https://learn.microsoft.com/en-ca/azure/defender-for-cloud/faq-defender-for-servers#is-the-500-mb-of-free-data-ingestion-allowance-applied-per-workspace-or-per-machine-) and subtracts that value from the applicable tables only. This value is worked out by calculating the number of distinct computers (by SourceComputerId) reporting to the workspace on a daily basis which have the *Security* solution listed in the Heartbeat table. \r\n\r\n3. Calculates your [Microsoft 365 E5, A5, F5 and G5 Allowance](https://azure.microsoft.com/en-ca/pricing/offers/sentinel-microsoft-365-offer/) and removes that allowance from the applicable tables. This is based on a fixed value that you input for the selected period. It does not calculate any adjustment in the number of licences across the selected time period \r\n\r\n4. Fetches the retail price for the current month for the selected currency and Azure region. It does not calculate any historcal prices over previous months.\r\n\r\n5. Applies any applicable discounts. This is via manual inputs at this stage, it can be a fixed value, as seen on the commitment tier page, or a percentage discount off the current retail price. If you are unsure, contact you Azure Security sales specialist.\r\n\r\n6. Calculates the effective commitment tier threshold for when it is cost effective to move to the next tier. This is calculated based on the cost as you may have different discounts applied to different tiers as per your Microsoft agreement.\r\n\r\n7. Calculates the total cost and charts for your current selected tier as well as provide a recommendation for the most cost effective tier based on your ingested data and time range.\r\n\r\n7. Performs any other additional calculations for the neccessary for various charts. Review the help file for each of these to understand more.\r\n\r\n## Required Parameters \r\n\r\nYou need to ensure the following parameters are set:\r\n\r\n|Parameter|Description|\r\n|:--|:-- |\r\n|**Subscription**|This is the subscription where your log analytics workspace resides.|\r\n|**Workspace**|This is the Log Analytics workspace you are analysing.|\r\n|**Time Range**:| This is the time period which you want to analyse in this workbook. **NOTE**: For the best results, only select complete day when analysing your data. This should start from 00:00:00 and end at 23:59:59. This ensures that the first and last days are not miscalculated.|\r\n|**CurrencyCode**| This should be the currency which you are invoiced. Not everyone can view the billing information, so this is not looked up automatically.|\r\n|**E5 Seats**|This is the total number of E5, A5, F5 and G5 licences purchased. This can be found [here](https://portal.azure.com/#view/Microsoft_AAD_IAM/LicensesMenuBlade/~/Products). This will default to zero.|\r\n\r\n## Optional Parameters\r\n\r\n|Parameter|Description|\r\n|:--|:--|\r\n|**Show Help**|You have already selected this, otherwise you would not be here. This presents helpful information all throughout the workbook. Switch this to know to hide these informational messages.|\r\n|**Input Custom Prices**|This gives you the option to input your own custom prices. This is typically used when you have additional discounts applied by Microsoft. If this option is selected, expand the heading immediatly below and input the values. They will default to zero, so consider saving the workbook to maintain these values.|\r\n|**Use Demo Data**|Sometimes to realise value of workbooks, you need to simulate the data. This will change all the usage queries to use a simulated data which makes the recommendation to move to the 100 GB commitment tier. This has only been designed with a workspace at the pay-as-you-go tier and may not work as intended on other scenarios.|\r\n\r\n\r\n## Please be aware!\r\n> This workbook is dependant on an external GitHub repository (by default) found [here](https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Solutions/CostManagement/Prices). This is due to the fact that the prices api for Azure cannot be looked up directly from a workbook, so they are cached in this location. All prices are checked daily and are only updated if the has been a change, usually due to the exchange rate. \r\n\r\n> If you want to lookup the prices from your own repository, switch the workbook to edit mode and review the help file under the hidden URL and Query parameters.\r\n",
         "style": "info"
       },
       "conditionalVisibility": {
@@ -333,14 +334,15 @@
     {
       "type": 1,
       "content": {
-        "json": "# Intentionally hidden - URL and Query Parameters\r\n\r\nThese parameters are only used in advanced scenarios. This contain the Urls and queries used for the external data queries and are constructed based on selected parameters. They allow the correct file to be referenced from the selected repository.\r\n\r\nDo not modify these unless you know what you are doing!\r\n\r\n"
+        "json": "# Intentionally hidden - URL and Query Parameters\r\n\r\nThese parameters are only used in advanced scenarios. This contain the Urls and queries used for the external data queries and are constructed based on selected parameters. They allow the correct file to be referenced from the selected repository.\r\n\r\nDo not modify these unless you know what you are doing!\r\n\r\n|Parameter|Description|Default Value|\r\n|:--|:--|:--|\r\n|RepositoryURL|This is the base URL for the repository|https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Solutions/CostManagement/Prices|\r\n|AzureMonitorPricesCSVURL|This is the combination of the RepositoryURL, WorkbookLocation and CurrencyCode parameters which makes up the exact file uri for Azure Monitor Prices. This should NOT be ammended, unless you are changing the folder structure|\\{RepositoryURL\\}/Classic/Azure%20Monitor/\\{WorkspaceLocation\\}/\\{CurrencyCode\\}_Prices.csv|\r\n|SentinelPricesCSVURL|This is the combination of the RepositoryURL, WorkbookLocation, CurrencyCode and PricingModel parameters which makes up the exact file uri for Azure Monitor Prices. This should NOT be ammended, unless you are changing the folder structure|\\{RepositoryURL\\}/Classic/Azure%20Monitor/\\{WorkspaceLocation\\}/\\{CurrencyCode\\}_Prices.csv|\r\n|SentinelPricesCSVURL|This has two values based on the workspace pricing model.|PricingModel == \"Log Analytics\" = \\{RepositoryURL\\}/Classic/Sentinel/\\{WorkspaceLocation\\}/\\{CurrencyCode\\}_Prices.csv\"<br/><br/>DefaultCriteria = \\{RepositoryURL\\}/\\{PricingModel\\}/Sentinel/\\{WorkspaceLocation\\}/\\{CurrencyCode\\}_Prices.csv|\r\n\r\n## Once the repository has been updated, check the charts and troubleshooting section to ensure data is being loaded. It should be possbile to load the prices using a SAS url, but this has not been tested for this workbook.\r\n\r\n# No other parameters should be edited as they are lookups and queries for all the charts to work. ",
+        "style": "warning"
       },
       "conditionalVisibility": {
         "parameterName": "_",
         "comparison": "isEqualTo",
         "value": "_"
       },
-      "name": "text - 8"
+      "name": "text - Intentionally Hidden Parameters Warning"
     },
     {
       "type": 9,
@@ -556,7 +558,7 @@
                 "criteriaContext": {
                   "operator": "Default",
                   "resultValType": "static",
-                  "resultVal": "let BasicTables = toscalar(print Basic = \"{BasicTables}\"      | extend Basic = split(substring(Basic, 1, strlen(Basic) - 2), ',')); let E5Seats = {E5Seats}; let E5AllowancePerDayMB = E5Seats * 5; let E5Tables = dynamic([{E5Tables}]); let E5Usage = Usage      | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd      | where IsBillable == true      | where DataType in (E5Tables)      | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)      | extend E5ReductionMB = iff(E5AllowancePerDayMB - Quantity > 0, Quantity, E5AllowancePerDayMB)      | project StartTime, E5ReductionMB; let DefenderForCloudPerDeviceAllowanceMB = 500; let DefenderForCloudTables = dynamic([{DefenderForCloudTables}]); let DefenderForCloudUpdateTables = dynamic([\"Update\", \"UpdateSummary\"]); let DefenderForCloudUsage = Heartbeat      | where TimeGenerated >= TimeRangeStart and TimeGenerated <= TimeRangeEnd      | where Solutions has \"\\\"security\\\"\"      | make-series DeviceCount = dcount(SourceComputerId, 4) default = 0 on TimeGenerated from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand DeviceCount to typeof(int), TimeGenerated to typeof(datetime)      | extend DefenderForCloudAllowancePerDayMB = DefenderForCloudPerDeviceAllowanceMB * DeviceCount      | project TimeGenerated, DefenderForCloudAllowancePerDayMB      | join kind = rightouter (Usage          | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd          | where IsBillable == true          | where DataType in (DefenderForCloudTables)          | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d          | mv-expand Quantity to typeof(long), StartTime to typeof(datetime))         on $left.TimeGenerated == $right.StartTime      | extend DefenderForCloudReductionMB = iff(DefenderForCloudAllowancePerDayMB - Quantity > 0, Quantity, DefenderForCloudAllowancePerDayMB)      | project StartTime, DefenderForCloudReductionMB; let UsageMetrics =  Usage      | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd      | where IsBillable == true      | where '*' == BasicTables[0] or DataType !in (BasicTables)      | make-series kind=nonempty QuantityMB = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand QuantityMB to typeof(long), StartTime to typeof(datetime)      | join kind = leftouter (E5Usage) on StartTime      | join kind = leftouter (DefenderForCloudUsage) on StartTime      | extend E5ReductionMB = case(PricingModel == \"Log Analytics\", 0,isempty(E5ReductionMB), 0, E5ReductionMB)      | extend DefenderForCloudReductionMB = iff(isempty(DefenderForCloudReductionMB), 0, DefenderForCloudReductionMB)      | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB      | extend JoinColumn = 1;"
+                  "resultVal": "let BasicTables = toscalar(print Basic = \"{BasicTables}\"      | extend Basic = split(substring(Basic, 1, strlen(Basic) - 2), ',')); let E5Seats = {E5Seats}; let E5AllowancePerDayMB = E5Seats * 5; let E5Tables = dynamic([{E5Tables}]); let E5Usage = Usage      | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd      | where IsBillable == true      | where DataType in (E5Tables)      | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)      | extend E5ReductionMB = iff(E5AllowancePerDayMB - Quantity > 0, Quantity, E5AllowancePerDayMB)      | project StartTime, E5ReductionMB; let DefenderForCloudPerDeviceAllowanceMB = 500; let DefenderForCloudTables = dynamic([{DefenderForCloudTables}]); let DefenderForCloudUpdateTables = dynamic([\"Update\", \"UpdateSummary\"]); let DefenderForCloudUsage = Heartbeat      | where TimeGenerated >= TimeRangeStart and TimeGenerated <= TimeRangeEnd      | where Solutions has \"\\\"security\\\"\"      | make-series DeviceCount = dcount(SourceComputerId, 4) default = 0 on TimeGenerated from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand DeviceCount to typeof(int), TimeGenerated to typeof(datetime)      | extend DefenderForCloudAllowancePerDayMB = DefenderForCloudPerDeviceAllowanceMB * DeviceCount      | project TimeGenerated, DefenderForCloudAllowancePerDayMB      | join kind = rightouter (Usage          | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd          | where IsBillable == true          | where DataType in (DefenderForCloudTables)          | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d          | mv-expand Quantity to typeof(long), StartTime to typeof(datetime))         on $left.TimeGenerated == $right.StartTime      | extend DefenderForCloudReductionMB = iff(DefenderForCloudAllowancePerDayMB - Quantity > 0, Quantity, DefenderForCloudAllowancePerDayMB)      | project StartTime, DefenderForCloudReductionMB; let UsageMetrics =  Usage      | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd      | where IsBillable == true      | where DataType !in (BasicTables)      | make-series kind=nonempty QuantityMB = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand QuantityMB to typeof(long), StartTime to typeof(datetime)      | join kind = leftouter (E5Usage) on StartTime      | join kind = leftouter (DefenderForCloudUsage) on StartTime      | extend E5ReductionMB = case(PricingModel == \"Log Analytics\", 0,isempty(E5ReductionMB), 0, E5ReductionMB)      | extend DefenderForCloudReductionMB = iff(isempty(DefenderForCloudReductionMB), 0, DefenderForCloudReductionMB)      | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB      | extend JoinColumn = 1;"
                 }
               }
             ]
@@ -586,7 +588,7 @@
           {
             "type": 1,
             "content": {
-              "json": "# Custom Prices\r\n\r\nBy default, this workbook calculates the cost based on the retail price for the relevant meters for the current month. Depending on your agreement with Microsoft, you may have discounts that are applicable. \r\n\r\nThis input gives you the ability to input a fixed price for the selected sku, or a percentage reduction off the retail price for the selected sku. \r\n\r\n## Fixed Prices\r\nIf your discounts are a fixed value, change the parameter \"*Fixed or Percentage*\" to \"**Fixed**\" then enter the value as provided on your agreement. E.g. Pay-as-you-go = 2.35 - This would mean that you would pay 2.35 for the selected meter in your selected currency.\r\n\r\n## Percentage\r\nIf your discounts are a percentage reduction, change the parameter \"*Fixed or Percentage*\" to \"**Percentage**\" then select the value from the drop down as provided on your agreement. E.g. Pay-as-you-go = 20 - This would mean you would be charged the retail price minus 20% for your region and currency.\r\n\r\n> **Note:** Your agreements may be specific to regions, ensure that you have entered the correct values.\r\n\r\n> If you do not need to use custom prices, ensure you switch the parameter \"*Input Custom Prices*\" to \"**No**\" at the top of this workbook",
+              "json": "# Custom Prices\r\n\r\nBy default, this workbook calculates the cost based on the retail price for the relevant meters for the current month. Depending on your agreement with Microsoft, you may have discounts that are applicable. \r\n\r\nThis input gives you the ability to input a fixed price for the selected sku, or a percentage reduction off the retail price for the selected sku. \r\n\r\n## Fixed Prices\r\nIf your discounts are a fixed value, change the parameter \"*Fixed or Percentage*\" to \"**Fixed**\" then enter the value as provided on your agreement. E.g. Pay-as-you-go = 2.35 - This would mean that you would pay 2.35 for the selected meter in your selected currency.\r\n\r\n## Percentage\r\nIf your discounts are a percentage reduction, change the parameter \"*Fixed or Percentage*\" to \"**Percentage**\" then select the value from the drop down as provided on your agreement. E.g. Pay-as-you-go = 20 - This would mean you would be charged the retail price minus 20% for your region and currency.\r\n\r\n> **Note:** Your agreements may be specific to regions, ensure that you have entered the correct values.\r\n\r\n> If you do not need to use custom prices, ensure you switch the parameter \"*Input Custom Prices*\" to \"**No**\" at the top of this workbook. This will ensure that the current retail prices are used, regardless of what custom price is input.\r\n\r\n> You may need to refresh the charts after ammending these values or save the workbook and reload it to get the best results.",
               "style": "info"
             },
             "name": "text - Input Custom Prices - Help Message"
@@ -618,7 +620,7 @@
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces"
             },
-            "name": "parameters - 4"
+            "name": "parameters - Input Custom Prices - Fixed or Percentage"
           },
           {
             "type": 1,
@@ -1147,7 +1149,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{SentinelPrices}",
+              "query": "{SentinelPrices}\r\n| extend ServiceName = strcat(\"🛡️ \",ServiceName)\r\n| project-reorder ServiceName\r\n",
               "size": 0,
               "timeContext": {
                 "durationMs": 86400000
@@ -1158,35 +1160,123 @@
                 "formatters": [
                   {
                     "columnMatch": "Tier",
-                    "formatter": 0,
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "colors",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Pay-as-you-go",
+                          "representation": "blue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "100",
+                          "representation": "orange",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "200",
+                          "representation": "redBright",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "300",
+                          "representation": "turquoise",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "400",
+                          "representation": "brown",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "500",
+                          "representation": "purple",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "1000",
+                          "representation": "green",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "2000",
+                          "representation": "gray",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "5000",
+                          "representation": "lightBlue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "pink",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    },
                     "tooltipFormat": {
                       "tooltip": "Thees are the Commitment Tiers"
                     }
                   },
                   {
                     "columnMatch": "SkuRetailPrice",
-                    "formatter": 0,
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "blue",
+                      "compositeBarSettings": {
+                        "labelText": "",
+                        "columnSettings": []
+                      }
+                    },
                     "tooltipFormat": {
                       "tooltip": "This is the current public retail price as advertised here https://azure.microsoft.com/en-ca/pricing/"
                     }
                   },
                   {
                     "columnMatch": "SkuPrice",
-                    "formatter": 0,
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "blue"
+                    },
                     "tooltipFormat": {
                       "tooltip": "This is the customer price for the selected Sku, after any applicable discounts"
                     }
                   },
                   {
                     "columnMatch": "SkuEffectivePricePerGB",
-                    "formatter": 0,
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "blue"
+                    },
                     "tooltipFormat": {
                       "tooltip": "This is the price per GB that you will pay for data that goes over the commitment tier"
                     }
                   },
                   {
                     "columnMatch": "SkuEffectiveCommitmentTierThreshold",
-                    "formatter": 0,
+                    "formatter": 4,
+                    "formatOptions": {
+                      "palette": "blue"
+                    },
+                    "numberFormat": {
+                      "unit": 39,
+                      "options": {
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
+                      }
+                    },
                     "tooltipFormat": {
                       "tooltip": "This is the value in GB which it is cost effective to move to the next tier"
                     }
@@ -1200,6 +1290,10 @@
                   }
                 ],
                 "labelSettings": [
+                  {
+                    "columnId": "ServiceName",
+                    "label": "Service"
+                  },
                   {
                     "columnId": "SkuRetailPrice",
                     "label": "Retail Price"
@@ -1215,10 +1309,6 @@
                   {
                     "columnId": "SkuEffectiveCommitmentTierThreshold",
                     "label": "Effective Commitment Tier Threshold GB"
-                  },
-                  {
-                    "columnId": "ServiceName",
-                    "label": "Service"
                   }
                 ]
               }
@@ -1758,7 +1848,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{AzureMonitorPrices}",
+              "query": "{AzureMonitorPrices}\r\n| extend ServiceName = strcat(\"⏱️ \",ServiceName)\r\n| project-reorder ServiceName\r\n",
               "size": 0,
               "timeContext": {
                 "durationMs": 86400000
@@ -1769,35 +1859,123 @@
                 "formatters": [
                   {
                     "columnMatch": "Tier",
-                    "formatter": 0,
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "colors",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Pay-as-you-go",
+                          "representation": "blue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "100",
+                          "representation": "orange",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "200",
+                          "representation": "redBright",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "300",
+                          "representation": "turquoise",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "400",
+                          "representation": "brown",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "500",
+                          "representation": "purple",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "1000",
+                          "representation": "green",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "2000",
+                          "representation": "gray",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "5000",
+                          "representation": "lightBlue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "pink",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    },
                     "tooltipFormat": {
-                      "tooltip": "This is the Commitment Tiers"
+                      "tooltip": "Thees are the Commitment Tiers"
                     }
                   },
                   {
                     "columnMatch": "SkuRetailPrice",
-                    "formatter": 0,
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "blue",
+                      "compositeBarSettings": {
+                        "labelText": "",
+                        "columnSettings": []
+                      }
+                    },
                     "tooltipFormat": {
                       "tooltip": "This is the current public retail price as advertised here https://azure.microsoft.com/en-ca/pricing/"
                     }
                   },
                   {
                     "columnMatch": "SkuPrice",
-                    "formatter": 0,
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "blue"
+                    },
                     "tooltipFormat": {
                       "tooltip": "This is the customer price for the selected Sku, after any applicable discounts"
                     }
                   },
                   {
                     "columnMatch": "SkuEffectivePricePerGB",
-                    "formatter": 0,
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "blue"
+                    },
                     "tooltipFormat": {
                       "tooltip": "This is the price per GB that you will pay for data that goes over the commitment tier"
                     }
                   },
                   {
                     "columnMatch": "SkuEffectiveCommitmentTierThreshold",
-                    "formatter": 0,
+                    "formatter": 4,
+                    "formatOptions": {
+                      "palette": "blue"
+                    },
+                    "numberFormat": {
+                      "unit": 39,
+                      "options": {
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
+                      }
+                    },
                     "tooltipFormat": {
                       "tooltip": "This is the value in GB which it is cost effective to move to the next tier"
                     }
@@ -1811,6 +1989,10 @@
                   }
                 ],
                 "labelSettings": [
+                  {
+                    "columnId": "ServiceName",
+                    "label": "Service"
+                  },
                   {
                     "columnId": "SkuRetailPrice",
                     "label": "Retail Price"
@@ -1826,10 +2008,6 @@
                   {
                     "columnId": "SkuEffectiveCommitmentTierThreshold",
                     "label": "Effective Commitment Tier Threshold GB"
-                  },
-                  {
-                    "columnId": "ServiceName",
-                    "label": "Service"
                   }
                 ]
               }
@@ -2089,7 +2267,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}), 1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelPriceInputs = {SentinelPrices};\r\nlet LogAnalyticsPriceInputs = {AzureMonitorPrices};\r\nlet PriceInputs = union SentinelPriceInputs, LogAnalyticsPriceInputs \r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))     \r\n    | project ServiceName, Tier, TierVolumeGB, SkuPrice, SkuEffectivePricePerGB  \r\n    | extend JoinColumn = 1;   \r\n{UsageMetrics} \r\nlet TierStats = \r\n    UsageMetrics  \r\n    | join kind = inner (PriceInputs) \r\n        on JoinColumn  \r\n    | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3\r\n    | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3\r\n    | extend QuantityGB = QuantityMB / 1e3\r\n    | extend QuantityGB = case(\r\n        ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), QuantityGB - E5ReductionGB - DefenderForCloudReductionGB, \r\n        QuantityGB - E5ReductionGB\r\n    )\r\n    | extend CostAtTier = iff(QuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", QuantityGB * SkuEffectivePricePerGB, SkuPrice)  \r\n    | summarize CostAtTier = sum(CostAtTier), QuantityGB = sum(QuantityGB) by Tier, ServiceName  \r\n    | extend\r\n        CostAtTier = CostAtTier, \r\n        QuantityGB = QuantityGB\r\n    | extend JoinColumn = 1;\r\nTierStats\r\n| where (ServiceName == \"Sentinel\" and Tier == SentinelCurrentTier and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and Tier == LogAnalyticsCurrentTier and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| join kind = inner(TierStats\r\n    | summarize arg_min(CostAtTier, Tier, JoinColumn) by ServiceName)\r\n    on ServiceName\r\n| extend Status = case(\r\n                      Tier == Tier1,\r\n                      \"Good\",\r\n                      \"Change Tier\"\r\n                  )\r\n| project-rename \r\n    CurrentTier = Tier,\r\n    RecommendedTier = Tier1,\r\n    CurrentTierCost = CostAtTier,\r\n    RecommendedTierCost = CostAtTier1\r\n| extend CostDifference = RecommendedTierCost - CurrentTierCost\r\n| project\r\n    ServiceName,\r\n    CurrentTier,\r\n    RecommendedTier,\r\n    Status,\r\n    QuantityGB,\r\n    CurrentTierCost,\r\n    RecommendedTierCost,\r\n    CostDifference",
+              "query": "let TimeRangeStart = todatetime({TimeRange:start});\r\nlet TimeRangeEnd = todatetime({TimeRange:end});\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelPriceInputs = {SentinelPrices};\r\nlet LogAnalyticsPriceInputs = {AzureMonitorPrices};\r\nlet PriceInputs = union SentinelPriceInputs, LogAnalyticsPriceInputs \r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))     \r\n    | project ServiceName, Tier, TierVolumeGB, SkuPrice, SkuEffectivePricePerGB  \r\n    | extend JoinColumn = 1;   \r\n{UsageMetrics} \r\nlet TierStats = \r\n    UsageMetrics  \r\n    | join kind = inner (PriceInputs) \r\n        on JoinColumn  \r\n    | extend DefenderForCloudReductionMB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB)\r\n    | extend E5ReductionMB = column_ifexists(\"E5ReductionMB\", QuantityMB)\r\n    | extend QuantityMB = case(\r\n                              ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"),\r\n                              QuantityMB - E5ReductionMB - DefenderForCloudReductionMB, \r\n                              QuantityMB - E5ReductionMB\r\n                          )\r\n    | extend QuantityGB = QuantityMB / 1e3\r\n    | extend CostAtTier = iff(QuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", QuantityGB * SkuEffectivePricePerGB, SkuPrice)  \r\n    | summarize CostAtTier = sum(CostAtTier), QuantityGB = sum(QuantityGB) by Tier, ServiceName  \r\n    | extend JoinColumn = 1;\r\nTierStats\r\n| where (ServiceName == \"Sentinel\" and Tier == SentinelCurrentTier and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and Tier == LogAnalyticsCurrentTier and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| join kind = inner(TierStats\r\n    | summarize arg_min(CostAtTier, Tier, JoinColumn) by ServiceName)\r\n    on ServiceName\r\n| extend Status = case(\r\n                      Tier == Tier1,\r\n                      \"Good\",\r\n                      \"Change Tier\"\r\n                  )\r\n| project-rename \r\n    CurrentTier = Tier,\r\n    RecommendedTier = Tier1,\r\n    CurrentTierCost = CostAtTier,\r\n    RecommendedTierCost = CostAtTier1\r\n| extend CostDifference = RecommendedTierCost - CurrentTierCost\r\n| order by ServiceName desc\r\n| extend ServiceName = case(\r\n    ServiceName =~ \"Sentinel\", strcat(\"🛡️ \",ServiceName),\r\n    ServiceName =~ \"Azure Monitor\", strcat(\"⏱️ \",ServiceName),\r\n    ServiceName\r\n)\r\n| project\r\n    ServiceName,\r\n    CurrentTier,\r\n    RecommendedTier,\r\n    Status,\r\n    CurrentTierCost = round(CurrentTierCost,4),\r\n    RecommendedTierCost = round(RecommendedTierCost,4),\r\n    CostDifference = round(CostDifference,4)",
               "size": 4,
               "showAnalytics": true,
               "title": "Commitment Tier Recommendations",
@@ -2105,21 +2283,151 @@
                 "formatters": [
                   {
                     "columnMatch": "ServiceName",
-                    "formatter": 0,
+                    "formatter": 1,
                     "tooltipFormat": {
                       "tooltip": "The name of the monitor service, this will either be \"Azure Monitor\" or \"Sentinel\""
                     }
                   },
                   {
                     "columnMatch": "CurrentTier",
-                    "formatter": 1,
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "colors",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Pay-as-you-go",
+                          "representation": "blue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "100",
+                          "representation": "orange",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "200",
+                          "representation": "redBright",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "300",
+                          "representation": "turquoise",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "400",
+                          "representation": "brown",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "500",
+                          "representation": "purple",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "1000",
+                          "representation": "green",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "2000",
+                          "representation": "gray",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "5000",
+                          "representation": "lightBlue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "pink",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    },
                     "tooltipFormat": {
                       "tooltip": "Current Commitment Tier"
                     }
                   },
                   {
                     "columnMatch": "RecommendedTier",
-                    "formatter": 1,
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "colors",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Pay-as-you-go",
+                          "representation": "blue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "100",
+                          "representation": "orange",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "200",
+                          "representation": "redBright",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "300",
+                          "representation": "turquoise",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "400",
+                          "representation": "brown",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "500",
+                          "representation": "purple",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "1000",
+                          "representation": "green",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "2000",
+                          "representation": "gray",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "5000",
+                          "representation": "lightBlue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "pink",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    },
                     "tooltipFormat": {
                       "tooltip": "The recommended commitment tier for the selected time period, taking into account the various discounts"
                     }
@@ -2160,20 +2468,6 @@
                     },
                     "tooltipFormat": {
                       "tooltip": "Are you on the correct tier"
-                    }
-                  },
-                  {
-                    "columnMatch": "QuantityGB",
-                    "formatter": 1,
-                    "numberFormat": {
-                      "unit": 39,
-                      "options": {
-                        "style": "decimal",
-                        "maximumFractionDigits": 2
-                      }
-                    },
-                    "tooltipFormat": {
-                      "tooltip": "Total Billable Quantity of data, after applied allowances."
                     }
                   },
                   {
@@ -2226,10 +2520,6 @@
                     "tooltipFormat": {
                       "tooltip": "This is the cost difference between the current tier and recommended tier for the selected time range."
                     }
-                  },
-                  {
-                    "columnMatch": "Workspace",
-                    "formatter": 5
                   }
                 ],
                 "labelSettings": [
@@ -2244,10 +2534,6 @@
                   {
                     "columnId": "RecommendedTier",
                     "label": "Recommended Tier"
-                  },
-                  {
-                    "columnId": "QuantityGB",
-                    "label": "Total Quantity"
                   },
                   {
                     "columnId": "CurrentTierCost",
@@ -2275,7 +2561,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let TimeRangeStart = startofday(todatetime({TimeRange:start}), 1);\r\nlet TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1);\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\n{UsageMetrics}  \r\nUsageMetrics\r\n| extend ServiceName = dynamic([\"Azure Monitor\", \"Sentinel\"])\r\n| mv-expand ServiceName to typeof(string)\r\n| summarize\r\n    QuantityMB = sum(QuantityMB),\r\n    DefenderForCloudReductionMB = sum(DefenderForCloudReductionMB),\r\n    E5ReductionMB = sum(E5ReductionMB)\r\n    by ServiceName\r\n| extend QuantityGB = QuantityMB / 1e3\r\n| extend BillableQuantityGB = case(\r\n                                  ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"),\r\n                                  (QuantityMB - DefenderForCloudReductionMB - E5ReductionMB) / 1e3, \r\n                                  (QuantityMB - E5ReductionMB) / 1e3\r\n                              )\r\n| extend DefenderForCloudReductionGB = iff(\r\n                                           ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"),\r\n                                           DefenderForCloudReductionMB / 1e3, \r\n                                           toreal(0)\r\n                                       )\r\n| extend E5ReductionGB = E5ReductionMB / 1e3\r\n| where (ServiceName == \"Sentinel\" and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| project\r\n    ServiceName,\r\n    QuantityGB = QuantityGB,\r\n    BillableQuantityGB = BillableQuantityGB,\r\n    DefenderForCloudReductionGB = DefenderForCloudReductionGB,\r\n    E5ReductionGB = E5ReductionGB\r\n| extend\r\n    TotalReduction = DefenderForCloudReductionGB + E5ReductionGB,\r\n    Message = iif(ServiceName == \"Sentinel\" and PricingModel != \"Unified\", \"Defender For Cloud 500MB per server/day only applicable to Microsoft Sentinel on the new Unified pricing model\",\"\")\r\n\r\n\r\n",
+              "query": "let TimeRangeStart = todatetime({TimeRange:start});\r\nlet TimeRangeEnd = todatetime({TimeRange:end});\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelCurrentTierValue = iif(SentinelCurrentTier =~ \"Pay-as-you-go\", 0, toint(SentinelCurrentTier));\r\nlet LogAnalyticsCurrentTierValue = iif(LogAnalyticsCurrentTier =~ \"Pay-as-you-go\", 0, toint(LogAnalyticsCurrentTier));\r\n{UsageMetrics}  \r\nUsageMetrics\r\n| extend ServiceName = dynamic([\"Azure Monitor\", \"Sentinel\"])\r\n| mv-expand ServiceName to typeof(string)\r\n| summarize\r\n    QuantityMB = sum(QuantityMB),\r\n    DefenderForCloudReductionMB = sum(DefenderForCloudReductionMB),\r\n    E5ReductionMB = sum(E5ReductionMB)\r\n    by ServiceName\r\n| extend QuantityGB = QuantityMB / 1e3\r\n| extend BillableQuantityGB = case(\r\n                                  ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"),\r\n                                  (QuantityMB - DefenderForCloudReductionMB - E5ReductionMB) / 1e3, \r\n                                  (QuantityMB - E5ReductionMB) / 1e3\r\n                              )\r\n| extend DefenderForCloudReductionGB = iff(\r\n                                           ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"),\r\n                                           DefenderForCloudReductionMB / 1e3, \r\n                                           toreal(0)\r\n                                       )\r\n| extend E5ReductionGB = E5ReductionMB / 1e3\r\n| extend TierValue = iff(ServiceName =~ \"Sentinel\", SentinelCurrentTierValue, LogAnalyticsCurrentTierValue)\r\n| extend AboveCommitmentTierGB = iff(BillableQuantityGB >= TierValue, BillableQuantityGB - TierValue, toreal(0))\r\n| extend BelowCommitmentTierGB = BillableQuantityGB - AboveCommitmentTierGB\r\n| where (ServiceName == \"Sentinel\" and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| extend\r\n    Message = iif(ServiceName == \"Sentinel\" and PricingModel != \"Unified\", \"Defender For Cloud 500MB per server/day only applicable to Microsoft Sentinel on the new Unified pricing model\",\"\")\r\n| order by ServiceName desc\r\n| extend ServiceName = case(\r\n    ServiceName =~ \"Sentinel\", strcat(\"🛡️ \",ServiceName),\r\n    ServiceName =~ \"Azure Monitor\", strcat(\"⏱️ \",ServiceName),\r\n    ServiceName\r\n)\r\n| project\r\n    ServiceName,\r\n    QuantityGB = round(QuantityGB,3),\r\n    DefenderForCloudReductionGB = round(DefenderForCloudReductionGB, 3),\r\n    E5ReductionGB = round(E5ReductionGB,3),\r\n    BelowCommitmentTierGB = round(BelowCommitmentTierGB,3),\r\n    AboveCommitmentTierGB = round(AboveCommitmentTierGB,3),\r\n    BillableQuantityGB = round(BillableQuantityGB,3),\r\n    Message\r\n    ",
               "size": 4,
               "showAnalytics": true,
               "title": "Ingestion and Allowances",
@@ -2290,23 +2576,28 @@
               "gridSettings": {
                 "formatters": [
                   {
+                    "columnMatch": "ServiceName",
+                    "formatter": 1,
+                    "formatOptions": {
+                      "linkTarget": "GenericDetails",
+                      "linkIsContextBlade": true
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "The name of the monitor service, this will either be \"Azure Monitor\" or \"Sentinel\""
+                    }
+                  },
+                  {
                     "columnMatch": "QuantityGB",
                     "formatter": 1,
                     "numberFormat": {
                       "unit": 39,
                       "options": {
-                        "style": "decimal"
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
                       }
-                    }
-                  },
-                  {
-                    "columnMatch": "BillableQuantityGB",
-                    "formatter": 1,
-                    "numberFormat": {
-                      "unit": 39,
-                      "options": {
-                        "style": "decimal"
-                      }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Total Billable Analytic Logs, before Defender for Servers and E5 Deductions"
                     }
                   },
                   {
@@ -2315,8 +2606,12 @@
                     "numberFormat": {
                       "unit": 39,
                       "options": {
-                        "style": "decimal"
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
                       }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Total Defender for Servers P2 Deductions"
                     }
                   },
                   {
@@ -2325,12 +2620,16 @@
                     "numberFormat": {
                       "unit": 39,
                       "options": {
-                        "style": "decimal"
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
                       }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Total E5 Deductions"
                     }
                   },
                   {
-                    "columnMatch": "TotalReduction",
+                    "columnMatch": "BelowCommitmentTier",
                     "formatter": 1,
                     "numberFormat": {
                       "unit": 39,
@@ -2338,6 +2637,37 @@
                         "style": "decimal",
                         "maximumFractionDigits": 2
                       }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "This is the total amount of data that is billable, after deductions that does not exceed the daily commitment tier threshold"
+                    }
+                  },
+                  {
+                    "columnMatch": "AboveCommitmentTierGB",
+                    "formatter": 1,
+                    "numberFormat": {
+                      "unit": 39,
+                      "options": {
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
+                      }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "This is the total amount of data that is billable, after deductions that exceeds the daily commitment tier threshold (Overages)"
+                    }
+                  },
+                  {
+                    "columnMatch": "BillableQuantityGB",
+                    "formatter": 1,
+                    "numberFormat": {
+                      "unit": 39,
+                      "options": {
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
+                      }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Total Billable Analytic Logs after Defender for Servers and E5 Deductions"
                     }
                   },
                   {
@@ -2376,11 +2706,7 @@
                   },
                   {
                     "columnId": "QuantityGB",
-                    "label": "Billable"
-                  },
-                  {
-                    "columnId": "BillableQuantityGB",
-                    "label": "Billed Amount"
+                    "label": "Billable Data"
                   },
                   {
                     "columnId": "DefenderForCloudReductionGB",
@@ -2391,8 +2717,17 @@
                     "label": "E5 Deductions"
                   },
                   {
-                    "columnId": "TotalReduction",
-                    "label": "Total Deductions"
+                    "columnId": "BelowCommitmentTierGB",
+                    "label": "Below Commitment Tier"
+                  },
+                  {
+                    "columnId": "AboveCommitmentTierGB",
+                    "label": "Above Commitment Tier"
+                  },
+                  {
+                    "columnId": "BillableQuantityGB",
+                    "label": "Billed Amount ",
+                    "comment": ""
                   }
                 ]
               },
@@ -2412,7 +2747,10 @@
           }
         ]
       },
-      "name": "group - Unified - Overview"
+      "name": "group - Unified - Overview",
+      "styleSettings": {
+        "showBorder": true
+      }
     },
     {
       "type": 12,
@@ -2438,7 +2776,7 @@
           {
             "type": 1,
             "content": {
-              "json": "# Commitment Tier Parameters\r\n\r\nThese charts require the selection of the Commitment tier parameter. By default, the current tier is selected. With the unified pricing model, this tier selection displays the combined price of Log Analytics and Microsoft Sentinel. \r\n\r\n> TIP: You can select all the tiers at once, but it is recommend to select your current tier, the recommended tier and at least one other (the next one up or down). For example if your current tier is 100 and the recommend tier is 200, select 100, 200 and 300. Check the Overview page for the current recommendation based on your selected time range.\r\n\r\n- Details for changing Microsoft Sentinel Commitment Tiers: https://learn.microsoft.com/en-us/azure/sentinel/billing-reduce-costs#set-or-change-pricing-tier\r\n\r\n### All prices shown are based on the current retail prices. This does not account for any discounts you may have been provided. This has been provided as a guide into your data and converted to cost, as opposed to just data ingested\r\n\r\n### This workbook has not been tested against any legacy tiers for Log Analytics or dedicated clusters.",
+              "json": "# Commitment Tier Parameters\r\n\r\nThese charts require the selection of the Commitment tier parameter. By default, the current tier is selected. If you have the classic Sentinel pricing, with Azure Monitor Logs and Sentinel seperately billed, you will have to pick each parameter independently, otherwise there will only be one drop down parameter to choose from. \r\n\r\n> TIP: You can select all the tiers at once, but it is recommended to select your current tier, the recommended tier and at least one other (the next one up or down). For example if your current tier is 100 and the recommend tier is 200, select 100, 200 and 300. Check the Overview page higher up for the current recommendation based on your selected time range. \r\n\r\n- Details for changing Microsoft Sentinel Commitment Tiers: https://learn.microsoft.com/en-us/azure/sentinel/billing-reduce-costs#set-or-change-pricing-tier",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -2462,6 +2800,7 @@
                   "name": "SentinelCT",
                   "label": "Sentinel Commitment Tier",
                   "type": 2,
+                  "description": "Microsoft Sentinel Commitment Tier. You can select multiple tiers to model your data costs with. By default you current tier should be selected.",
                   "multiSelect": true,
                   "quote": "'",
                   "delimiter": ",",
@@ -2477,12 +2816,7 @@
                     "durationMs": 86400000
                   },
                   "queryType": 1,
-                  "resourceType": "microsoft.resourcegraph/resources",
-                  "value": [
-                    "Pay-as-you-go",
-                    "100",
-                    "1000"
-                  ]
+                  "resourceType": "microsoft.resourcegraph/resources"
                 }
               ],
               "style": "formVertical",
@@ -2508,7 +2842,7 @@
               "comparison": "isEqualTo",
               "value": "true"
             },
-            "name": "text - 18"
+            "name": "text - Parameter Divider"
           },
           {
             "type": 9,
@@ -2522,8 +2856,9 @@
                   "id": "ad76436d-135b-499c-ab9f-4c994dbb35d6",
                   "version": "KqlParameterItem/1.0",
                   "name": "LogAnalyticsCT",
-                  "label": "Log Analytics Commitment Tier",
+                  "label": "Azure Monitor Logs Commitment Tier",
                   "type": 2,
+                  "description": "Azure Monitor Logs (Log Analytics) Commitment Tier. You can select multiple tiers to model your data costs with. By default you current tier should be selected.",
                   "multiSelect": true,
                   "quote": "'",
                   "delimiter": ",",
@@ -2539,11 +2874,7 @@
                     "durationMs": 86400000
                   },
                   "queryType": 1,
-                  "resourceType": "microsoft.resourcegraph/resources",
-                  "value": [
-                    "Pay-as-you-go",
-                    "100"
-                  ]
+                  "resourceType": "microsoft.resourcegraph/resources"
                 }
               ],
               "style": "formVertical",
@@ -2696,19 +3027,6 @@
             "name": "query - Help - Series Tiles"
           },
           {
-            "type": 1,
-            "content": {
-              "json": "# Sum of Daily Costs\r\n\r\nThis chart show the retail cost for Microsoft Sentinel based on the selected commitment tiers and current usage. \r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the chart would display two series for each selected tier. Each series would reflect the retail prices that would have been paid based on the selected tiers.\r\n\r\nWhen trying to interpret these costs , the legend shows the total cost for the selected time range, with the most expensive tier on the left and the best value on the right. ",
-              "style": "info"
-            },
-            "conditionalVisibility": {
-              "parameterName": "ShowHelp",
-              "comparison": "isEqualTo",
-              "value": "true"
-            },
-            "name": "text - help - Daily Costs"
-          },
-          {
             "type": 9,
             "content": {
               "version": "KqlParameterItem/1.0",
@@ -2725,7 +3043,7 @@
                       "criteriaContext": {
                         "operator": "Default",
                         "resultValType": "static",
-                        "resultVal": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1); let TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1); let PricingModel = \"{PricingModel}\"; {UsageMetrics} UsageMetrics | join kind = inner (     PriceInputs     | where Tier in (SelectedTiers)     )     on JoinColumn | project-away JoinColumn, JoinColumn1 | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3 | extend DefenderForCloudReductionGB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionGB, toreal(0)) | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3 | extend QuantityGB = QuantityMB / 1e3 | extend BillableQuantityGB = QuantityGB - E5ReductionGB - DefenderForCloudReductionGB | extend CostAtTier = iff(BillableQuantityGB > TierVolumeGB, BillableQuantityGB * SkuEffectivePricePerGB, SkuPrice) | make-series CostAtTier = sum(CostAtTier), BillableQuantityGB = sum(BillableQuantityGB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier | extend MovingAverageFilter = iif(array_length(CostAtTier) < 7, array_length(CostAtTier), 7) | extend CostMovingAverage = series_fir(CostAtTier, repeat(1, MovingAverageFilter), true, false) | extend BillableQuantityGBMovingAverage = series_fir(BillableQuantityGB, repeat(1, MovingAverageFilter), true, false) | render timechart "
+                        "resultVal": "let TimeRangeStart = todatetime({TimeRange:start}); let TimeRangeEnd = todatetime({TimeRange:end}); let PricingModel = \"{PricingModel}\"; {UsageMetrics}  UsageMetrics | join kind = inner (PriceInputs     | where Tier in (SelectedTiers))     on JoinColumn | project-away JoinColumn, JoinColumn1 | extend DefenderForCloudReductionMB = toreal(column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB)) | extend DefenderForCloudReductionMB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionMB, toreal(0)) | extend E5ReductionMB = column_ifexists(\"E5ReductionMB\", QuantityMB) | extend BillableQuantityGB = (QuantityMB - E5ReductionMB - DefenderForCloudReductionMB) /1e3 | extend CostAtTier = iff(BillableQuantityGB > TierVolumeGB, BillableQuantityGB * SkuEffectivePricePerGB, SkuPrice) | make-series CostAtTier = sum(CostAtTier), BillableQuantityGB = sum(BillableQuantityGB) on StartTime from TimeRangeStart to TimeRangeEnd step 1d by Tier | extend MovingAverageFilter = iif(array_length(CostAtTier) < 7, array_length(CostAtTier), 7) | extend CostMovingAverage = series_fir(CostAtTier, repeat(1, MovingAverageFilter), true, false) | extend BillableQuantityGBMovingAverage = series_fir(BillableQuantityGB, repeat(1, MovingAverageFilter), true, false) | render timechart "
                       }
                     }
                   ],
@@ -2745,7 +3063,7 @@
                       "criteriaContext": {
                         "operator": "Default",
                         "resultValType": "static",
-                        "resultVal": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1); let TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1); let PricingModel = \"{PricingModel}\"; {UsageMetrics} let Actual_Usage_GB =      UsageMetrics     | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3     | extend DefenderForCloudReductionGB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionGB, toreal(0))     | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3     | extend QuantityGB = QuantityMB / 1e3     | extend BillableQuantityGB = QuantityGB - E5ReductionGB - DefenderForCloudReductionGB     | make-series BillableQuantityGB = toreal(round(sum(BillableQuantityGB),3)) default = toreal(0) on StartTime step 1d      | project          SeriesName = \"Actual_Usage_GB\",         StartTime,         BillableQuantityGB; let Average_Usage_GB =      Actual_Usage_GB     | extend Stats = series_stats_dynamic(BillableQuantityGB)     | project         SeriesName = \"Average_Usage_GB\",         StartTime,         BillableQuantityGB = repeat(toreal(Stats.avg), array_length(BillableQuantityGB)) ; let UsageTimeRange =     toscalar(Actual_Usage_GB     | project StartTime); let CommitmentTierCalculations = PriceInputs     | extend StartTime = UsageTimeRange     | extend BillableQuantityGB = repeat(toreal(SkuEffectiveCommitmentTierThreshold), array_length(StartTime))     | project          SeriesName = tostring(Tier),          StartTime,          BillableQuantityGB ; union CommitmentTierCalculations, Actual_Usage_GB, Average_Usage_GB | render timechart "
+                        "resultVal": "let TimeRangeStart = todatetime({TimeRange:start}); let TimeRangeEnd = todatetime({TimeRange:end}); let PricingModel = \"{PricingModel}\"; {UsageMetrics}  let Actual_Usage_GB =      UsageMetrics  | extend DefenderForCloudReductionMB = toreal(column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB)) | extend DefenderForCloudReductionMB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionMB, toreal(0))  | extend E5ReductionMB = column_ifexists(\"E5ReductionMB\", QuantityMB)  | extend BillableQuantityGB = (QuantityMB - E5ReductionMB - DefenderForCloudReductionMB) / 1e3 | make-series BillableQuantityGB = toreal(round(sum(BillableQuantityGB), 3)) default = toreal(0) on StartTime step 1d  | project SeriesName = \"Actual_Usage_GB\", StartTime, BillableQuantityGB; let Average_Usage_GB =      Actual_Usage_GB  | extend Stats = series_stats_dynamic(BillableQuantityGB)  | project SeriesName = \"Average_Usage_GB\", StartTime, BillableQuantityGB = repeat(toreal(Stats.avg), array_length(BillableQuantityGB)); let UsageTimeRange =     toscalar(Actual_Usage_GB  | project StartTime); let CommitmentTierCalculations = PriceInputs  | extend StartTime = UsageTimeRange  | extend BillableQuantityGB = repeat(toreal(SkuEffectiveCommitmentTierThreshold), array_length(StartTime))  | project SeriesName = tostring(Tier), StartTime, BillableQuantityGB; union CommitmentTierCalculations, Actual_Usage_GB, Average_Usage_GB  | render timechart "
                       }
                     }
                   ],
@@ -2765,7 +3083,7 @@
                       "criteriaContext": {
                         "operator": "Default",
                         "resultValType": "static",
-                        "resultVal": "let PricingModel = \"{PricingModel}\"; let TierValue = iff(     CurrentTier == \"Pay-as-you-go\", 0,     toint(CurrentTier) ); let TimeRangeStart = startofday(todatetime({TimeRange:start}), 1);  let TimeRangeEnd = endofday(todatetime({TimeRange:end}), -1);  {UsageMetrics}    UsageMetrics  | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3  | extend DefenderForCloudReductionGB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionGB, toreal(0))  | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3  | extend QuantityGB = QuantityMB / 1e3  | extend BillableQuantityGB =  QuantityGB - E5ReductionGB - DefenderForCloudReductionGB  | extend AboveCommitmentTierGB = iff(BillableQuantityGB >= TierValue, BillableQuantityGB - TierValue, toreal(0)) | extend BelowCommitmentTierGB = BillableQuantityGB - AboveCommitmentTierGB | project StartTime, DefenderForCloudReductionGB, E5ReductionGB,AboveCommitmentTierGB, BelowCommitmentTierGB"
+                        "resultVal": "let TimeRangeStart = todatetime({TimeRange:start});  let TimeRangeEnd = todatetime({TimeRange:end}); let PricingModel = \"{PricingModel}\"; let TierValue = iff(CurrentTier == \"Pay-as-you-go\", 0, toint(CurrentTier)); {UsageMetrics}    UsageMetrics  | extend DefenderForCloudReductionMB = toreal(column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB)) | extend DefenderForCloudReductionMB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionMB, toreal(0))  | extend E5ReductionMB = column_ifexists(\"E5ReductionMB\", QuantityMB) | extend BillableQuantityGB =  (QuantityMB - E5ReductionMB - DefenderForCloudReductionMB) / 1e3 | extend DefenderForCloudReductionGB = DefenderForCloudReductionMB / 1e3 | extend E5ReductionGB = E5ReductionMB / 1e3 | extend AboveCommitmentTierGB = iff(BillableQuantityGB >= TierValue, BillableQuantityGB - TierValue, toreal(0))  | extend BelowCommitmentTierGB = BillableQuantityGB - AboveCommitmentTierGB  | project StartTime, DefenderForCloudReductionGB, E5ReductionGB, AboveCommitmentTierGB, BelowCommitmentTierGB"
                       }
                     }
                   ],
@@ -2774,11 +3092,24 @@
                   }
                 }
               ],
-              "style": "pills",
+              "style": "formHorizontal",
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces"
             },
             "name": "parameters - Charts - Queries"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "# Sum of Daily Costs\r\n\r\nThese charts show the retail cost for  Azure Monitor Logs and / or Microsoft Sentinel based on the selected commitment tiers and current usage. \r\n\r\nIf your pricing model is \"Log Analytics\" or \"Unified\", only one chart will be displayed, otherwise two will be displayed, one for Log Analytics and another for Microsoft Sentinel as they are billed seperately in the classic model.\r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the chart \"Sum of Daily Sentinel Cost\" would display two series for each selected tier. Each series would reflect the retail prices that would have been paid based on the selected tiers.\r\n\r\nWhen trying to interpret these costs , the legend below each chart shows the total cost for the selected time range, with the most expensive tier on the left and the best value on the right. ",
+              "style": "info"
+            },
+            "conditionalVisibility": {
+              "parameterName": "ShowHelp",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "text - help - Daily Costs"
           },
           {
             "type": 3,
@@ -2945,7 +3276,7 @@
           {
             "type": 1,
             "content": {
-              "json": "# Moving Average Costs\r\n\r\nThis chart show the moving average costs for Microsoft Sentinel based on the selected commitment tiers and current usage. \r\n\r\nIn statistics, a moving average is a calculation to analyze data points by creating a series of averages of different subsets of the full data set. This is used in this example to smooth out short term fluctuations in the data and to highlight weekly trends\r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the chart would display two series for each selected tier. Each series would reflect the moving averages cost based on the selected tiers.",
+              "json": "# Moving Average Costs\r\n\r\nThese charts show the moving average costs for Azure Monitor Logs and / or Microsoft Sentinel based on the selected commitment tiers and current usage. \r\n\r\nIf your pricing model is \"Log Analytics\" or \"Unified\", only one chart will be displayed, otherwise two will be displayed, one for Log Analytics and another for Microsoft Sentinel as they are billed seperately in the classic model.\r\n\r\nIn statistics, a moving average is a calculation to analyze data points by creating a series of averages of different subsets of the full data set. This is used in this example to smooth out short term fluctuations in the data and to highlight weekly trends. This chart has been set to a seven day moving average to analyse moving averages over a week.\r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the chart \"Sentinel 7 Day Moving Average Cost\" would display the two series for each selected tier. Each series would reflect the moving averages cost based on the selected tiers.",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -3102,7 +3433,7 @@
           {
             "type": 1,
             "content": {
-              "json": "# GB Ingested and Thresholds\r\n\r\nThis chart show the actual and average ingestion of billable data for Microsoft Sentinel. It also visualises the thresholds which the selected commitment tiers become cost effective. \r\n\r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the chart would display two series for each selected tier. It would also display two series called *\"Actual_Usage_GB\"* and *\"Average_Usage_GB\"*\r\n\r\nIf the Actual_Usage_GB and / or Average_Usage_GB is higher than a displayed commitment tier, then it would be highly likely that moving to the next tier would be cost effective.",
+              "json": "# GB Ingested and Thresholds\r\n\r\nThese charts show the actual and average ingestion of billable data for for Azure Monitor Logs and / or Microsoft Sentinel based on the selected commitment tiers and current usage, including Defender for Servers Plan 2 and E5 deductions. \r\n\r\nIt also visualises the thresholds which the selected commitment tiers become cost effective.\r\n\r\nIf your pricing model is \"Log Analytics\" or \"Unified\", only one chart will be displayed, otherwise two will be displayed, one for Log Analytics and another for Microsoft Sentinel as Defender for Servers Plan 2 allowances were only applicable to Azure Monitor Logs, and not Microsoft Sentinel.\r\n\r\n\r\nFor example if you change the parameter **Sentinel Commitment Tier** to *Pay-as-you-go* and *500*, the chart \"Sentinel Billable Data Ingested and Commitment Tier Thresholds\" would display two series for each selected tier. It would also display two series called *\"Average Billable Usage\"* and *\"Billable Usage\"*\r\n\r\nIf the Billable Usage and / or Average Billable Usage is higher than a displayed commitment tier, then it would be highly likely that moving to the next tier would be cost effective. Review the moving averages and recommendations charts.",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -3170,12 +3501,12 @@
                   },
                   {
                     "seriesName": "Actual_Usage_GB",
-                    "label": "Actual Usage",
+                    "label": "Billable Usage",
                     "color": "amethyst"
                   },
                   {
                     "seriesName": "Average_Usage_GB",
-                    "label": "Average Usage",
+                    "label": "Average Billable Usage",
                     "color": "pink"
                   }
                 ],
@@ -3257,12 +3588,12 @@
                   },
                   {
                     "seriesName": "Actual_Usage_GB",
-                    "label": "Actual Usage",
+                    "label": "Billable Usage",
                     "color": "amethyst"
                   },
                   {
                     "seriesName": "Average_Usage_GB",
-                    "label": "Average Usage",
+                    "label": "Average Billable Usage",
                     "color": "pink"
                   }
                 ],
@@ -3289,7 +3620,7 @@
           {
             "type": 1,
             "content": {
-              "json": "# Ingestion Allowances\r\n\r\nThere are various Microsoft solutions that offer discounts on data ingested into Azure Monitor Logs and Microsoft Sentinel. This chart breaks down the total daily ingestion and shows the following:\r\n\r\n- Daily [Defender for Servers Plan 2 data ingestion Deductions](https://learn.microsoft.com/en-ca/azure/defender-for-cloud/faq-defender-for-servers#is-the-500-mb-of-free-data-ingestion-allowance-applied-per-workspace-or-per-machine-). \r\n\r\n\r\n- Daily [Microsoft 365 E5, A5, F5 and G5 Deductions](https://azure.microsoft.com/en-ca/pricing/offers/sentinel-microsoft-365-offer/). \r\n\r\n- Data ingested daily below the current commitment tier\r\n\r\n- Data ingested daily above the current commitment tier.\r\n\r\nThis charts will also show a dashed threshold line to show the commitment tier value. This is not to be confused with the effective commitment tier thresholds in previous charts, which show when it is cost effective to move to the tier, but the actual commitment tier itself. For example the 100GB commitment tier would show the threshold line at 100GB. ",
+              "json": "# Ingestion Allowances\r\n\r\n\r\nThese charts show the breakdown of ingested data into Azure Monitor Logs and / or Microsoft Sentinel based on the selected commitment tiers and current usage, including Defender for Servers Plan 2 and E5 deductions. \r\n\r\nIf your pricing model is \"Log Analytics\" or \"Unified\", only one chart will be displayed, otherwise two will be displayed, one for Log Analytics and another for Microsoft Sentinel as Defender for Servers Plan 2 allowances were only applicable to Azure Monitor Logs, and not Microsoft Sentinel.\r\n\r\n## The chart displays the data in the following way:\r\n\r\n- Each vertical bar represents the total billable ingested data for that day into Analytics logs, including Defender for Servers Plan 2 and E5 Ingestion.\r\n\r\n- In **orange**, each bar will show the \r\ndaily [Defender for Servers Plan 2 data ingestion Deductions](https://learn.microsoft.com/en-ca/azure/defender-for-cloud/faq-defender-for-servers#is-the-500-mb-of-free-data-ingestion-allowance-applied-per-workspace-or-per-machine-) from the daily total ingestion. \r\n\r\n\r\n- In **purple (amethyst)**, each bar will show the daily [Microsoft 365 E5, A5, F5 and G5 Deductions](https://azure.microsoft.com/en-ca/pricing/offers/sentinel-microsoft-365-offer/) from the daily total ingestion.\r\n\r\n- In **green**, billable data that is ingested and is below the commitment tier will be shown (after Defender for Servers Plan 2 and E5 Dedcutions). This isn't to be confused with you minimum daily cost of the tier.\r\n\r\n- In **blue**, billable data that is ingested, which is above the commitment tier threshold will be shown (after Defender for Servers Plan 2 and E5 Dedcutions)\r\n\r\n- In **bright red**, If your commitment tier is 100 GB per day or higher, a dashed line will be displayed to show the commitment tier threshold. E.g If your tier is 100 GB, then the threshold line will be displayed at 100 GB.\r\n\r\n",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -3303,7 +3634,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let ServiceName = \"Sentinel\";\r\nlet CurrentTier = \"{SentinelCurrentTier}\";\r\n{LogIngestionAndAllowancesQuery}",
+              "query": "let ServiceName = \"Sentinel\";\r\nlet CurrentTier = \"{SentinelCurrentTier}\";\r\n{LogIngestionAndAllowancesQuery}\r\n",
               "size": 0,
               "showAnalytics": true,
               "title": "Sentinel Ingestion and Allowances",
@@ -3321,12 +3652,12 @@
                 "seriesLabelSettings": [
                   {
                     "seriesName": "DefenderForCloudReductionGB",
-                    "label": "Defender For Cloud Allowance",
+                    "label": "Defender For Cloud Dedcution",
                     "color": "orange"
                   },
                   {
                     "seriesName": "E5ReductionGB",
-                    "label": "E5 Allowance",
+                    "label": "E5 Dedcution",
                     "color": "amethyst"
                   },
                   {
@@ -3364,7 +3695,7 @@
               "comparison": "isEqualTo",
               "value": "true"
             },
-            "name": "query - Sentinel Ingestion and Allowances"
+            "name": "query - Sentinel Ingestion and Dedcutions"
           },
           {
             "type": 3,
@@ -3388,12 +3719,12 @@
                 "seriesLabelSettings": [
                   {
                     "seriesName": "DefenderForCloudReductionGB",
-                    "label": "Defender For Cloud Allowance",
+                    "label": "Defender For Cloud Dedcution",
                     "color": "orange"
                   },
                   {
                     "seriesName": "E5ReductionGB",
-                    "label": "E5 Allowance",
+                    "label": "E5 Dedcution",
                     "color": "amethyst"
                   },
                   {
@@ -3431,11 +3762,14 @@
               "comparison": "isEqualTo",
               "value": "true"
             },
-            "name": "query - Azure Monitor Logs Ingestion and Allowances"
+            "name": "query - Azure Monitor Logs Ingestion and Deductions"
           }
         ]
       },
-      "name": "group - Unified - Charts"
+      "name": "group - Unified - Charts",
+      "styleSettings": {
+        "showBorder": true
+      }
     },
     {
       "type": 12,
@@ -3461,7 +3795,7 @@
           {
             "type": 1,
             "content": {
-              "json": "# GB Pricing Forecasted\r\n\r\nThese charts show the current ingestion cost the forecasted ingestion costs based of billable data for Microsoft Sentinel. It also visualises the thresholds which the selected commitment tiers become cost effective. \r\n\r\nThese charts require you to select the Microsoft Sentinel tiers that will be displayed for forecasting. By default the current tier will be selected.\r\n\r\nYou are also required to select a value from the parameter **Days Forecasted**.\r\n\r\nWhen making forecasting predictions, the more data you have historically, the more accurate the forecasting is. It is also worth noting the further in the future the data goes, the less accurate the prediction is.\r\n\r\nWhen observing these charts, you will see two series. \r\n- **CostAtTier**: This represents the current cost based on the pricing unputs and current usage. At the end of the selected time range, it will drop to 0.\r\n- **Forecasted**: This reflects the trend of data, with anomalous data samples removed. This is why it does not match the *CostAtTier* series exactly. At the end of the selected time range, it will continue further for the number of days selected in the parameter **Days Forecasted**, providing a calculated prection of the data based on historcal data.\r\n\r\n>Note: Forecasting cannot predict for unexpected changes that have not happened regularlly in the historical data, such as onboarding of new data sources. Also if seasonality cannot be detected (This means regular patterns, such as peaks and troughs in the data relating to user working hours), then it will display a line of best fit.",
+              "json": "# GB Pricing Forecasted\r\n\r\nThese charts show the current ingestion cost the forecasted ingestion costs based of billable data for Azure Monitor Logs and / or Microsoft Sentinel. It does this by performing trend analyse against you data in the given time range and models that trend into the future.\r\n\r\nIf your pricing model is \"Log Analytics\" or \"Unified\", only one chart will be displayed, otherwise two will be displayed, one for Log Analytics and another for Microsoft Sentinel as Defender for Servers Plan 2 allowances were only applicable to Azure Monitor Logs, and not Microsoft Sentinel.\r\n\r\n### Parameters\r\n\r\n- **Days Forecasted**: This is the number of days / weeks into the future you wish to project your data.\r\n\r\n- **Sentinel / Azure Monitor Tier**: Select the tier you are modelling the costs on. By default the current tier should be selected.\r\n\r\n### Reading the chart\r\n\r\nWhen making forecasting predictions, the more data you have historically, the more accurate the forecasting is. It is also worth noting the further in the future the data goes, the less accurate the prediction is.\r\n\r\nWhen observing these charts, you will see two series. \r\n- **Current Billable costs**: This area, colored **Light Blue**, represents the current cost based on the pricing unputs and current usage. At the end of the selected time range, it will drop to 0.\r\n\r\n- **Forecasted Billable Costs**: This area, colored **Pink**, represents the trend of data, with anomalous data samples removed. This will start at the end of the \"*Current Billable Costs*\" to simulate the next days / weeks ahead\r\n\r\n>Note: Forecasting cannot predict for unexpected changes that have not happened regularlly in the historical data, such as onboarding of new data sources. Also if seasonality cannot be detected , then it will display a line of best fit.",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -3482,6 +3816,7 @@
                   "name": "DaysInFuture",
                   "label": "Days Forecasted",
                   "type": 10,
+                  "description": "This is used to calculate how many days in the future should the forecasting charts predict. ",
                   "isRequired": true,
                   "query": "{\"version\":\"1.0.0\",\"content\":\"[\\r\\n    {\\r\\n        \\\"value\\\":  1,\\r\\n        \\\"label\\\":  \\\"1 days\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"value\\\":  2,\\r\\n        \\\"label\\\":  \\\"2 days\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"value\\\":  3,\\r\\n        \\\"label\\\":  \\\"3 days\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"value\\\":  4,\\r\\n        \\\"label\\\":  \\\"4 days\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"value\\\":  5,\\r\\n        \\\"label\\\":  \\\"5 days\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"value\\\":  6,\\r\\n        \\\"label\\\":  \\\"6 days\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"label\\\":  \\\"1 week\\\",\\r\\n        \\\"selected\\\":  true,\\r\\n        \\\"value\\\":  7\\r\\n    },\\r\\n    {\\r\\n        \\\"value\\\":  14,\\r\\n        \\\"label\\\":  \\\"2 Weeks\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"value\\\":  21,\\r\\n        \\\"label\\\":  \\\"3 Weeks\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"value\\\":  28,\\r\\n        \\\"label\\\":  \\\"4 Weeks\\\"\\r\\n    },\\r\\n\\t    {\\r\\n        \\\"value\\\":  56,\\r\\n        \\\"label\\\":  \\\"8 Weeks\\\"\\r\\n    },\\r\\n\\t    {\\r\\n        \\\"value\\\":  84,\\r\\n        \\\"label\\\":  \\\"12 Weeks\\\"\\r\\n    }\\r\\n]\\r\\n\",\"transformers\":null}",
                   "typeSettings": {
@@ -3494,7 +3829,7 @@
               "style": "above",
               "queryType": 8
             },
-            "name": "parameters - 15"
+            "name": "parameters - Forecasting - Future Days"
           },
           {
             "type": 9,
@@ -3510,6 +3845,7 @@
                   "name": "SentinelSelectedForecastTier",
                   "label": "Sentinel Tier",
                   "type": 10,
+                  "description": "Select the Microsoft Sentinel Tier to model your costs. You can only select one tier at a time.",
                   "isRequired": true,
                   "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| extend selected = iff(\"{SentinelCurrentTier}\" == value, true, false)\r\n| project value, label = value, selected, Order\r\n| order by Order asc",
                   "crossComponentResources": [
@@ -3530,6 +3866,7 @@
               "queryType": 1,
               "resourceType": "microsoft.resourcegraph/resources"
             },
+            "customWidth": "0",
             "conditionalVisibility": {
               "parameterName": "ShowSentinel",
               "comparison": "isEqualTo",
@@ -3551,6 +3888,7 @@
                   "name": "LogAnalyticsSelectedForecastTier",
                   "label": "Azure Monitor Logs Tier",
                   "type": 10,
+                  "description": "Select the Azure Monitor Logs Tier to model your costs. You can only select one tier at a time.",
                   "isRequired": true,
                   "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| extend selected = iff(\"{LogAnalyticsCurrentTier}\" == value, true, false)\r\n| project value, label = value, selected, Order\r\n| order by Order asc",
                   "crossComponentResources": [
@@ -3571,6 +3909,7 @@
               "queryType": 1,
               "resourceType": "microsoft.resourcegraph/resources"
             },
+            "customWidth": "0",
             "conditionalVisibility": {
               "parameterName": "ShowAzureMonitor",
               "comparison": "isEqualTo",
@@ -3595,7 +3934,7 @@
                       "criteriaContext": {
                         "operator": "Default",
                         "resultValType": "static",
-                        "resultVal": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1); let TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1); let DaysForecastedPastEnd = {DaysInFuture}; let PricingModel = \"{PricingModel}\"; {UsageMetrics} UsageMetrics | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3 | extend DefenderForCloudReductionGB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionGB, toreal(0)) | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3 | extend QuantityGB = QuantityMB / 1e3 | extend BillableQuantityGB = QuantityGB - E5ReductionGB - DefenderForCloudReductionGB | make-series BillableQuantityGB = sum(BillableQuantityGB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d  | extend BillableQuantityGB_Forecasted = series_decompose_forecast(BillableQuantityGB, DaysForecastedPastEnd, -1,'avg') | render timechart | mv-expand     BillableQuantityGB to typeof(real),     BillableQuantityGB_Forecasted to typeof(real),     StartTime to typeof(datetime) | extend JoinColumn = 1 | join kind = inner (     PriceInputs     )     on JoinColumn | project StartTime, BillableQuantityGB, Tier, BillableQuantityGB_Forecasted, TierVolumeGB, SkuEffectivePricePerGB, SkuPrice | extend CostAtTier = iif(BillableQuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(BillableQuantityGB * SkuEffectivePricePerGB), toreal(SkuPrice)) | extend CostAtTier_Forecasted = iff(BillableQuantityGB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(BillableQuantityGB_Forecasted * SkuEffectivePricePerGB), toreal(SkuPrice)) | make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d  | render timechart "
+                        "resultVal": "let TimeRangeStart = todatetime({TimeRange:start}); let TimeRangeEnd = todatetime({TimeRange:end}); let DaysForecastedPastEnd = {DaysInFuture}; let PricingModel = \"{PricingModel}\"; {UsageMetrics}   UsageMetrics | extend DefenderForCloudReductionMB = toreal(column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB)) | extend DefenderForCloudReductionMB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionMB, toreal(0)) | extend E5ReductionMB = column_ifexists(\"E5ReductionMB\", QuantityMB) | extend BillableQuantityGB = (QuantityMB - E5ReductionMB - DefenderForCloudReductionMB) / 1e3 | make-series BillableQuantityGB = sum(BillableQuantityGB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d | extend BillableQuantityGB_Forecasted = series_decompose_forecast(BillableQuantityGB, DaysForecastedPastEnd, -1, 'avg') | mv-expand StartTime to typeof(datetime), BillableQuantityGB_Forecasted to typeof(real), BillableQuantityGB to typeof(real) | extend BillableQuantityGB_Forecasted = iff(StartTime < (TimeRangeEnd -1d), toreal(0), BillableQuantityGB_Forecasted)  "
                       }
                     }
                   ],
@@ -3615,7 +3954,7 @@
                       "criteriaContext": {
                         "operator": "Default",
                         "resultValType": "static",
-                        "resultVal": "let TimeRangeStart = startofday(todatetime({TimeRange:start}),1); let TimeRangeEnd = endofday(todatetime({TimeRange:end}),-1); let PricingModel = \"{PricingModel}\"; let DaysForecastedPastEnd = {DaysInFuture}; {UsageMetrics} UsageMetrics | extend DefenderForCloudReductionGB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB) / 1e3 | extend DefenderForCloudReductionGB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionGB, toreal(0)) | extend E5ReductionGB = column_ifexists(\"E5ReductionMB\", QuantityMB) / 1e3 | extend QuantityGB = QuantityMB / 1e3 | extend BillableQuantityGB = QuantityGB - E5ReductionGB - DefenderForCloudReductionGB | make-series BillableQuantityGB = sum(BillableQuantityGB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d  | extend BillableQuantityGB_Forecasted = series_decompose_forecast(BillableQuantityGB, DaysForecastedPastEnd, -1,'avg') | render timechart | mv-expand     BillableQuantityGB to typeof(real),     BillableQuantityGB_Forecasted to typeof(real),     StartTime to typeof(datetime) | extend JoinColumn = 1 | join kind = inner (     PriceInputs     )     on JoinColumn | project StartTime, BillableQuantityGB, Tier, BillableQuantityGB_Forecasted, TierVolumeGB, SkuEffectivePricePerGB, SkuPrice | extend CostAtTier = iif(BillableQuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(BillableQuantityGB * SkuEffectivePricePerGB), toreal(SkuPrice)) | extend CostAtTier_Forecasted = iff(BillableQuantityGB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(BillableQuantityGB_Forecasted * SkuEffectivePricePerGB), toreal(SkuPrice)) | make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d  | extend CostAtTier = series_fir(CostAtTier, repeat(1, 7), true, false) | extend Forecasted = series_fir(Forecasted, repeat(1, 7), true, false) | render timechart "
+                        "resultVal": "let TimeRangeStart = todatetime({TimeRange:start}); let TimeRangeEnd = todatetime({TimeRange:end}); let PricingModel = \"{PricingModel}\"; let DaysForecastedPastEnd = {DaysInFuture};  {UsageMetrics}  UsageMetrics | extend DefenderForCloudReductionMB = toreal(column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB)) | extend DefenderForCloudReductionMB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionMB, toreal(0)) | extend E5ReductionMB = column_ifexists(\"E5ReductionMB\", QuantityMB) | extend BillableQuantityGB = (QuantityMB - E5ReductionMB - DefenderForCloudReductionMB) / 1e3 | make-series BillableQuantityGB = sum(BillableQuantityGB) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d | extend BillableQuantityGB_Forecasted = series_decompose_forecast(BillableQuantityGB, DaysForecastedPastEnd, -1, 'avg') | mv-expand     BillableQuantityGB to typeof(real),     BillableQuantityGB_Forecasted to typeof(real),     StartTime to typeof(datetime) | extend JoinColumn = 1 | join kind = inner (PriceInputs) on JoinColumn | project     StartTime,     BillableQuantityGB,     Tier,     BillableQuantityGB_Forecasted,     TierVolumeGB,     SkuEffectivePricePerGB,     SkuPrice | extend CostAtTier = iif(BillableQuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(BillableQuantityGB * SkuEffectivePricePerGB), toreal(SkuPrice)) | extend CostAtTier_Forecasted = iff(BillableQuantityGB_Forecasted > TierVolumeGB or Tier == \"Pay-as-you-go\", toreal(BillableQuantityGB_Forecasted * SkuEffectivePricePerGB), toreal(SkuPrice)) | make-series CostAtTier = any(CostAtTier), Forecasted = any(CostAtTier_Forecasted) on StartTime from TimeRangeStart to datetime_add('Day', DaysForecastedPastEnd, TimeRangeEnd) step 1d | extend CostAtTier = series_fir(CostAtTier, repeat(1, 7), true, false) | extend Forecasted = series_fir(Forecasted, repeat(1, 7), true, false) | mv-expand StartTime to typeof(datetime), CostAtTier to typeof(real), Forecasted to typeof(real) | extend CostAtTier = iff(StartTime > TimeRangeEnd, toreal(0), CostAtTier) | extend Forecasted = iff(StartTime <= TimeRangeEnd , toreal(0), Forecasted)"
                       }
                     }
                   ],
@@ -3628,13 +3967,13 @@
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces"
             },
-            "name": "parameters - 9"
+            "name": "parameters - Forecasting - Queries"
           },
           {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet ServiceName = \"Sentinel\";\r\nlet PriceInputs = {SentinelPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n{ForecastQuery}",
+              "query": "let SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet ServiceName = \"Sentinel\";\r\nlet PriceInputs = {SentinelPrices}\r\n| where Tier == SelectedTier\r\n| extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n| extend JoinColumn = 1;\r\n{ForecastQuery}\r\n",
               "size": 0,
               "showAnalytics": true,
               "title": "Sentinel Forecasted Cost for Tier \"{SentinelSelectedForecastTier}\" in {CurrencyCode}",
@@ -3645,17 +3984,18 @@
               "crossComponentResources": [
                 "{Workspace}"
               ],
+              "visualization": "areachart",
               "chartSettings": {
                 "showLegend": true,
                 "seriesLabelSettings": [
                   {
-                    "seriesName": "CostAtTier",
-                    "label": "Current Cost",
+                    "seriesName": "BillableQuantityGB",
+                    "label": "Current Billable Cost",
                     "color": "blue"
                   },
                   {
-                    "seriesName": "Forecasted",
-                    "label": "Forecasted Cost",
+                    "seriesName": "BillableQuantityGB_Forecasted",
+                    "label": "Forecasted Billable Cost",
                     "color": "pink"
                   }
                 ],
@@ -3664,7 +4004,8 @@
                     "unit": 17,
                     "options": {
                       "style": "decimal",
-                      "useGrouping": true
+                      "useGrouping": true,
+                      "maximumFractionDigits": 2
                     }
                   }
                 }
@@ -3693,13 +4034,28 @@
               "crossComponentResources": [
                 "{Workspace}"
               ],
+              "visualization": "areachart",
               "chartSettings": {
+                "showLegend": true,
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "BillableQuantityGB",
+                    "label": "Current Billable Cost",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "BillableQuantityGB_Forecasted",
+                    "label": "Forecasted Billable Cost",
+                    "color": "pink"
+                  }
+                ],
                 "ySettings": {
                   "numberFormatSettings": {
                     "unit": 17,
                     "options": {
                       "style": "decimal",
-                      "useGrouping": true
+                      "useGrouping": true,
+                      "maximumFractionDigits": 2
                     }
                   }
                 }
@@ -3714,10 +4070,23 @@
             "name": "query - Forecasting - Azure Monitor Logs"
           },
           {
+            "type": 1,
+            "content": {
+              "json": "# Forecasted 7 Day Moving Average\r\n\r\nThese charts operate similar to above and show the current ingestion cost the forecasted ingestion costs based of billable data for Azure Monitor Logs and / or Microsoft Sentinel. It does this by performing trend analyse against you data in the given time range and models that trend into the future. Further more it applies a [finite impulse response](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/series-firfunction) filter on the data to calculate the moving average and \"smooth\" the data.\r\n\r\nIf your pricing model is \"Log Analytics\" or \"Unified\", only one chart will be displayed, otherwise two will be displayed, one for Log Analytics and another for Microsoft Sentinel as Defender for Servers Plan 2 allowances were only applicable to Azure Monitor Logs, and not Microsoft Sentinel.\r\n\r\n\r\n### Reading the chart\r\n\r\nWhen making forecasting predictions, the more data you have historically, the more accurate the forecasting is. It is also worth noting the further in the future the data goes, the less accurate the prediction is. This chart does not make a line of best fit, but shows the average daily ingestion based on a seven day period (three days either side of the sample). Because of this, the beginning of the data will \"climb\" to the daily average.\r\n\r\nWhen observing these charts, you will see two series. \r\n- **Current Billable costs**: This area, colored **Light Blue**, represents the seven day moving average cost based on the pricing unputs and current usage. At the end of the selected time range, it will drop to 0.\r\n\r\n- **Forecasted Billable Costs**: This area, colored **Pink**, represents the seven day moving average trend of data, with anomalous data samples removed. This will start at the end of the \"*Current Billable Costs*\" to simulate the next days / weeks ahead\r\n\r\n> Note: Forecasting cannot predict for unexpected changes that have not happened regularlly in the historical data, such as onboarding of new data sources. ",
+              "style": "info"
+            },
+            "conditionalVisibility": {
+              "parameterName": "ShowHelp",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "text - Forecasting - Moving Average Help"
+          },
+          {
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet ServiceName = \"Sentinel\";\r\nlet PriceInputs = {SentinelPrices}\r\n    | where Tier == SelectedTier\r\n    | extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | extend JoinColumn = 1;\r\n{ForecastMovingAverageQuery}",
+              "query": "let SelectedTier = \"{SentinelSelectedForecastTier}\";\r\nlet ServiceName = \"Sentinel\";\r\nlet PriceInputs = {SentinelPrices}\r\n    | where Tier == SelectedTier\r\n    | extend TierVolumeGB = iif( Tier == \"Pay-as-you-go\", 0, toint(Tier))\r\n    | extend JoinColumn = 1;\r\n{ForecastMovingAverageQuery}\r\n",
               "size": 0,
               "showAnalytics": true,
               "title": "Sentinel Forecasted 7 Day Moving Average Cost for Tier \"{SentinelSelectedForecastTier}\" in {CurrencyCode}",
@@ -3727,8 +4096,9 @@
               "crossComponentResources": [
                 "{Workspace}"
               ],
-              "visualization": "timechart",
+              "visualization": "areachart",
               "chartSettings": {
+                "showLegend": true,
                 "seriesLabelSettings": [
                   {
                     "seriesName": "CostAtTier",
@@ -3740,7 +4110,17 @@
                     "label": "Forecasted Moving Average",
                     "color": "pink"
                   }
-                ]
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 17,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true,
+                      "maximumFractionDigits": 2
+                    }
+                  }
+                }
               }
             },
             "conditionalVisibility": {
@@ -3765,7 +4145,30 @@
               "crossComponentResources": [
                 "{Workspace}"
               ],
-              "visualization": "timechart"
+              "visualization": "areachart",
+              "chartSettings": {
+                "showLegend": true,
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "CostAtTier",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "Forecasted",
+                    "color": "pink"
+                  }
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 17,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true,
+                      "maximumFractionDigits": 2
+                    }
+                  }
+                }
+              }
             },
             "conditionalVisibility": {
               "parameterName": "ShowAzureMonitor",
@@ -3773,11 +4176,14 @@
               "value": "true"
             },
             "showPin": true,
-            "name": "Azure Monitor Logs Forecasted 7 Day Moving Average - Copy"
+            "name": "Azure Monitor Logs Forecasted 7 Day Moving Average"
           }
         ]
       },
-      "name": "group - Unified - Forecasting"
+      "name": "group - Unified - Forecasting",
+      "styleSettings": {
+        "showBorder": true
+      }
     },
     {
       "type": 12,
@@ -4097,10 +4503,14 @@
           }
         ]
       },
-      "name": "group - Main Page - Troubleshooting"
+      "name": "group - Main Page - Troubleshooting",
+      "styleSettings": {
+        "showBorder": true
+      }
     }
   ],
-  "fallbackResourceIds": [],
+  "fallbackResourceIds": [
+  ],
   "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02459.3229-230925-201317/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
