@@ -579,6 +579,7 @@
         "groupType": "editable",
         "title": "Input Custom Prices",
         "expandable": true,
+        "expanded": true,
         "loadType": "always",
         "items": [
           {
@@ -600,9 +601,11 @@
                   "name": "FixedOrPercentage",
                   "label": "Fixed Or Percentage",
                   "type": 10,
+                  "description": "If your Microsoft applied discounts are a fixed price, select \"Fixed\". If they are a percentage discount off the current retail price, select \"Percentage\"",
                   "isRequired": true,
                   "typeSettings": {
-                    "additionalResourceOptions": []
+                    "additionalResourceOptions": [],
+                    "showDefault": false
                   },
                   "jsonData": "[\r\n    {\"label\" : \"Percentage\", \"value\":\"Percentage\", \"selected\" :true},\r\n    {\"label\" : \"Fixed\", \"value\":\"Fixed\", \"selected\" :false}\r\n]\r\n    ",
                   "timeContext": {
@@ -1156,7 +1159,7 @@
                     "columnMatch": "Tier",
                     "formatter": 0,
                     "tooltipFormat": {
-                      "tooltip": "This is the Commitment Tiers"
+                      "tooltip": "Thees are the Commitment Tiers"
                     }
                   },
                   {
@@ -1884,7 +1887,10 @@
               "tileSettings": {
                 "titleContent": {
                   "columnMatch": "title",
-                  "formatter": 1
+                  "formatter": 1,
+                  "tooltipFormat": {
+                    "tooltip": ""
+                  }
                 },
                 "leftContent": {
                   "columnMatch": "left",
@@ -1971,8 +1977,25 @@
               "gridSettings": {
                 "formatters": [
                   {
+                    "columnMatch": "workspaceId",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "Workspace Azure Resource Id"
+                    }
+                  },
+                  {
                     "columnMatch": "logAnalyticsSku",
-                    "formatter": 1
+                    "formatter": 1,
+                    "tooltipFormat": {
+                      "tooltip": "Current Log Analytics Sku "
+                    }
+                  },
+                  {
+                    "columnMatch": "logAnalyticsTier",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "Current Log Analytics Tier, this is either \"Pay-as-you-go\", 100, 200, 300, 400, 500, 1000, 2000 or 5000"
+                    }
                   },
                   {
                     "columnMatch": "sentinelEnabled",
@@ -1999,6 +2022,23 @@
                           "text": "Unknown"
                         }
                       ]
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Is Microsoft Sentinel enabled on this workspace"
+                    }
+                  },
+                  {
+                    "columnMatch": "sentinelSku",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "Current Microsoft Sentinel Sku, this will either be \"Unified\", \"Pay-as-you-go\" or \"CapacityReservation\""
+                    }
+                  },
+                  {
+                    "columnMatch": "sentinelTier",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "Current Microsoft Sentinel tier. This is either \"Pay-as-you-go\", 100, 200, 300, 400, 500, 1000, 2000 or 5000. If the Sku is Unified, this will always be the same as the Log Analytics Tier"
                     }
                   }
                 ],
@@ -2063,12 +2103,25 @@
               "gridSettings": {
                 "formatters": [
                   {
+                    "columnMatch": "ServiceName",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "The name of the monitor service, this will either be \"Azure Monitor\" or \"Sentinel\""
+                    }
+                  },
+                  {
                     "columnMatch": "CurrentTier",
-                    "formatter": 1
+                    "formatter": 1,
+                    "tooltipFormat": {
+                      "tooltip": "Current Commitment Tier"
+                    }
                   },
                   {
                     "columnMatch": "RecommendedTier",
-                    "formatter": 1
+                    "formatter": 1,
+                    "tooltipFormat": {
+                      "tooltip": "The recommended commitment tier for the selected time period, taking into account the various discounts"
+                    }
                   },
                   {
                     "columnMatch": "Status",
@@ -2103,6 +2156,9 @@
                           "text": "{0}{1}"
                         }
                       ]
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Are you on the correct tier"
                     }
                   },
                   {
@@ -2114,6 +2170,9 @@
                         "style": "decimal",
                         "maximumFractionDigits": 2
                       }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Total Billable Quantity of data, after applied allowances."
                     }
                   },
                   {
@@ -2130,7 +2189,7 @@
                       }
                     },
                     "tooltipFormat": {
-                      "tooltip": "This is your current estimated costs"
+                      "tooltip": "This is your current estimated costs."
                     }
                   },
                   {
@@ -2147,7 +2206,7 @@
                       }
                     },
                     "tooltipFormat": {
-                      "tooltip": "This is the potential cost if the tier is changed"
+                      "tooltip": "This is the estimate cost if the tier is changed to the recommended tier, based on your selected time frame."
                     }
                   },
                   {
@@ -2162,6 +2221,9 @@
                         "style": "decimal",
                         "maximumFractionDigits": 2
                       }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "This is the cost difference between the current tier and recommended tier for the selected time range."
                     }
                   },
                   {
@@ -2358,6 +2420,7 @@
         "groupType": "editable",
         "title": "Charts",
         "expandable": true,
+        "expanded": true,
         "items": [
           {
             "type": 1,
