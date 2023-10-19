@@ -109,7 +109,7 @@
             "value": {
               "durationMs": 2592000000
             },
-            "label": "Time Range"
+            "label": "Time Range (UTC)"
           },
           {
             "id": "4e04e9a7-1da3-4cfe-aa8a-35ad6229606b",
@@ -345,30 +345,10 @@
           {
             "type": 1,
             "content": {
-              "json": "# Simulated Data\r\n\r\nBy default, the simulated data will pull sample data from GitHub to show the value of this workbook. However by replacing the URL with a link to an accessible CSV file, in the format provided in the demo template, you can use this workbook for modelling data. This can be ideal for scenarios such as migrating from another SIEM to Microsoft Sentinel, or combining the data output from this workbook for multiple workspaces.\r\n\r\nMultiple workspaces require this method as basic logs are identified via the REST API, which can only be done per workspace.",
+              "json": "# Simulated Data\r\n\r\nBy default, the simulated data will pull sample data from GitHub to show the value of this workbook. However by replacing the URL with a link to an accessible CSV file, in the format provided in the demo template, you can use this workbook for modelling data. This can be ideal for scenarios such as migrating from another SIEM to Microsoft Sentinel, or combining the data output from this workbook for multiple workspaces.\r\n\r\nMultiple workspaces require this method as basic logs are identified via the REST API, which can only be done per workspace. To do this:\r\n\r\n1. Ensure the workbook time range is the same every time.\r\n2. Export the data to CSV using the **Ingestion and Allowances** allowances charts (if the pricing model is classic, use the Azure Monitor Logs chart). \r\n3. Combine the results into a single table, performing the neccessary sums to aggeregate each value for each date.\r\n4. Upload the file to somewhere accessible by the workbook, either a GitHub repository, or an Azure Blob Storage account and use a SAS URL.\r\n5. Open the workbook on any workspace and change the Simulated Data URL to the URL of the aggregated CSV.\r\n\r\nThe orignal simulated data can be found [here](https://github.com/TheAlistairRoss/MicrosoftSentinel/tree/CostManagementWorkbookUpdating/Solutions/CostManagement/SimulatedData).",
               "style": "info"
             },
             "name": "text - 1"
-          },
-          {
-            "type": 11,
-            "content": {
-              "version": "LinkItem/1.0",
-              "style": "paragraph",
-              "links": [
-                {
-                  "id": "60e48fc0-199b-4416-b120-ca59ddc59634",
-                  "cellValue": "https://github.com/TheAlistairRoss/MicrosoftSentinel/tree/CostManagementWorkbookUpdating/Solutions/CostManagement/SimulatedData",
-                  "linkTarget": "Url",
-                  "linkLabel": "Download Template from GitHub",
-                  "preText": "",
-                  "postText": "",
-                  "style": "link",
-                  "icon": "Download"
-                }
-              ]
-            },
-            "name": "links - Download Template Data"
           },
           {
             "type": 12,
@@ -491,7 +471,7 @@
                     "queryType": 1,
                     "resourceType": "microsoft.resourcegraph/resources"
                   },
-                  "name": "parameters - 5"
+                  "name": "parameters - Simulated Pricing Model"
                 },
                 {
                   "type": 9,
@@ -506,9 +486,6 @@
                         "type": 2,
                         "description": "Change this when you want to simulated the current Sentinel tier as a different one.",
                         "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| extend selected = iff(\"{SentinelCurrentTier}\" == value, true, false)\r\n| project value, label = value, selected, Order\r\n| order by Order asc",
-                        "crossComponentResources": [
-                          "/subscriptions/a460eb43-f297-44ec-a8c6-3de20c09439a/resourcegroups/permissionstesting/providers/microsoft.operationalinsights/workspaces/permissionstesting"
-                        ],
                         "typeSettings": {
                           "additionalResourceOptions": [],
                           "showDefault": false
@@ -517,8 +494,7 @@
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resourcegraph/resources"
-                      }
+                        "resourceType": "microsoft.resourcegraph/resources"                      }
                     ],
                     "style": "formHorizontal",
                     "queryType": 0,
@@ -547,9 +523,6 @@
                         "type": 2,
                         "description": "Change this when you want to simulated the current Sentinel tier as a different one.",
                         "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| extend selected = iff(\"{LogAnalyticsCurrentTier}\" == value, true, false)\r\n| project value, label = value, selected, Order\r\n| order by Order asc\r\n",
-                        "crossComponentResources": [
-                          "/subscriptions/a460eb43-f297-44ec-a8c6-3de20c09439a/resourcegroups/permissionstesting/providers/microsoft.operationalinsights/workspaces/permissionstesting"
-                        ],
                         "typeSettings": {
                           "additionalResourceOptions": [],
                           "showDefault": false
@@ -3539,7 +3512,6 @@
         "groupType": "editable",
         "title": "Charts",
         "expandable": true,
-        "expanded": true,
         "items": [
           {
             "type": 1,
@@ -3597,11 +3569,7 @@
                     "durationMs": 86400000
                   },
                   "queryType": 1,
-                  "resourceType": "microsoft.resourcegraph/resources",
-                  "value": [
-                    "Pay-as-you-go",
-                    "100"
-                  ]
+                  "resourceType": "microsoft.resourcegraph/resources"
                 }
               ],
               "style": "formVertical",
@@ -3875,6 +3843,26 @@
                   "timeContext": {
                     "durationMs": 86400000
                   }
+                },
+                {
+                  "id": "4150ed3f-c192-481c-931e-6fae5f659755",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "SentinelCurrentTierMB",
+                  "type": 1,
+                  "query": "let CurrentTier = \"{SentinelCurrentTier}\";\r\nprint iif(CurrentTier == \"Pay-as-you-go\", toreal(0), toreal(CurrentTier) *1e3)",
+                  "isHiddenWhenLocked": true,
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces"
+                },
+                {
+                  "id": "cdb3a485-7523-4563-b729-a32f8f759b16",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "LogAnalyticsCurrentTierMB",
+                  "type": 1,
+                  "query": "let CurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nprint iif(CurrentTier == \"Pay-as-you-go\", toreal(0), toreal(CurrentTier) *1e3)",
+                  "isHiddenWhenLocked": true,
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces"
                 }
               ],
               "style": "formHorizontal",
@@ -4461,7 +4449,7 @@
                     "color": "redBright"
                   }
                 ],
-                "customThresholdLine": "{SentinelCurrentTier}",
+                "customThresholdLine": "{SentinelCurrentTierMB}",
                 "customThresholdLineStyle": 2,
                 "ySettings": {
                   "numberFormatSettings": {
@@ -4528,7 +4516,7 @@
                     "color": "redBright"
                   }
                 ],
-                "customThresholdLine": "{SentinelCurrentTier}",
+                "customThresholdLine": "{LogAnalyticsCurrentTierMB}",
                 "customThresholdLineStyle": 2,
                 "ySettings": {
                   "numberFormatSettings": {
@@ -5294,9 +5282,5 @@
       }
     }
   ],
-  "fallbackResourceIds": [
-    "/subscriptions/a460eb43-f297-44ec-a8c6-3de20c09439a/resourcegroups/permissionstesting/providers/microsoft.operationalinsights/workspaces/permissionstesting"
-  ],
-  "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02481.3375-231018-000236/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
