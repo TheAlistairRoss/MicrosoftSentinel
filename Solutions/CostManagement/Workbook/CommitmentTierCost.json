@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Workspace Commitment Tier Workbook\r\n\r\n[If you have any feedback or issues, please submit them here](https://github.com/TheAlistairRoss/MicrosoftSentinel/issues/new/choose)"
+        "json": "# Microsoft Sentinel and Azure Monitor Logs Commitment Tier Workbook\r\n\r\n#### Author: [TheAlistairRoss](https://thealistairross0.wordpress.com/)\r\n\r\n[If you have any feedback or issues, please submit them here](https://github.com/TheAlistairRoss/MicrosoftSentinel/issues/new/choose)"
       },
       "name": "text - Main Page - Title"
     },
@@ -12,6 +12,9 @@
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
         "parameters": [
           {
             "id": "46c56e28-782c-460a-92a2-2537d1f0a231",
@@ -105,7 +108,8 @@
             },
             "value": {
               "durationMs": 2592000000
-            }
+            },
+            "label": "Time Range"
           },
           {
             "id": "4e04e9a7-1da3-4cfe-aa8a-35ad6229606b",
@@ -154,8 +158,7 @@
             "jsonData": "[\r\n    {\"value\":\"true\", \"label\": \"Yes\", \"selected\": false},\r\n    {\"value\":\"false\", \"label\": \"No\", \"selected\": true}\r\n]",
             "timeContext": {
               "durationMs": 86400000
-            },
-            "value": "true"
+            }
           },
           {
             "id": "bd7f3a5a-3a14-46a4-8241-f18615a0e636",
@@ -171,13 +174,12 @@
             "timeContext": {
               "durationMs": 86400000
             },
-            "queryType": 8,
-            "value": "true"
+            "queryType": 8
           },
           {
             "version": "KqlParameterItem/1.0",
-            "name": "UseDemoData",
-            "label": "Use Demo Data",
+            "name": "UseSimulatedData",
+            "label": "Use Simulated Data",
             "type": 10,
             "isRequired": true,
             "typeSettings": {
@@ -188,8 +190,7 @@
             "timeContext": {
               "durationMs": 86400000
             },
-            "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6",
-            "value": "true"
+            "id": "d7c892ef-18c1-487a-b79d-a6ebead177d6"
           },
           {
             "id": "6e2979ef-af24-467a-afc5-13ee2012c838",
@@ -313,7 +314,7 @@
           }
         ],
         "style": "above",
-        "queryType": 0,
+        "queryType": 1,
         "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "name": "parameters - Main Page"
@@ -321,7 +322,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Welcome to Microsoft Sentinel Commitment Tier workbook. \r\n## Authored by: [TheAlistairRoss](https://thealistairross0.wordpress.com/)\r\n\r\nChanging Commitment Tiers in Log Analytics and Microsoft Sentinel can be a daunting task. You have so many factors to take into account when making the calculation, including seasonality of your data, defender for servers plan 2 500MB per day allowance, E5, A5, F5 and G5 5MB per user per day allowance and the different table types. (Analytic and Basic logs). While the built in recommendation (on the commitment tier page) shows a simple table, I am constantly asked for more data to make an informed desicion. This workbook aims to address exactly that.\r\n\r\n### Where can I used this workbook.\r\nThis workbook has been designed for Azure Monitor Logs (Log Analytic) workspaces that are on the perGB or Commitment tier skus, as well as workspaces that are enabled with Microsoft Sentinel (Unified or classic pricing models). \r\n\r\nIt will not work for the legacy Free, Standalone and Per Node pricing tiers. \r\n\r\nIt will also not work for multiple workspaces at this stage, due to api limitations.\r\n\r\n### How does it work\r\nThis workbook calculates the recommendations and charts by performing the following:\r\n\r\n1. Calculates your total billable usage for analytic tables only.\r\n\r\n2. Calculates your [Defender for Servers Plan 2 data ingestion Allowance](https://learn.microsoft.com/en-ca/azure/defender-for-cloud/faq-defender-for-servers#is-the-500-mb-of-free-data-ingestion-allowance-applied-per-workspace-or-per-machine-) and subtracts that value from the applicable tables only. This value is worked out by calculating the number of distinct computers (by SourceComputerId) reporting to the workspace on a daily basis which have the *Security* solution listed in the Heartbeat table. \r\n\r\n3. Calculates your [Microsoft 365 E5, A5, F5 and G5 Allowance](https://azure.microsoft.com/en-ca/pricing/offers/sentinel-microsoft-365-offer/) and removes that allowance from the applicable tables. This is based on a fixed value that you input for the selected period. It does not calculate any adjustment in the number of licences across the selected time period \r\n\r\n4. Fetches the retail price for the current month for the selected currency and Azure region. It does not calculate any historcal prices over previous months.\r\n\r\n5. Applies any applicable discounts. This is via manual inputs at this stage, it can be a fixed value, as seen on the commitment tier page, or a percentage discount off the current retail price. If you are unsure, contact you Azure Security sales specialist.\r\n\r\n6. Calculates the effective commitment tier threshold for when it is cost effective to move to the next tier. This is calculated based on the cost as you may have different discounts applied to different tiers as per your Microsoft agreement.\r\n\r\n7. Calculates the total cost and charts for your current selected tier as well as provide a recommendation for the most cost effective tier based on your ingested data and time range.\r\n\r\n7. Performs any other additional calculations for the neccessary for various charts. Review the help file for each of these to understand more.\r\n\r\n## Required Parameters \r\n\r\nYou need to ensure the following parameters are set:\r\n\r\n|Parameter|Description|\r\n|:--|:-- |\r\n|**Subscription**|This is the subscription where your log analytics workspace resides.|\r\n|**Workspace**|This is the Log Analytics workspace you are analysing.|\r\n|**Time Range**:| This is the time period which you want to analyse in this workbook. **NOTE**: For the best results, only select complete day when analysing your data. This should start from 00:00:00 and end at 23:59:59. This ensures that the first and last days are not miscalculated.|\r\n|**CurrencyCode**| This should be the currency which you are invoiced. Not everyone can view the billing information, so this is not looked up automatically.|\r\n|**E5 Seats**|This is the total number of E5, A5, F5 and G5 licences purchased. This can be found [here](https://portal.azure.com/#view/Microsoft_AAD_IAM/LicensesMenuBlade/~/Products). This will default to zero.|\r\n\r\n## Optional Parameters\r\n\r\n|Parameter|Description|\r\n|:--|:--|\r\n|**Show Help**|You have already selected this, otherwise you would not be here. This presents helpful information all throughout the workbook. Switch this to know to hide these informational messages.|\r\n|**Input Custom Prices**|This gives you the option to input your own custom prices. This is typically used when you have additional discounts applied by Microsoft. If this option is selected, expand the heading immediatly below and input the values. They will default to zero, so consider saving the workbook to maintain these values.|\r\n|**Use Demo Data**|Sometimes to realise value of workbooks, you need to simulate the data. This will change all the usage queries to use a simulated data which makes the recommendation to move to the 100 GB commitment tier. This has only been designed with a workspace at the pay-as-you-go tier and may not work as intended on other scenarios.|\r\n\r\n\r\n## Please be aware!\r\n> This workbook is dependant on an external GitHub repository (by default) found [here](https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Solutions/CostManagement/Prices). This is due to the fact that the prices api for Azure cannot be looked up directly from a workbook, so they are cached in this location. All prices are checked daily and are only updated if the has been a change, usually due to the exchange rate. \r\n\r\n> If you want to lookup the prices from your own repository, switch the workbook to edit mode and review the help file under the hidden URL and Query parameters.\r\n",
+        "json": "## Help\r\n\r\nChanging Commitment Tiers in Log Analytics and Microsoft Sentinel can be a daunting task. You have so many factors to take into account when making the calculation, including seasonality of your data, defender for servers plan 2 500MB per day allowance, E5, A5, F5 and G5 5MB per user per day allowance and the different table types. (Analytic and Basic logs). While the built in recommendation (on the commitment tier page) shows a simple table, I am constantly asked for more data to make an informed desicion. This workbook aims to address exactly that.\r\n\r\n### Where can I used this workbook.\r\nThis workbook has been designed for Azure Monitor Logs (Log Analytic) workspaces that are on the perGB or Commitment tier skus, as well as workspaces that are enabled with Microsoft Sentinel (Unified or classic pricing models). \r\n\r\nIt will not work for the legacy Free, Standalone and Per Node pricing tiers. \r\n\r\nIt will also not work for multiple workspaces at this stage, due to api limitations.\r\n\r\n### How does it work\r\nThis workbook calculates the recommendations and charts by performing the following:\r\n\r\n1. Calculates your total billable usage for analytic tables only.\r\n\r\n2. Calculates your [Defender for Servers Plan 2 data ingestion Allowance](https://learn.microsoft.com/en-ca/azure/defender-for-cloud/faq-defender-for-servers#is-the-500-mb-of-free-data-ingestion-allowance-applied-per-workspace-or-per-machine-) and subtracts that value from the applicable tables only. This value is worked out by calculating the number of distinct computers (by SourceComputerId) reporting to the workspace on a daily basis which have the *Security* solution listed in the Heartbeat table. \r\n\r\n3. Calculates your [Microsoft 365 E5, A5, F5 and G5 Allowance](https://azure.microsoft.com/en-ca/pricing/offers/sentinel-microsoft-365-offer/) and removes that allowance from the applicable tables. This is based on a fixed value that you input for the selected period. It does not calculate any adjustment in the number of licences across the selected time period \r\n\r\n4. Fetches the retail price for the current month for the selected currency and Azure region. It does not calculate any historcal prices over previous months.\r\n\r\n5. Applies any applicable discounts. This is via manual inputs at this stage, it can be a fixed value, as seen on the commitment tier page, or a percentage discount off the current retail price. If you are unsure, contact you Azure Security sales specialist.\r\n\r\n6. Calculates the effective commitment tier threshold for when it is cost effective to move to the next tier. This is calculated based on the cost as you may have different discounts applied to different tiers as per your Microsoft agreement.\r\n\r\n7. Calculates the total cost and charts for your current selected tier as well as provide a recommendation for the most cost effective tier based on your ingested data and time range.\r\n\r\n7. Performs any other additional calculations for the neccessary for various charts. Review the help file for each of these to understand more.\r\n\r\n## Required Parameters \r\n\r\nYou need to ensure the following parameters are set:\r\n\r\n|Parameter|Description|\r\n|:--|:-- |\r\n|**Subscription**|This is the subscription where your log analytics workspace resides.|\r\n|**Workspace**|This is the Log Analytics workspace you are analysing.|\r\n|**Time Range**:| This is the time period which you want to analyse in this workbook. **NOTE**: For the best results, only select complete day when analysing your data. This should start from 00:00:00 and end at 23:59:59. This ensures that the first and last days are not miscalculated.|\r\n|**CurrencyCode**| This should be the currency which you are invoiced. Not everyone can view the billing information, so this is not looked up automatically.|\r\n|**E5 Seats**|This is the total number of E5, A5, F5 and G5 licences purchased. This can be found [here](https://portal.azure.com/#view/Microsoft_AAD_IAM/LicensesMenuBlade/~/Products). This will default to zero.|\r\n\r\n## Optional Parameters\r\n\r\n|Parameter|Description|\r\n|:--|:--|\r\n|**Show Help**|You have already selected this, otherwise you would not be here. This presents helpful information all throughout the workbook. Switch this to know to hide these informational messages.|\r\n|**Input Custom Prices**|This gives you the option to input your own custom prices. This is typically used when you have additional discounts applied by Microsoft. If this option is selected, expand the heading immediatly below and input the values. They will default to zero, so consider saving the workbook to maintain these values.|\r\n|**Use Simulated Data**|Sometimes to realise value of workbooks, you need to simulate the data. This will change all the usage queries to use a simulated data which makes the recommendation to move to the 100 GB commitment tier. This has only been designed with a workspace at the pay-as-you-go tier and may not work as intended on other scenarios.|\r\n\r\n\r\n## Please be aware!\r\n> This workbook is dependant on an external GitHub repository (by default) found [here](https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Solutions/CostManagement/Prices). This is due to the fact that the prices api for Azure cannot be looked up directly from a workbook, so they are cached in this location. All prices are checked daily and are only updated if the has been a change, usually due to the exchange rate. \r\n\r\n> If you want to lookup the prices from your own repository, switch the workbook to edit mode and review the help file under the hidden URL and Query parameters.\r\n",
         "style": "info"
       },
       "conditionalVisibility": {
@@ -330,6 +331,293 @@
         "value": "true"
       },
       "name": "text - Main Page - Initial Help"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "title": "Simulated Data",
+        "expandable": true,
+        "expanded": true,
+        "loadType": "always",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "# Simulated Data\r\n\r\nBy default, the simulated data will pull sample data from GitHub to show the value of this workbook. However by replacing the URL with a link to an accessible CSV file, in the format provided in the demo template, you can use this workbook for modelling data. This can be ideal for scenarios such as migrating from another SIEM to Microsoft Sentinel, or combining the data output from this workbook for multiple workspaces.\r\n\r\nMultiple workspaces require this method as basic logs are identified via the REST API, which can only be done per workspace.",
+              "style": "info"
+            },
+            "name": "text - 1"
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "paragraph",
+              "links": [
+                {
+                  "id": "60e48fc0-199b-4416-b120-ca59ddc59634",
+                  "cellValue": "https://github.com/TheAlistairRoss/MicrosoftSentinel/tree/CostManagementWorkbookUpdating/Solutions/CostManagement/SimulatedData",
+                  "linkTarget": "Url",
+                  "linkLabel": "Download Template from GitHub",
+                  "preText": "",
+                  "postText": "",
+                  "style": "link",
+                  "icon": "Download"
+                }
+              ]
+            },
+            "name": "links - Download Template Data"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "loadType": "always",
+              "items": [
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "parameters": [
+                      {
+                        "id": "1c9de676-c892-4de5-85c8-e933774ba850",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SimulatedDataURL",
+                        "label": "Simulated Data URL",
+                        "type": 1,
+                        "description": "The is the URL for a CSV file which is being imported and displayed within this workbook. Refer to the help file for detailed information",
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/CostManagementWorkbookUpdating/Solutions/CostManagement/SimulatedData/CommitmentTierWorkbookSimulatedData.csv"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      }
+                    ],
+                    "style": "formVertical",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "UseSimulatedData",
+                    "comparison": "isEqualTo",
+                    "value": "true"
+                  },
+                  "name": "parameters - Simulated Data URL"
+                },
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "parameters": [
+                      {
+                        "id": "d89ecd5b-8f63-4db0-a343-60c46e17abf1",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "UseSimulatedDataDates",
+                        "label": "Use Simulated Data Dates",
+                        "type": 10,
+                        "isRequired": true,
+                        "query": "{\"version\":\"1.0.0\",\"content\":\"[\\r\\n    {\\\"value\\\":\\\"true\\\", \\\"label\\\": \\\"Yes\\\", \\\"selected\\\": false},\\r\\n    {\\\"value\\\":\\\"false\\\", \\\"label\\\": \\\"No\\\", \\\"selected\\\": true}\\r\\n]\",\"transformers\":null}",
+                        "typeSettings": {
+                          "additionalResourceOptions": []
+                        },
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "queryType": 8
+                      },
+                      {
+                        "id": "da28eda3-bee1-4350-a8d4-7d31b5667a54",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SimulatedDataQuery",
+                        "type": 1,
+                        "isRequired": true,
+                        "isHiddenWhenLocked": true,
+                        "criteriaData": [
+                          {
+                            "criteriaContext": {
+                              "operator": "Default",
+                              "resultValType": "static",
+                              "resultVal": "let UseSimulatedDataDates = {UseSimulatedDataDates}; let Data =  materialize(     externaldata(StartTime: datetime, QuantityMB: real, DefenderForCloudReductionMB: real, E5ReductionMB: real)[h\"{SimulatedDataURL}\"] with(format=\"csv\", ignoreFirstRecord=true)     ); let DataCount = toscalar(Data     | count); let UsageMetrics = Data | order by StartTime asc | extend SubtractDays = (DataCount - row_number()) * 1d | extend StartTime = iff(     UseSimulatedDataDates == true, StartTime,     startofday(ago(SubtractDays)) ) | extend JoinColumn = 1 | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB, JoinColumn;"
+                            }
+                          }
+                        ],
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      }
+                    ],
+                    "style": "formHorizontal",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "name": "parameters - Simulated Data Dates"
+                },
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "parameters": [
+                      {
+                        "id": "7fab8b4a-4d41-4aac-9a61-a1dd61257b8a",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SimulatedPricingModel",
+                        "label": "Simulated Pricing Model",
+                        "type": 2,
+                        "description": "Change this whe you want to simulate a different pricing model to the current pricing model for the given workspace",
+                        "isRequired": true,
+                        "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Unified\", \"Classic\", \"Log Analytics\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| extend selected = iff(\"{PricingModel}\" == value, true, false)\r\n| project value, label = value, selected, Order\r\n| order by Order asc\r\n",
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "queryType": 1,
+                        "resourceType": "microsoft.resourcegraph/resources"
+                      }
+                    ],
+                    "style": "formHorizontal",
+                    "queryType": 1,
+                    "resourceType": "microsoft.resourcegraph/resources"
+                  },
+                  "name": "parameters - 5"
+                },
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "parameters": [
+                      {
+                        "id": "8a21c061-168f-4aeb-a184-f724159ac332",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SimulatedSentinelTier",
+                        "label": "Simulated Sentinel Tier",
+                        "type": 2,
+                        "description": "Change this when you want to simulated the current Sentinel tier as a different one.",
+                        "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| extend selected = iff(\"{SentinelCurrentTier}\" == value, true, false)\r\n| project value, label = value, selected, Order\r\n| order by Order asc",
+                        "crossComponentResources": [
+                          "/subscriptions/a460eb43-f297-44ec-a8c6-3de20c09439a/resourcegroups/permissionstesting/providers/microsoft.operationalinsights/workspaces/permissionstesting"
+                        ],
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "queryType": 1,
+                        "resourceType": "microsoft.resourcegraph/resources"
+                      }
+                    ],
+                    "style": "formHorizontal",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "PricingModel",
+                    "comparison": "isNotEqualTo",
+                    "value": "Log Analytics"
+                  },
+                  "name": "parameters - Sentinel Simulated Tier"
+                },
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "crossComponentResources": [
+                      "/subscriptions/a460eb43-f297-44ec-a8c6-3de20c09439a/resourcegroups/permissionstesting/providers/microsoft.operationalinsights/workspaces/permissionstesting"
+                    ],
+                    "parameters": [
+                      {
+                        "id": "3f66d98c-1001-46b4-ac41-a81cefeaa03d",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SimulatedAzureMonitorLogsTier",
+                        "label": "Simulated Azure Monitor Logs Tier",
+                        "type": 2,
+                        "description": "Change this when you want to simulated the current Sentinel tier as a different one.",
+                        "query": "resources\r\n| take 1\r\n| project value = dynamic([\"Pay-as-you-go\",\"100\",\"200\",\"300\",\"400\",\"500\",\"1000\",\"2000\",\"5000\"])\r\n| mvexpand with_itemindex = Order value to typeof(string)\r\n| extend selected = iff(\"{LogAnalyticsCurrentTier}\" == value, true, false)\r\n| project value, label = value, selected, Order\r\n| order by Order asc\r\n",
+                        "crossComponentResources": [
+                          "/subscriptions/a460eb43-f297-44ec-a8c6-3de20c09439a/resourcegroups/permissionstesting/providers/microsoft.operationalinsights/workspaces/permissionstesting"
+                        ],
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "timeContext": {
+                          "durationMs": 86400000
+                        },
+                        "queryType": 1,
+                        "resourceType": "microsoft.resourcegraph/resources"
+                      }
+                    ],
+                    "style": "formHorizontal",
+                    "queryType": 1,
+                    "resourceType": "microsoft.resourcegraph/resources"
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "PricingModel",
+                    "comparison": "isNotEqualTo",
+                    "value": "Unified"
+                  },
+                  "name": "parameters - Azure Monitor Logs Simulated Tiers"
+                }
+              ],
+              "exportParameters": true
+            },
+            "customWidth": "50",
+            "name": "group - Simulated Data Parameters",
+            "styleSettings": {
+              "maxWidth": "50"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{SimulatedDataQuery}\r\nUsageMetrics",
+              "size": 1,
+              "title": "Simulated Data",
+              "timeContextFromParameter": "TimeRange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "JoinColumn",
+                    "formatter": 5
+                  }
+                ]
+              }
+            },
+            "customWidth": "50",
+            "name": "query - Simulated Data",
+            "styleSettings": {
+              "maxWidth": "50"
+            }
+          }
+        ],
+        "exportParameters": true
+      },
+      "conditionalVisibility": {
+        "parameterName": "UseSimulatedData",
+        "comparison": "isEqualTo",
+        "value": "true"
+      },
+      "name": "group - Simulated Data",
+      "styleSettings": {
+        "showBorder": true
+      }
     },
     {
       "type": 1,
@@ -546,12 +834,12 @@
             "criteriaData": [
               {
                 "criteriaContext": {
-                  "leftOperand": "UseDemoData",
+                  "leftOperand": "UseSimulatedData",
                   "operator": "==",
                   "rightValType": "static",
                   "rightVal": "true",
-                  "resultValType": "static",
-                  "resultVal": "let QuantityList = dynamic([37.806, 37.59, 114.276, 116.766, 113.172, 114.684, 115.164, 37.5, 37.542, 108.75, 116.016, 119.868, 111.504, 111.366, 37.164, 37.084, 113.922, 114.384, 115.026, 115.44, 113.706, 36.894, 36.77, 111.852, 113.13, 116.55, 114.726, 114.468, 37.044, 36.908, 113.616, 114.396, 111.426, 121.542, 114.426, 36.356, 36.572, 112.764, 118.56, 114.738, 113.946, 112.086, 36.218, 36.018, 109.56, 120.504, 110.526, 108.708, 107.946, 35.494, 35.634, 129.432, 110.79, 107.766, 105.966, 104.478, 34.194, 34.238, 103.458, 104.448, 106.602, 105.48, 107.988, 34.378, 34.264, 104.544, 107.304, 111.582, 108.438, 108.18, 36.114, 34.698, 105.786, 108.414, 113.196, 129.57, 109.866, 38.388, 35.92, 111.036, 114.792, 114.72, 111.33, 109.284, 36.02, 35.604, 108.756, 111.282, 113.844, 115.95]); let UsageMetrics = print QuantityGB = QuantityList     | mv-expand QuantityGB to typeof(real)     | serialize     | extend StartTime = startofday(datetime_add(\"day\", -row_number(), now()))     | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd     | extend QuantityMB = QuantityGB * 1e3     | extend DefenderForCloudReductionMB = iif(row_number() % 7 in (1,2), (QuantityMB / 100) * 30, (QuantityMB /100 * 20))     | extend E5ReductionMB = iif(row_number() % 7 in (1,2), (QuantityMB / 100) * 20, (QuantityMB /100 * 10))     | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB     | extend JoinColumn = 1; "
+                  "resultValType": "param",
+                  "resultVal": "SimulatedDataQuery"
                 }
               },
               {
@@ -559,6 +847,82 @@
                   "operator": "Default",
                   "resultValType": "static",
                   "resultVal": "let BasicTables = toscalar(print Basic = \"{BasicTables}\"      | extend Basic = split(substring(Basic, 1, strlen(Basic) - 2), ',')); let E5Seats = {E5Seats}; let E5AllowancePerDayMB = E5Seats * 5; let E5Tables = dynamic([{E5Tables}]); let E5Usage = Usage      | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd      | where IsBillable == true      | where DataType in (E5Tables)      | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand Quantity to typeof(long), StartTime to typeof(datetime)      | extend E5ReductionMB = iff(E5AllowancePerDayMB - Quantity > 0, Quantity, E5AllowancePerDayMB)      | project StartTime, E5ReductionMB; let DefenderForCloudPerDeviceAllowanceMB = 500; let DefenderForCloudTables = dynamic([{DefenderForCloudTables}]); let DefenderForCloudUpdateTables = dynamic([\"Update\", \"UpdateSummary\"]); let DefenderForCloudUsage = Heartbeat      | where TimeGenerated >= TimeRangeStart and TimeGenerated <= TimeRangeEnd      | where Solutions has \"\\\"security\\\"\"      | make-series DeviceCount = dcount(SourceComputerId, 4) default = 0 on TimeGenerated from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand DeviceCount to typeof(int), TimeGenerated to typeof(datetime)      | extend DefenderForCloudAllowancePerDayMB = DefenderForCloudPerDeviceAllowanceMB * DeviceCount      | project TimeGenerated, DefenderForCloudAllowancePerDayMB      | join kind = rightouter (Usage          | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd          | where IsBillable == true          | where DataType in (DefenderForCloudTables)          | make-series Quantity = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d          | mv-expand Quantity to typeof(long), StartTime to typeof(datetime))         on $left.TimeGenerated == $right.StartTime      | extend DefenderForCloudReductionMB = iff(DefenderForCloudAllowancePerDayMB - Quantity > 0, Quantity, DefenderForCloudAllowancePerDayMB)      | project StartTime, DefenderForCloudReductionMB; let UsageMetrics =  Usage      | where StartTime >= TimeRangeStart and StartTime <= TimeRangeEnd      | where IsBillable == true      | where DataType !in (BasicTables)      | make-series kind=nonempty QuantityMB = sum(Quantity) default = 0 on StartTime from TimeRangeStart to TimeRangeEnd step 1d      | mv-expand QuantityMB to typeof(long), StartTime to typeof(datetime)      | join kind = leftouter (E5Usage) on StartTime      | join kind = leftouter (DefenderForCloudUsage) on StartTime      | extend E5ReductionMB = case(PricingModel == \"Log Analytics\", 0,isempty(E5ReductionMB), 0, E5ReductionMB)      | extend DefenderForCloudReductionMB = iff(isempty(DefenderForCloudReductionMB), 0, DefenderForCloudReductionMB)      | project StartTime, QuantityMB, DefenderForCloudReductionMB, E5ReductionMB      | extend JoinColumn = 1;"
+                }
+              }
+            ]
+          },
+          {
+            "id": "1030209d-9295-47dd-bb90-2e34aef4f238",
+            "version": "KqlParameterItem/1.0",
+            "name": "PricingModel",
+            "type": 1,
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "leftOperand": "UseSimulatedData",
+                  "operator": "==",
+                  "rightValType": "static",
+                  "rightVal": "true",
+                  "resultValType": "param",
+                  "resultVal": "SimulatedPricingModel"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "param",
+                  "resultVal": "PricingModel"
+                }
+              }
+            ]
+          },
+          {
+            "id": "2619235c-8ff7-4084-864a-0b06814cfb05",
+            "version": "KqlParameterItem/1.0",
+            "name": "SentinelCurrentTier",
+            "type": 1,
+            "isRequired": true,
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "leftOperand": "UseSimulatedData",
+                  "operator": "==",
+                  "rightValType": "static",
+                  "rightVal": "true",
+                  "resultValType": "param",
+                  "resultVal": "SimulatedSentinelTier"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "param",
+                  "resultVal": "SentinelCurrentTier"
+                }
+              }
+            ]
+          },
+          {
+            "id": "acabcdfa-c9c8-4c96-8545-842bd65aab73",
+            "version": "KqlParameterItem/1.0",
+            "name": "LogAnalyticsCurrentTier",
+            "type": 1,
+            "criteriaData": [
+              {
+                "criteriaContext": {
+                  "leftOperand": "UseSimulatedData",
+                  "operator": "==",
+                  "rightValType": "static",
+                  "rightVal": "true",
+                  "resultValType": "param",
+                  "resultVal": "SimulatedAzureMonitorLogsTier"
+                }
+              },
+              {
+                "criteriaContext": {
+                  "operator": "Default",
+                  "resultValType": "param",
+                  "resultVal": "LogAnalyticsCurrentTier"
                 }
               }
             ]
@@ -2028,20 +2392,23 @@
         "comparison": "isEqualTo",
         "value": "true"
       },
-      "name": "group - Input Custom Prices"
+      "name": "group - Input Custom Prices",
+      "styleSettings": {
+        "showBorder": true
+      }
     },
     {
       "type": 1,
       "content": {
-        "json": "# DEMO DATA\r\n## This workbook is currently displaying usage data for demonstration purposes. Ensure you turn this parameter off in production",
+        "json": "# SIMULATED DATA\r\n## This workbook is currently displaying usage data for demonstration purposes. Ensure you turn this parameter off in production",
         "style": "warning"
       },
       "conditionalVisibility": {
-        "parameterName": "UseDemoData",
+        "parameterName": "UseSimulatedData",
         "comparison": "isEqualTo",
         "value": "true"
       },
-      "name": "text - Main Page - Demo Data Warning"
+      "name": "text - Main Page - Simulated Data Warning"
     },
     {
       "type": 12,
@@ -2054,290 +2421,10 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "print  \r\n    title = \"Retail Or Custom Prices\",\r\n    subtitle = \"\",\r\n    left = iff({CustomPrices}, \"Custom\", \"Retail\"),\r\n    right = \"\",\r\n    bottom = \"\"",
-              "size": 4,
-              "timeContext": {
-                "durationMs": 86400000
-              },
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces",
-              "visualization": "tiles",
-              "tileSettings": {
-                "titleContent": {
-                  "columnMatch": "title",
-                  "formatter": 1
-                },
-                "leftContent": {
-                  "columnMatch": "left",
-                  "formatter": 18,
-                  "formatOptions": {
-                    "thresholdsOptions": "icons",
-                    "thresholdsGrid": [
-                      {
-                        "operator": "==",
-                        "thresholdValue": "Custom",
-                        "representation": "Edit",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "==",
-                        "thresholdValue": "Retail",
-                        "representation": "Normal",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "Default",
-                        "thresholdValue": null,
-                        "representation": "question",
-                        "text": "{0}{1}"
-                      }
-                    ]
-                  }
-                },
-                "showBorder": false
-              }
-            },
-            "customWidth": "0",
-            "name": "query - Overview - Retail Or Custom"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "print  \r\n    title = \"Pricing Model\",\r\n    subtitle = \"\",\r\n    left = \"{PricingModel}\",\r\n    right = \"\",\r\n    bottom = \"\"",
-              "size": 4,
-              "timeContext": {
-                "durationMs": 86400000
-              },
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces",
-              "visualization": "tiles",
-              "tileSettings": {
-                "titleContent": {
-                  "columnMatch": "title",
-                  "formatter": 1
-                },
-                "leftContent": {
-                  "columnMatch": "left",
-                  "formatter": 18,
-                  "formatOptions": {
-                    "thresholdsOptions": "icons",
-                    "thresholdsGrid": [
-                      {
-                        "operator": "==",
-                        "thresholdValue": "Log Analytics",
-                        "representation": "Monitoring",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "==",
-                        "thresholdValue": "Classic",
-                        "representation": "Restore",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "==",
-                        "thresholdValue": "Unified",
-                        "representation": "Stop",
-                        "text": "{0}{1}"
-                      },
-                      {
-                        "operator": "Default",
-                        "thresholdValue": null,
-                        "representation": "question",
-                        "text": "{0}{1}"
-                      }
-                    ]
-                  }
-                },
-                "showBorder": false
-              }
-            },
-            "customWidth": "0",
-            "name": "query - Overview -Tiles - Pricing Model"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "print  \r\n    title = \"Sentinel Enabled\",\r\n    subtitle = \"\",\r\n    left = \"{ShowSentinel}\",\r\n    right = \"\",\r\n    bottom = \"\"",
-              "size": 4,
-              "timeContext": {
-                "durationMs": 86400000
-              },
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces",
-              "visualization": "tiles",
-              "tileSettings": {
-                "titleContent": {
-                  "columnMatch": "title",
-                  "formatter": 1
-                },
-                "leftContent": {
-                  "columnMatch": "left",
-                  "formatter": 18,
-                  "formatOptions": {
-                    "thresholdsOptions": "icons",
-                    "thresholdsGrid": [
-                      {
-                        "operator": "==",
-                        "thresholdValue": "false",
-                        "representation": "1",
-                        "text": "False"
-                      },
-                      {
-                        "operator": "==",
-                        "thresholdValue": "true",
-                        "representation": "success",
-                        "text": "True"
-                      },
-                      {
-                        "operator": "Default",
-                        "thresholdValue": null,
-                        "representation": "question",
-                        "text": "{0}{1}"
-                      }
-                    ]
-                  }
-                },
-                "showBorder": false
-              }
-            },
-            "customWidth": "0",
-            "name": "query - Overview - Tiles - Sentinel Enabled"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "resources \r\n| where type =~ 'microsoft.operationalinsights/workspaces'\r\n| where id =~ \"{Workspace}\" \r\n| extend workspaceId = tolower(id)\r\n| extend logAnalyticsSku   = trim(' ', tostring(properties.sku.name))\r\n| extend logAnalyticsSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n| extend logAnalyticsTier = case(\r\n    logAnalyticsSku =~ \"pergb2018\", \"Pay-as-you-go\", \r\n    logAnalyticsSku =~ \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n    \"Free, PerNode and Standalone not supported in this workbook\")\r\n| join kind = leftouter(\r\n    resources \r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product =~ \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId startswith \"{Workspace}\"\r\n    | extend workspaceId = tolower(tostring(properties.workspaceResourceId))\r\n    | extend sentinelEnabled = true\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name)), sentinelSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n    | extend sentinelTier = case(\r\n        sentinelSku =~ \"Unified\", \"Log Analytics Tier\", \r\n        sentinelSku =~ \"PerGB\", \"Pay-as-you-go\", \r\n        sentinelSku =~ \"CapacityReservation\", \r\n        tostring(properties.sku.capacityReservationLevel), \"Not Supported in this workbook\")\r\n    | project workspaceId, sentinelEnabled, sentinelSku, sentinelTier, sentinelSkuUpdate\r\n    )\r\n    on workspaceId\r\n| extend sentinelEnabled = iif(isnotnull(sentinelEnabled), true, false)\r\n| extend sentinelSku  = iif(strlen(sentinelSku) > 0, sentinelSku, \"\")\r\n| project workspaceId, logAnalyticsSku, logAnalyticsTier,sentinelEnabled, sentinelSku, sentinelTier\r\n",
-              "size": 4,
-              "showAnalytics": true,
-              "title": "Workspace Details",
-              "showRefreshButton": true,
-              "queryType": 1,
-              "resourceType": "microsoft.resourcegraph/resources",
-              "crossComponentResources": [
-                "{Subscription}"
-              ],
-              "gridSettings": {
-                "formatters": [
-                  {
-                    "columnMatch": "workspaceId",
-                    "formatter": 0,
-                    "tooltipFormat": {
-                      "tooltip": "Workspace Azure Resource Id"
-                    }
-                  },
-                  {
-                    "columnMatch": "logAnalyticsSku",
-                    "formatter": 1,
-                    "tooltipFormat": {
-                      "tooltip": "Current Log Analytics Sku "
-                    }
-                  },
-                  {
-                    "columnMatch": "logAnalyticsTier",
-                    "formatter": 0,
-                    "tooltipFormat": {
-                      "tooltip": "Current Log Analytics Tier, this is either \"Pay-as-you-go\", 100, 200, 300, 400, 500, 1000, 2000 or 5000"
-                    }
-                  },
-                  {
-                    "columnMatch": "sentinelEnabled",
-                    "formatter": 18,
-                    "formatOptions": {
-                      "thresholdsOptions": "icons",
-                      "thresholdsGrid": [
-                        {
-                          "operator": "==",
-                          "thresholdValue": "0",
-                          "representation": "more",
-                          "text": "False"
-                        },
-                        {
-                          "operator": "==",
-                          "thresholdValue": "1",
-                          "representation": "success",
-                          "text": "True"
-                        },
-                        {
-                          "operator": "Default",
-                          "thresholdValue": null,
-                          "representation": "unknown",
-                          "text": "Unknown"
-                        }
-                      ]
-                    },
-                    "tooltipFormat": {
-                      "tooltip": "Is Microsoft Sentinel enabled on this workspace"
-                    }
-                  },
-                  {
-                    "columnMatch": "sentinelSku",
-                    "formatter": 0,
-                    "tooltipFormat": {
-                      "tooltip": "Current Microsoft Sentinel Sku, this will either be \"Unified\", \"Pay-as-you-go\" or \"CapacityReservation\""
-                    }
-                  },
-                  {
-                    "columnMatch": "sentinelTier",
-                    "formatter": 0,
-                    "tooltipFormat": {
-                      "tooltip": "Current Microsoft Sentinel tier. This is either \"Pay-as-you-go\", 100, 200, 300, 400, 500, 1000, 2000 or 5000. If the Sku is Unified, this will always be the same as the Log Analytics Tier"
-                    }
-                  }
-                ],
-                "labelSettings": [
-                  {
-                    "columnId": "workspaceId",
-                    "label": "Workspace Id"
-                  },
-                  {
-                    "columnId": "logAnalyticsSku",
-                    "label": "Log Analytics Sku"
-                  },
-                  {
-                    "columnId": "logAnalyticsTier",
-                    "label": "Log Analytics Tier"
-                  },
-                  {
-                    "columnId": "sentinelEnabled",
-                    "label": "Is Sentinel Enabled"
-                  },
-                  {
-                    "columnId": "sentinelSku",
-                    "label": "Sentinel Sku"
-                  },
-                  {
-                    "columnId": "sentinelTier",
-                    "label": "Sentinel Tier"
-                  }
-                ]
-              }
-            },
-            "name": "query - Overview - Workspace Details"
-          },
-          {
-            "type": 1,
-            "content": {
-              "json": "# Commitment Tier Recommendations\r\n\r\nThis table view displays the current tiers for Microsoft Sentinel. It shows the optimal tier to be on based on the selected time range. It does this by calculating the total cost at each tier and returns the cost for the current tier and the lowest price tier in the selected time range. \r\n\r\nBecause of this, the recommended tier may not always be the most optimal if you have recently made changes to data ingestion, such as increasing or decreasing. Always review the charts page\r\n\r\n"
-            },
-            "conditionalVisibility": {
-              "parameterName": "ShowHelp",
-              "comparison": "isEqualTo",
-              "value": "true"
-            },
-            "name": "text - Unified - Overview - Commitment Tier Recommendations"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
               "query": "let TimeRangeStart = todatetime({TimeRange:start});\r\nlet TimeRangeEnd = todatetime({TimeRange:end});\r\nlet PricingModel = \"{PricingModel}\";\r\nlet SentinelCurrentTier = \"{SentinelCurrentTier}\";\r\nlet LogAnalyticsCurrentTier = \"{LogAnalyticsCurrentTier}\";\r\nlet SentinelPriceInputs = {SentinelPrices};\r\nlet LogAnalyticsPriceInputs = {AzureMonitorPrices};\r\nlet PriceInputs = union SentinelPriceInputs, LogAnalyticsPriceInputs \r\n    | extend TierVolumeGB = iif(Tier == \"Pay-as-you-go\", 0, toint(Tier))     \r\n    | project ServiceName, Tier, TierVolumeGB, SkuPrice, SkuEffectivePricePerGB  \r\n    | extend JoinColumn = 1;   \r\n{UsageMetrics} \r\nlet TierStats = \r\n    UsageMetrics  \r\n    | join kind = inner (PriceInputs) \r\n        on JoinColumn  \r\n    | extend DefenderForCloudReductionMB = column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB)\r\n    | extend E5ReductionMB = column_ifexists(\"E5ReductionMB\", QuantityMB)\r\n    | extend QuantityMB = case(\r\n                              ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"),\r\n                              QuantityMB - E5ReductionMB - DefenderForCloudReductionMB, \r\n                              QuantityMB - E5ReductionMB\r\n                          )\r\n    | extend QuantityGB = QuantityMB / 1e3\r\n    | extend CostAtTier = iff(QuantityGB > TierVolumeGB or Tier == \"Pay-as-you-go\", QuantityGB * SkuEffectivePricePerGB, SkuPrice)  \r\n    | summarize CostAtTier = sum(CostAtTier), QuantityGB = sum(QuantityGB) by Tier, ServiceName  \r\n    | extend JoinColumn = 1;\r\nTierStats\r\n| where (ServiceName == \"Sentinel\" and Tier == SentinelCurrentTier and PricingModel in (\"Unified\", \"Classic\")) or (ServiceName == \"Azure Monitor\" and Tier == LogAnalyticsCurrentTier and PricingModel in (\"Classic\", \"Log Analytics\"))\r\n| join kind = inner(TierStats\r\n    | summarize arg_min(CostAtTier, Tier, JoinColumn) by ServiceName)\r\n    on ServiceName\r\n| extend Status = case(\r\n                      Tier == Tier1,\r\n                      \"Good\",\r\n                      \"Change Tier\"\r\n                  )\r\n| project-rename \r\n    CurrentTier = Tier,\r\n    RecommendedTier = Tier1,\r\n    CurrentTierCost = CostAtTier,\r\n    RecommendedTierCost = CostAtTier1\r\n| extend CostDifference = RecommendedTierCost - CurrentTierCost\r\n| order by ServiceName desc\r\n| extend ServiceName = case(\r\n    ServiceName =~ \"Sentinel\", strcat(\"🛡️ \",ServiceName),\r\n    ServiceName =~ \"Azure Monitor\", strcat(\"⏱️ \",ServiceName),\r\n    ServiceName\r\n)\r\n| project\r\n    ServiceName,\r\n    CurrentTier,\r\n    RecommendedTier,\r\n    Status,\r\n    CurrentTierCost = round(CurrentTierCost,4),\r\n    RecommendedTierCost = round(RecommendedTierCost,4),\r\n    CostDifference = round(CostDifference,4)",
               "size": 4,
               "showAnalytics": true,
-              "title": "Commitment Tier Recommendations",
+              "title": "Commitment Tier Recommendations - Hidden because it is used in merges",
               "timeContextFromParameter": "TimeRange",
               "showRefreshButton": true,
               "showExportToExcel": true,
@@ -2624,7 +2711,168 @@
                 ]
               }
             },
+            "conditionalVisibility": {
+              "parameterName": "_",
+              "comparison": "isEqualTo",
+              "value": "_"
+            },
             "name": "query - Unified - Overview - Commitment Tier Recommendations"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "print  \r\n    title = \"Retail Or Custom Prices\",\r\n    subtitle = \"\",\r\n    left = iff({CustomPrices}, \"Custom\", \"Retail\"),\r\n    right = \"\",\r\n    bottom = \"\"",
+              "size": 4,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "title",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "left",
+                  "formatter": 18,
+                  "formatOptions": {
+                    "thresholdsOptions": "icons",
+                    "thresholdsGrid": [
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Custom",
+                        "representation": "Edit",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Retail",
+                        "representation": "Normal",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "Default",
+                        "thresholdValue": null,
+                        "representation": "question",
+                        "text": "{0}{1}"
+                      }
+                    ]
+                  }
+                },
+                "showBorder": false
+              }
+            },
+            "customWidth": "0",
+            "name": "query - Overview - Retail Or Custom"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "print  \r\n    title = \"Pricing Model\",\r\n    subtitle = \"\",\r\n    left = \"{PricingModel}\",\r\n    right = \"\",\r\n    bottom = \"\"",
+              "size": 4,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "title",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "left",
+                  "formatter": 18,
+                  "formatOptions": {
+                    "thresholdsOptions": "icons",
+                    "thresholdsGrid": [
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Log Analytics",
+                        "representation": "Monitoring",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Classic",
+                        "representation": "Restore",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "Unified",
+                        "representation": "Stop",
+                        "text": "{0}{1}"
+                      },
+                      {
+                        "operator": "Default",
+                        "thresholdValue": null,
+                        "representation": "question",
+                        "text": "{0}{1}"
+                      }
+                    ]
+                  }
+                },
+                "showBorder": false
+              }
+            },
+            "customWidth": "0",
+            "name": "query - Overview -Tiles - Pricing Model"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "print  \r\n    title = \"Sentinel Enabled\",\r\n    subtitle = \"\",\r\n    left = \"{ShowSentinel}\",\r\n    right = \"\",\r\n    bottom = \"\"",
+              "size": 4,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "title",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "left",
+                  "formatter": 18,
+                  "formatOptions": {
+                    "thresholdsOptions": "icons",
+                    "thresholdsGrid": [
+                      {
+                        "operator": "==",
+                        "thresholdValue": "false",
+                        "representation": "1",
+                        "text": "False"
+                      },
+                      {
+                        "operator": "==",
+                        "thresholdValue": "true",
+                        "representation": "success",
+                        "text": "True"
+                      },
+                      {
+                        "operator": "Default",
+                        "thresholdValue": null,
+                        "representation": "question",
+                        "text": "{0}{1}"
+                      }
+                    ]
+                  }
+                },
+                "showBorder": false
+              }
+            },
+            "customWidth": "0",
+            "name": "query - Overview - Tiles - Sentinel Enabled"
           },
           {
             "type": 3,
@@ -2632,7 +2880,6 @@
               "version": "KqlItem/1.0",
               "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"4a80b589-5195-48f3-8a50-c880514180b5\",\"mergeType\":\"table\",\"leftTable\":\"query - Unified - Overview - Commitment Tier Recommendations\"}],\"projectRename\":[{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].ServiceName\",\"mergedName\":\"Service\",\"fromId\":\"4a80b589-5195-48f3-8a50-c880514180b5\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CurrentTier\",\"mergedName\":\"Current Tier\",\"fromId\":\"4a80b589-5195-48f3-8a50-c880514180b5\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].Status\",\"mergedName\":\"Status\",\"fromId\":\"4a80b589-5195-48f3-8a50-c880514180b5\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CurrentTierCost\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].RecommendedTierCost\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].RecommendedTier\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CostDifference\"}]}",
               "size": 4,
-              "title": "Change Tier",
               "queryType": 7,
               "visualization": "tiles",
               "tileSettings": {
@@ -2678,8 +2925,416 @@
                 "showBorder": false
               }
             },
+            "customWidth": "0",
             "showPin": false,
-            "name": "query - 7"
+            "name": "query - Overview - Tiles - Change Tier"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "resources \r\n| where type =~ 'microsoft.operationalinsights/workspaces'\r\n| where id =~ \"{Workspace}\" \r\n| extend workspaceId = tolower(id)\r\n| extend logAnalyticsSku   = trim(' ', tostring(properties.sku.name))\r\n| extend logAnalyticsSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n| extend logAnalyticsTier = case(\r\n    logAnalyticsSku =~ \"pergb2018\", \"Pay-as-you-go\", \r\n    logAnalyticsSku =~ \"CapacityReservation\", tostring(properties.sku.capacityReservationLevel),\r\n    \"Free, PerNode and Standalone not supported in this workbook\")\r\n| join kind = leftouter(\r\n    resources \r\n    | where type =~ \"microsoft.operationsmanagement/solutions\"\r\n    | where plan.product =~ \"OMSGallery/SecurityInsights\"\r\n    | where properties.workspaceResourceId startswith \"{Workspace}\"\r\n    | extend workspaceId = tolower(tostring(properties.workspaceResourceId))\r\n    | extend sentinelEnabled = true\r\n    | extend sentinelSku   = trim(' ', tostring(properties.sku.name)), sentinelSkuUpdate = trim(' ', tostring(properties.sku.lastSkuUpdate))\r\n    | extend sentinelTier = case(\r\n        sentinelSku =~ \"Unified\", \"Log Analytics Tier\", \r\n        sentinelSku =~ \"PerGB\", \"Pay-as-you-go\", \r\n        sentinelSku =~ \"CapacityReservation\", \r\n        tostring(properties.sku.capacityReservationLevel), \"Not Supported in this workbook\")\r\n    | project workspaceId, sentinelEnabled, sentinelSku, sentinelTier, sentinelSkuUpdate\r\n    )\r\n    on workspaceId\r\n| extend sentinelEnabled = iif(isnotnull(sentinelEnabled), true, false)\r\n| extend sentinelSku  = iif(strlen(sentinelSku) > 0, sentinelSku, \"\")\r\n| project workspaceId, logAnalyticsSku, logAnalyticsTier,sentinelEnabled, sentinelSku, sentinelTier\r\n",
+              "size": 4,
+              "showAnalytics": true,
+              "title": "Workspace Details",
+              "showRefreshButton": true,
+              "queryType": 1,
+              "resourceType": "microsoft.resourcegraph/resources",
+              "crossComponentResources": [
+                "{Subscription}"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "workspaceId",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "Workspace Azure Resource Id"
+                    }
+                  },
+                  {
+                    "columnMatch": "logAnalyticsSku",
+                    "formatter": 1,
+                    "tooltipFormat": {
+                      "tooltip": "Current Log Analytics Sku "
+                    }
+                  },
+                  {
+                    "columnMatch": "logAnalyticsTier",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "Current Log Analytics Tier, this is either \"Pay-as-you-go\", 100, 200, 300, 400, 500, 1000, 2000 or 5000"
+                    }
+                  },
+                  {
+                    "columnMatch": "sentinelEnabled",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "0",
+                          "representation": "more",
+                          "text": "False"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "1",
+                          "representation": "success",
+                          "text": "True"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "unknown",
+                          "text": "Unknown"
+                        }
+                      ]
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Is Microsoft Sentinel enabled on this workspace"
+                    }
+                  },
+                  {
+                    "columnMatch": "sentinelSku",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "Current Microsoft Sentinel Sku, this will either be \"Unified\", \"Pay-as-you-go\" or \"CapacityReservation\""
+                    }
+                  },
+                  {
+                    "columnMatch": "sentinelTier",
+                    "formatter": 0,
+                    "tooltipFormat": {
+                      "tooltip": "Current Microsoft Sentinel tier. This is either \"Pay-as-you-go\", 100, 200, 300, 400, 500, 1000, 2000 or 5000. If the Sku is Unified, this will always be the same as the Log Analytics Tier"
+                    }
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "workspaceId",
+                    "label": "Workspace Id"
+                  },
+                  {
+                    "columnId": "logAnalyticsSku",
+                    "label": "Log Analytics Sku"
+                  },
+                  {
+                    "columnId": "logAnalyticsTier",
+                    "label": "Log Analytics Tier"
+                  },
+                  {
+                    "columnId": "sentinelEnabled",
+                    "label": "Is Sentinel Enabled"
+                  },
+                  {
+                    "columnId": "sentinelSku",
+                    "label": "Sentinel Sku"
+                  },
+                  {
+                    "columnId": "sentinelTier",
+                    "label": "Sentinel Tier"
+                  }
+                ]
+              }
+            },
+            "name": "query - Overview - Workspace Details"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "# Commitment Tier Recommendations\r\n\r\nThis table view displays the current tiers for Microsoft Sentinel. It shows the optimal tier to be on based on the selected time range. It does this by calculating the total cost at each tier and returns the cost for the current tier and the lowest price tier in the selected time range. \r\n\r\nBecause of this, the recommended tier may not always be the most optimal if you have recently made changes to data ingestion, such as increasing or decreasing. Always review the charts page\r\n\r\n"
+            },
+            "conditionalVisibility": {
+              "parameterName": "ShowHelp",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "text - Unified - Overview - Commitment Tier Recommendations"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\",\"mergeType\":\"table\",\"leftTable\":\"query - Unified - Overview - Commitment Tier Recommendations\"}],\"projectRename\":[{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].ServiceName\",\"mergedName\":\"Service\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CurrentTier\",\"mergedName\":\"CurrentTier\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].RecommendedTier\",\"mergedName\":\"RecommendedTier\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].Status\",\"mergedName\":\"Status\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CurrentTierCost\",\"mergedName\":\"CurrentTierCost\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].RecommendedTierCost\",\"mergedName\":\"RecommendedTierCost\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CostDifference\",\"mergedName\":\"Cost Difference\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"}]}",
+              "size": 4,
+              "showAnalytics": true,
+              "title": "Commitment Tier Recommendations",
+              "showRefreshButton": true,
+              "showExportToExcel": true,
+              "queryType": 7,
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "ServiceName",
+                    "formatter": 1,
+                    "formatOptions": {
+                      "linkTarget": "GenericDetails",
+                      "linkIsContextBlade": true
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "The name of the monitor service, this will either be \"Azure Monitor\" or \"Sentinel\""
+                    }
+                  },
+                  {
+                    "columnMatch": "CurrentTier",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "colors",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Pay-as-you-go",
+                          "representation": "blue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "100",
+                          "representation": "orange",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "200",
+                          "representation": "redBright",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "300",
+                          "representation": "turquoise",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "400",
+                          "representation": "brown",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "500",
+                          "representation": "purple",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "1000",
+                          "representation": "green",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "2000",
+                          "representation": "gray",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "5000",
+                          "representation": "lightBlue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "pink",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Current Commitment Tier"
+                    }
+                  },
+                  {
+                    "columnMatch": "RecommendedTier",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "colors",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Pay-as-you-go",
+                          "representation": "blue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "100",
+                          "representation": "orange",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "200",
+                          "representation": "redBright",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "300",
+                          "representation": "turquoise",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "400",
+                          "representation": "brown",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "500",
+                          "representation": "purple",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "1000",
+                          "representation": "green",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "2000",
+                          "representation": "gray",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "5000",
+                          "representation": "lightBlue",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "pink",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "The recommended commitment tier for the selected time period, taking into account the various discounts"
+                    }
+                  },
+                  {
+                    "columnMatch": "Status",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "icons",
+                      "thresholdsGrid": [
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Change Tier",
+                          "representation": "3",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "==",
+                          "thresholdValue": "Good",
+                          "representation": "success",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "startsWith",
+                          "thresholdValue": "No Value",
+                          "representation": "2",
+                          "text": "{0}"
+                        },
+                        {
+                          "operator": "Default",
+                          "thresholdValue": null,
+                          "representation": "unknown",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "Are you on the correct tier"
+                    }
+                  },
+                  {
+                    "columnMatch": "CurrentTierCost",
+                    "formatter": 1,
+                    "formatOptions": {
+                      "aggregation": "Sum"
+                    },
+                    "numberFormat": {
+                      "unit": 17,
+                      "options": {
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
+                      }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "This is your current estimated costs."
+                    }
+                  },
+                  {
+                    "columnMatch": "RecommendedTierCost",
+                    "formatter": 1,
+                    "formatOptions": {
+                      "aggregation": "Sum"
+                    },
+                    "numberFormat": {
+                      "unit": 17,
+                      "options": {
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
+                      }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "This is the estimate cost if the tier is changed to the recommended tier, based on your selected time frame."
+                    }
+                  },
+                  {
+                    "columnMatch": "CostDifference",
+                    "formatter": 1,
+                    "formatOptions": {
+                      "aggregation": "Sum"
+                    },
+                    "numberFormat": {
+                      "unit": 0,
+                      "options": {
+                        "style": "decimal",
+                        "maximumFractionDigits": 2
+                      }
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "This is the cost difference between the current tier and recommended tier for the selected time range."
+                    }
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "CurrentTier",
+                    "label": "Current Tier"
+                  },
+                  {
+                    "columnId": "RecommendedTier",
+                    "label": "Recommended Tier"
+                  },
+                  {
+                    "columnId": "CurrentTierCost",
+                    "label": "Current Tier Cost"
+                  },
+                  {
+                    "columnId": "RecommendedTierCost",
+                    "label": "Recommended Tier cost"
+                  }
+                ]
+              },
+              "chartSettings": {
+                "yAxis": [
+                  "CostAtTier"
+                ]
+              }
+            },
+            "name": "query - Unified - Overview - Commitment Tier Recommendations - Merged"
           },
           {
             "type": 3,
@@ -2869,7 +3524,8 @@
             },
             "name": "query - Unified - Overview - Ingestion and Allowances"
           }
-        ]
+        ],
+        "exportParameters": true
       },
       "name": "group - Unified - Overview",
       "styleSettings": {
@@ -2888,15 +3544,15 @@
           {
             "type": 1,
             "content": {
-              "json": "# DEMO DATA\r\n## This workbook is currently displaying usage data for demonstration purposes. Ensure you turn this parameter off in production",
+              "json": "# SIMULATED DATA\r\n## This workbook is currently displaying usage data for demonstration purposes. Ensure you turn this parameter off in production",
               "style": "warning"
             },
             "conditionalVisibility": {
-              "parameterName": "UseDemoData",
+              "parameterName": "UseSimulatedData",
               "comparison": "isEqualTo",
               "value": "true"
             },
-            "name": "text - Main Page - Demo Data Warning - Copy"
+            "name": "text - Main Page - Simulated Data Warning - Copy"
           },
           {
             "type": 1,
@@ -2941,7 +3597,11 @@
                     "durationMs": 86400000
                   },
                   "queryType": 1,
-                  "resourceType": "microsoft.resourcegraph/resources"
+                  "resourceType": "microsoft.resourcegraph/resources",
+                  "value": [
+                    "Pay-as-you-go",
+                    "100"
+                  ]
                 }
               ],
               "style": "formVertical",
@@ -3208,7 +3868,7 @@
                       "criteriaContext": {
                         "operator": "Default",
                         "resultValType": "static",
-                        "resultVal": "let TimeRangeStart = todatetime({TimeRange:start});  let TimeRangeEnd = todatetime({TimeRange:end}); let PricingModel = \"{PricingModel}\"; let TierValue = iff(CurrentTier == \"Pay-as-you-go\", 0, toint(CurrentTier)); {UsageMetrics}    UsageMetrics  | extend DefenderForCloudReductionMB = toreal(column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB)) | extend DefenderForCloudReductionMB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionMB, toreal(0))  | extend E5ReductionMB = column_ifexists(\"E5ReductionMB\", QuantityMB) | extend BillableQuantityGB =  (QuantityMB - E5ReductionMB - DefenderForCloudReductionMB) / 1e3 | extend DefenderForCloudReductionGB = DefenderForCloudReductionMB / 1e3 | extend E5ReductionGB = E5ReductionMB / 1e3 | extend AboveCommitmentTierGB = iff(BillableQuantityGB >= TierValue, BillableQuantityGB - TierValue, toreal(0))  | extend BelowCommitmentTierGB = BillableQuantityGB - AboveCommitmentTierGB  | project StartTime, DefenderForCloudReductionGB, E5ReductionGB, AboveCommitmentTierGB, BelowCommitmentTierGB"
+                        "resultVal": "let TimeRangeStart = todatetime({TimeRange:start});   let TimeRangeEnd = todatetime({TimeRange:end});  let PricingModel = \"{PricingModel}\";  let TierValueMB = iff(CurrentTier == \"Pay-as-you-go\", toreal(0), toreal(toint(CurrentTier) * 1e3));  {UsageMetrics}     UsageMetrics | extend DefenderForCloudReductionMB = toreal(column_ifexists(\"DefenderForCloudReductionMB\", QuantityMB)) | extend DefenderForCloudReductionMB = iff(ServiceName == \"Azure Monitor\" or (ServiceName == \"Sentinel\" and PricingModel == \"Unified\"), DefenderForCloudReductionMB, toreal(0)) | extend E5ReductionMB = column_ifexists(\"E5ReductionMB\", QuantityMB) | extend QuantityMB =  QuantityMB - E5ReductionMB - DefenderForCloudReductionMB | extend AboveCommitmentTierMB = iff(QuantityMB >= TierValueMB, QuantityMB - TierValueMB, toreal(0)) | extend BelowCommitmentTierMB = QuantityMB - AboveCommitmentTierMB | project     StartTime,     DefenderForCloudReductionMB,     E5ReductionMB,     AboveCommitmentTierMB,     BelowCommitmentTierMB"
                       }
                     }
                   ],
@@ -3745,7 +4405,7 @@
           {
             "type": 1,
             "content": {
-              "json": "# Ingestion Allowances\r\n\r\n\r\nThese charts show the breakdown of ingested data into Azure Monitor Logs and / or Microsoft Sentinel based on the selected commitment tiers and current usage, including Defender for Servers Plan 2 and E5 deductions. \r\n\r\nIf your pricing model is \"Log Analytics\" or \"Unified\", only one chart will be displayed, otherwise two will be displayed, one for Log Analytics and another for Microsoft Sentinel as Defender for Servers Plan 2 allowances were only applicable to Azure Monitor Logs, and not Microsoft Sentinel.\r\n\r\n## The chart displays the data in the following way:\r\n\r\n- Each vertical bar represents the total billable ingested data for that day into Analytics logs, including Defender for Servers Plan 2 and E5 Ingestion.\r\n\r\n- In **orange**, each bar will show the \r\ndaily [Defender for Servers Plan 2 data ingestion Deductions](https://learn.microsoft.com/en-ca/azure/defender-for-cloud/faq-defender-for-servers#is-the-500-mb-of-free-data-ingestion-allowance-applied-per-workspace-or-per-machine-) from the daily total ingestion. \r\n\r\n\r\n- In **purple (amethyst)**, each bar will show the daily [Microsoft 365 E5, A5, F5 and G5 Deductions](https://azure.microsoft.com/en-ca/pricing/offers/sentinel-microsoft-365-offer/) from the daily total ingestion.\r\n\r\n- In **green**, billable data that is ingested and is below the commitment tier will be shown (after Defender for Servers Plan 2 and E5 Dedcutions). This isn't to be confused with you minimum daily cost of the tier.\r\n\r\n- In **blue**, billable data that is ingested, which is above the commitment tier threshold will be shown (after Defender for Servers Plan 2 and E5 Dedcutions)\r\n\r\n- In **bright red**, If your commitment tier is 100 GB per day or higher, a dashed line will be displayed to show the commitment tier threshold. E.g If your tier is 100 GB, then the threshold line will be displayed at 100 GB.\r\n\r\n",
+              "json": "# Ingestion Allowances\r\n\r\n\r\nThese charts show the breakdown of ingested data into Azure Monitor Logs and / or Microsoft Sentinel based on the selected commitment tiers and current usage, including Defender for Servers Plan 2 and E5 deductions. \r\n\r\nIf your pricing model is \"Log Analytics\" or \"Unified\", only one chart will be displayed, otherwise two will be displayed, one for Log Analytics and another for Microsoft Sentinel as Defender for Servers Plan 2 allowances were only applicable to Azure Monitor Logs, and not Microsoft Sentinel.\r\n\r\n## The chart displays the data in the following way:\r\n\r\n- Each vertical bar represents the total billable ingested data for that day into Analytics logs, including Defender for Servers Plan 2 and E5 Ingestion.\r\n\r\n- In **orange**, each bar will show the \r\ndaily [Defender for Servers Plan 2 data ingestion Deductions](https://learn.microsoft.com/en-ca/azure/defender-for-cloud/faq-defender-for-servers#is-the-500-mb-of-free-data-ingestion-allowance-applied-per-workspace-or-per-machine-) from the daily total ingestion. \r\n\r\n\r\n- In **purple (amethyst)**, each bar will show the daily [Microsoft 365 E5, A5, F5 and G5 Deductions](https://azure.microsoft.com/en-ca/pricing/offers/sentinel-microsoft-365-offer/) from the daily total ingestion.\r\n\r\n- In **green**, billable data that is ingested and is below the commitment tier will be shown (after Defender for Servers Plan 2 and E5 Dedcutions). This isn't to be confused with you minimum daily cost of the tier.\r\n\r\n- In **blue**, billable data that is ingested, which is above the commitment tier threshold will be shown (after Defender for Servers Plan 2 and E5 Dedcutions)\r\n\r\n- In **bright red**, If your commitment tier is 100 GB per day or higher, a dashed line will be displayed to show the commitment tier threshold. E.g If your tier is 100 GB, then the threshold line will be displayed at 100 GB.\r\n\r\n> ### DATA EXPORT\r\nIf exporting data to combine workspace data into a single CSV, use the export function on this chart. \r\n",
               "style": "info"
             },
             "conditionalVisibility": {
@@ -3776,22 +4436,22 @@
                 "showLegend": true,
                 "seriesLabelSettings": [
                   {
-                    "seriesName": "DefenderForCloudReductionGB",
+                    "seriesName": "DefenderForCloudReductionMB",
                     "label": "Defender For Cloud Dedcution",
                     "color": "orange"
                   },
                   {
-                    "seriesName": "E5ReductionGB",
+                    "seriesName": "E5ReductionMB",
                     "label": "E5 Dedcution",
                     "color": "amethyst"
                   },
                   {
-                    "seriesName": "AboveCommitmentTierGB",
+                    "seriesName": "AboveCommitmentTierMB",
                     "label": "Above Commitment Tier Threshold",
                     "color": "blue"
                   },
                   {
-                    "seriesName": "BelowCommitmentTierGB",
+                    "seriesName": "BelowCommitmentTierMB",
                     "label": "Below Commitment Tier Threshold",
                     "color": "green"
                   },
@@ -3805,7 +4465,7 @@
                 "customThresholdLineStyle": 2,
                 "ySettings": {
                   "numberFormatSettings": {
-                    "unit": 39,
+                    "unit": 38,
                     "options": {
                       "style": "decimal",
                       "useGrouping": true,
@@ -3843,22 +4503,22 @@
                 "showLegend": true,
                 "seriesLabelSettings": [
                   {
-                    "seriesName": "DefenderForCloudReductionGB",
+                    "seriesName": "DefenderForCloudReductionMB",
                     "label": "Defender For Cloud Dedcution",
                     "color": "orange"
                   },
                   {
-                    "seriesName": "E5ReductionGB",
+                    "seriesName": "E5ReductionMB",
                     "label": "E5 Dedcution",
                     "color": "amethyst"
                   },
                   {
-                    "seriesName": "AboveCommitmentTierGB",
+                    "seriesName": "AboveCommitmentTierMB",
                     "label": "Above Commitment Tier Threshold",
                     "color": "blue"
                   },
                   {
-                    "seriesName": "BelowCommitmentTierGB",
+                    "seriesName": "BelowCommitmentTierMB",
                     "label": "Below Commitment Tier Threshold",
                     "color": "green"
                   },
@@ -3872,7 +4532,7 @@
                 "customThresholdLineStyle": 2,
                 "ySettings": {
                   "numberFormatSettings": {
-                    "unit": 39,
+                    "unit": 38,
                     "options": {
                       "style": "decimal",
                       "useGrouping": true,
@@ -3907,15 +4567,15 @@
           {
             "type": 1,
             "content": {
-              "json": "# DEMO DATA\r\n## This workbook is currently displaying usage data for demonstration purposes. Ensure you turn this parameter off in production",
+              "json": "# SIMULATED DATA\r\n## This workbook is currently displaying usage data for demonstration purposes. Ensure you turn this parameter off in production",
               "style": "warning"
             },
             "conditionalVisibility": {
-              "parameterName": "UseDemoData",
+              "parameterName": "UseSimulatedData",
               "comparison": "isEqualTo",
               "value": "true"
             },
-            "name": "text - Main Page - Demo Data Warning - Copy"
+            "name": "text - Main Page - Simulated Data Warning - Copy"
           },
           {
             "type": 1,
@@ -4634,5 +5294,9 @@
       }
     }
   ],
+  "fallbackResourceIds": [
+    "/subscriptions/a460eb43-f297-44ec-a8c6-3de20c09439a/resourcegroups/permissionstesting/providers/microsoft.operationalinsights/workspaces/permissionstesting"
+  ],
+  "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02481.3375-231018-000236/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
