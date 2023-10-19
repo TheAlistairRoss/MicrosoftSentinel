@@ -1,4 +1,4 @@
-﻿StartTime [UTC],QuantityMB,DefenderForCloudReductionMB,E5ReductionMB
+﻿StartTime,QuantityMB,DefenderForCloudReductionMB,E5ReductionMB
 2023-07-22 00:00:00Z,37806,18903,11341.8
 2023-07-23 00:00:00Z,37590,18795,11277
 2023-07-24 00:00:00Z,114276,34282.8,34282.8
