@@ -4634,8 +4634,5 @@
       }
     }
   ],
-  "fallbackResourceIds": [
-  ],
-  "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02459.3229-230925-201317/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
