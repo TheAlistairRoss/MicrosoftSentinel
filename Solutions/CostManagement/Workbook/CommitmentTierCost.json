@@ -12,9 +12,6 @@
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
-        "crossComponentResources": [
-          "{Subscription}"
-        ],
         "parameters": [
           {
             "id": "46c56e28-782c-460a-92a2-2537d1f0a231",
@@ -314,7 +311,7 @@
           }
         ],
         "style": "above",
-        "queryType": 1,
+        "queryType": 0,
         "resourceType": "microsoft.operationalinsights/workspaces"
       },
       "name": "parameters - Main Page"
@@ -400,6 +397,20 @@
                     "version": "KqlParameterItem/1.0",
                     "parameters": [
                       {
+                        "id": "bd0776f9-c413-4a72-b3c5-0a0313db5274",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "SimulatedOrWorkspaceData",
+                        "label": "Simulated or Workspace Data",
+                        "type": 10,
+                        "isRequired": true,
+                        "query": "{\"version\":\"1.0.0\",\"content\":\"[\\r\\n    {\\\"value\\\":\\\"true\\\", \\\"label\\\": \\\"Simulated\\\", \\\"selected\\\": false},\\r\\n    {\\\"value\\\":\\\"false\\\", \\\"label\\\": \\\"Workspace\\\", \\\"selected\\\": true}\\r\\n]\",\"transformers\":null}",
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "queryType": 8
+                      },
+                      {
                         "id": "d89ecd5b-8f63-4db0-a343-60c46e17abf1",
                         "version": "KqlParameterItem/1.0",
                         "name": "UseSimulatedDataDates",
@@ -437,8 +448,7 @@
                       }
                     ],
                     "style": "formHorizontal",
-                    "queryType": 0,
-                    "resourceType": "microsoft.operationalinsights/workspaces"
+                    "queryType": 8
                   },
                   "name": "parameters - Simulated Data Dates"
                 },
@@ -464,7 +474,8 @@
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resourcegraph/resources"
+                        "resourceType": "microsoft.resourcegraph/resources",
+                        "value": "Classic"
                       }
                     ],
                     "style": "formHorizontal",
@@ -494,7 +505,8 @@
                           "durationMs": 86400000
                         },
                         "queryType": 1,
-                        "resourceType": "microsoft.resourcegraph/resources"                      }
+                        "resourceType": "microsoft.resourcegraph/resources"
+                      }
                     ],
                     "style": "formHorizontal",
                     "queryType": 0,
@@ -511,9 +523,6 @@
                   "type": 9,
                   "content": {
                     "version": "KqlParameterItem/1.0",
-                    "crossComponentResources": [
-                      "/subscriptions/a460eb43-f297-44ec-a8c6-3de20c09439a/resourcegroups/permissionstesting/providers/microsoft.operationalinsights/workspaces/permissionstesting"
-                    ],
                     "parameters": [
                       {
                         "id": "3f66d98c-1001-46b4-ac41-a81cefeaa03d",
@@ -574,6 +583,11 @@
               }
             },
             "customWidth": "50",
+            "conditionalVisibility": {
+              "parameterName": "SimulatedOrWorkspaceData",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
             "name": "query - Simulated Data",
             "styleSettings": {
               "maxWidth": "50"
@@ -807,7 +821,7 @@
             "criteriaData": [
               {
                 "criteriaContext": {
-                  "leftOperand": "UseSimulatedData",
+                  "leftOperand": "SimulatedOrWorkspaceData",
                   "operator": "==",
                   "rightValType": "static",
                   "rightVal": "true",
