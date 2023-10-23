@@ -3044,7 +3044,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\",\"mergeType\":\"table\",\"leftTable\":\"query - Unified - Overview - Commitment Tier Recommendations\"}],\"projectRename\":[{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].ServiceName\",\"mergedName\":\"Service\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CurrentTier\",\"mergedName\":\"CurrentTier\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].RecommendedTier\",\"mergedName\":\"RecommendedTier\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].Status\",\"mergedName\":\"Status\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CurrentTierCost\",\"mergedName\":\"CurrentTierCost\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].RecommendedTierCost\",\"mergedName\":\"RecommendedTierCost\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CostDifference\",\"mergedName\":\"Cost Difference\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"}]}",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\",\"mergeType\":\"table\",\"leftTable\":\"query - Unified - Overview - Commitment Tier Recommendations\"}],\"projectRename\":[{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].ServiceName\",\"mergedName\":\"Service\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CurrentTier\",\"mergedName\":\"CurrentTier\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].RecommendedTier\",\"mergedName\":\"RecommendedTier\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].Status\",\"mergedName\":\"Status\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CurrentTierCost\",\"mergedName\":\"CurrentTierCost\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].RecommendedTierCost\",\"mergedName\":\"RecommendedTierCost\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"},{\"originalName\":\"[query - Unified - Overview - Commitment Tier Recommendations].CostDifference\",\"mergedName\":\"CostDifference\",\"fromId\":\"226f9e14-f020-4b2b-bfc7-5f6c7cebd77a\"}]}",
               "size": 4,
               "showAnalytics": true,
               "title": "Commitment Tier Recommendations",
@@ -3053,17 +3053,6 @@
               "queryType": 7,
               "gridSettings": {
                 "formatters": [
-                  {
-                    "columnMatch": "ServiceName",
-                    "formatter": 1,
-                    "formatOptions": {
-                      "linkTarget": "GenericDetails",
-                      "linkIsContextBlade": true
-                    },
-                    "tooltipFormat": {
-                      "tooltip": "The name of the monitor service, this will either be \"Azure Monitor\" or \"Sentinel\""
-                    }
-                  },
                   {
                     "columnMatch": "CurrentTier",
                     "formatter": 18,
@@ -3294,9 +3283,24 @@
                     "tooltipFormat": {
                       "tooltip": "This is the cost difference between the current tier and recommended tier for the selected time range."
                     }
+                  },
+                  {
+                    "columnMatch": "ServiceName",
+                    "formatter": 1,
+                    "formatOptions": {
+                      "linkTarget": "GenericDetails",
+                      "linkIsContextBlade": true
+                    },
+                    "tooltipFormat": {
+                      "tooltip": "The name of the monitor service, this will either be \"Azure Monitor\" or \"Sentinel\""
+                    }
                   }
                 ],
                 "labelSettings": [
+                  {
+                    "columnId": "Service",
+                    "label": "Service"
+                  },
                   {
                     "columnId": "CurrentTier",
                     "label": "Current Tier"
@@ -3306,12 +3310,20 @@
                     "label": "Recommended Tier"
                   },
                   {
+                    "columnId": "Status",
+                    "label": "Status"
+                  },
+                  {
                     "columnId": "CurrentTierCost",
                     "label": "Current Tier Cost"
                   },
                   {
                     "columnId": "RecommendedTierCost",
                     "label": "Recommended Tier cost"
+                  },
+                  {
+                    "columnId": "CostDifference",
+                    "label": "Cost Difference"
                   }
                 ]
               },
@@ -5296,5 +5308,9 @@
       }
     }
   ],
+  "fallbackResourceIds": [
+    "/subscriptions/a460eb43-f297-44ec-a8c6-3de20c09439a/resourcegroups/permissionstesting/providers/microsoft.operationalinsights/workspaces/permissionstesting"
+  ],
+  "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02481.3375-231018-000236/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
