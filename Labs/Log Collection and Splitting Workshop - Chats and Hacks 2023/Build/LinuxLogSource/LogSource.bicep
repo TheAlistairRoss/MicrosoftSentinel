@@ -100,9 +100,9 @@ var trustedLaunchExtension = {
   maaEndpoint: substring('emptystring', 0, 0)
 }
 
-var scriptFolder = 'a'
-var scriptFileName = 'a'
-var scriptParameters = 'a'
+var scriptFolder = '/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config'
+var scriptFileName = 'cloudinit-ub.txt'
+var scriptParameters = ''
 
 var customScriptExtension = {
   extensionName: 'CustomScriptExtension'

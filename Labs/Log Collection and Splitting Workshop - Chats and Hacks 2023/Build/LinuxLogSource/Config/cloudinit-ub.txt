@@ -1,8 +1,7 @@
-#cloud-config - AMA - Ubuntu Log Forwarder
+#cloud-config - AMA - Ubuntu Log Source
 
 runcmd:
   - sudo apt-get update
   - echo \"root         -    nofile         65536\" | sudo tee -a /etc/security/limits.conf
   - echo \"*         -    nofile         65536\" | sudo tee -a /etc/security/limits.conf
   - sudo sed -i -e 's@*.*;auth,authpriv.none@syslog.*;auth,authpriv.none@g' /etc/rsyslog.d/50-default.conf
-  - sudo wget -O Forwarder_AMA_installer.py https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/DataConnectors/Syslog/Forwarder_AMA_installer.py&&sudo python Forwarder_AMA_installer.py

@@ -31,22 +31,21 @@ param _artifactsLocation string = deployment().properties.templateLink.uri
 @secure()
 param _artifactsLocationSasToken string = ''
 
-
 var logSourceResourceGroupName = '${basename}-log-source-rg'
 var NetworkingResourceGroupName = '${basename}-networking-rg'
 var SentinelResourceGroupName = '${basename}-sentinel-rg'
 
-resource logSourceResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource logSourceResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = if (deployNetworks && deployLinuxLogSource) { 
   name: logSourceResourceGroupName
   location: location
 }
 
-resource NetworkingResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource NetworkingResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = if (deployNetworks) {
   name: NetworkingResourceGroupName
   location: location
 }
 
-resource SentinelResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource SentinelResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = if (deploySentinel) {
   name: SentinelResourceGroupName
   location: location
 }

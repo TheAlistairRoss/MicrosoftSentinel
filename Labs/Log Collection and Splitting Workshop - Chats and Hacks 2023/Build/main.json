@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "106750052471405693"
+      "templateHash": "5898645451705972468"
     }
   },
   "parameters": {
@@ -81,18 +81,21 @@
   },
   "resources": [
     {
+      "condition": "[and(parameters('deployNetworks'), parameters('deployLinuxLogSource'))]",
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2023-07-01",
       "name": "[variables('logSourceResourceGroupName')]",
       "location": "[parameters('location')]"
     },
     {
+      "condition": "[parameters('deployNetworks')]",
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2023-07-01",
       "name": "[variables('NetworkingResourceGroupName')]",
       "location": "[parameters('location')]"
     },
     {
+      "condition": "[parameters('deploySentinel')]",
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2023-07-01",
       "name": "[variables('SentinelResourceGroupName')]",
@@ -546,7 +549,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "7206323907107781437"
+              "templateHash": "2007400196039964233"
             }
           },
           "parameters": {
@@ -581,7 +584,7 @@
               "location": "[parameters('location')]",
               "kind": "Linux",
               "properties": {
-                "dataCollectionEndpointId": "[if(not(equals(parameters('dataCollectionEndpointId'), null())), parameters('dataCollectionEndpointId'), '')]",
+                "dataCollectionEndpointId": "[if(not(equals(parameters('dataCollectionEndpointId'), null())), parameters('dataCollectionEndpointId'), null())]",
                 "dataSources": {
                   "syslog": [
                     {
@@ -687,7 +690,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "5143628372724980158"
+              "templateHash": "4610878243273636682"
             }
           },
           "parameters": {
@@ -827,9 +830,9 @@
               "maaTenantName": "GuestAttestation",
               "maaEndpoint": "[substring('emptystring', 0, 0)]"
             },
-            "scriptFolder": "a",
-            "scriptFileName": "a",
-            "scriptParameters": "a",
+            "scriptFolder": "/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config",
+            "scriptFileName": "cloudinit-ub.txt",
+            "scriptParameters": "",
             "customScriptExtension": {
               "extensionName": "CustomScriptExtension",
               "extensionPublisher": "Microsoft.Compute",

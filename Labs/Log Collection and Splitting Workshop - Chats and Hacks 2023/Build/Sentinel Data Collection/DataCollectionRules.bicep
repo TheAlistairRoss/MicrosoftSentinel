@@ -15,7 +15,7 @@ resource cefDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-0
   location: location
   kind: 'Linux'
   properties: {
-    dataCollectionEndpointId: dataCollectionEndpointId != null ? dataCollectionEndpointId : ''
+    dataCollectionEndpointId: dataCollectionEndpointId != null ? dataCollectionEndpointId : null
     dataSources: {
       syslog: [
         {
