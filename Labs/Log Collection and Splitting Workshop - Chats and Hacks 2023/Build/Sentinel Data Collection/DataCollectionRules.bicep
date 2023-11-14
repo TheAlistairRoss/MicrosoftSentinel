@@ -1,7 +1,7 @@
 @description('Location of the resources')
 param location string = resourceGroup().location
 
-@description('Log Analytics Workspace Name')
+@description('Log Analytics Workspace Resource Id')
 param workspaceResourceId string
 
 param dataCollectionEndpointId string

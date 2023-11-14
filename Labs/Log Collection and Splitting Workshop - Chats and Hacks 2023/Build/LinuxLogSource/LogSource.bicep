@@ -2,7 +2,7 @@
 param location string = resourceGroup().location
 
 @description('The name of your Virtual Machine.')
-param vmName string = 'LogSource'
+param vmName string = 'LinuxLogSource'
 
 @description('Username for the Virtual Machine.')
 param adminUsername string
@@ -25,7 +25,6 @@ param adminPasswordOrKey string
 ])
 param ubuntuOSVersion string = 'Ubuntu-2004'
 
-
 @description('The size of the VM')
 param vmSize string = 'Standard_D2s_v3'
 
@@ -38,6 +37,15 @@ param subnetResourceId string
   'TrustedLaunch'
 ])
 param securityType string = 'TrustedLaunch'
+
+param deployAMA bool = true
+
+@description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
+param _artifactsLocation string = deployment().properties.templateLink.uri
+
+@description('The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated.')
+@secure()
+param _artifactsLocationSasToken string
 
 var imageReference = {
   'Ubuntu-1804': {
@@ -61,8 +69,9 @@ var imageReference = {
 }
 
 var networkInterfaceName = '${vmName}NetInt'
-var networkSecurityGroupName  = '${vmName}NSG'
+
 var osDiskType = 'Standard_LRS'
+
 var linuxConfiguration = {
   disablePasswordAuthentication: true
   ssh: {
@@ -91,6 +100,20 @@ var trustedLaunchExtension = {
   maaEndpoint: substring('emptystring', 0, 0)
 }
 
+var scriptFolder = 'a'
+var scriptFileName = 'a'
+var scriptParameters = 'a'
+
+var customScriptExtension = {
+  extensionName: 'CustomScriptExtension'
+  extensionPublisher: 'Microsoft.Compute'
+  extensionVersion: '1.8'
+  fileUris:[
+    uri(_artifactsLocation, '${scriptFolder}/${scriptFileName}${_artifactsLocationSasToken}')
+  ]
+  commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${scriptFolder}/${scriptFileName} ${scriptParameters}' 
+}
+
 resource networkInterface 'Microsoft.Network/networkInterfaces@2023-05-01' = {
   name: networkInterfaceName
   location: location
@@ -106,38 +129,17 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2023-05-01' = {
         }
       }
     ]
-    networkSecurityGroup: {
-      id: networkSecurityGroup.id
-    }
-  }
-}
-
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-05-01' = {
-  name: networkSecurityGroupName
-  location: location
-  properties: {
-    securityRules: [
-      {
-        name: 'SSH'
-        properties: {
-          priority: 1000
-          protocol: 'Tcp'
-          access: 'Allow'
-          direction: 'Inbound'
-          sourceAddressPrefix: '*'
-          sourcePortRange: '*'
-          destinationAddressPrefix: '*'
-          destinationPortRange: '22'
-        }
-      }
-    ]
   }
 }
 
 resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
   name: vmName
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
+    
     hardwareProfile: {
       vmSize: vmSize
     }
@@ -167,7 +169,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
   }
 }
 
-resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if ((securityType == 'TrustedLaunch') && ((securityProfileJson.uefiSettings.secureBootEnabled == true) && (securityProfileJson.uefiSettings.vTpmEnabled == true))) {
+resource vmExtension_TrustedLaunch 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if ((securityType == 'TrustedLaunch') && ((securityProfileJson.uefiSettings.secureBootEnabled == true) && (securityProfileJson.uefiSettings.vTpmEnabled == true))) {
   parent: vm
   name: trustedLaunchExtension.extensionName
   location: location
@@ -184,6 +186,36 @@ resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' =
           maaTenantName: trustedLaunchExtension.maaTenantName
         }
       }
+    }
+  }
+}
+
+resource vmExtension_AMA 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = if (deployAMA) {
+  parent: vm
+  name: 'AzureMonitorWindowsAgent'
+  location: location
+  properties: {
+    publisher: 'Microsoft.Azure.Monitor'
+    type: 'AzureMonitorWindowsAgent'
+    typeHandlerVersion: '1.0'
+    autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
+  }
+}
+
+resource vmExtension_CustomScript 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if ((securityType == 'TrustedLaunch') && ((securityProfileJson.uefiSettings.secureBootEnabled == true) && (securityProfileJson.uefiSettings.vTpmEnabled == true))) {
+  parent: vm
+  name: customScriptExtension.extensionName
+  location: location
+  dependsOn: deployAMA ? [vmExtension_AMA] : []
+  properties: {
+    publisher: customScriptExtension.extensionPublisher
+    type: customScriptExtension.extensionName
+    typeHandlerVersion: customScriptExtension.extensionVersion
+    autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
+    settings: {
+      commandToExecute: customScriptExtension.commandToExecute
     }
   }
 }
