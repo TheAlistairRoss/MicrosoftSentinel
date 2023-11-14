@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "5898645451705972468"
+      "templateHash": "4927977281051624131"
     }
   },
   "parameters": {
@@ -130,7 +130,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "5630382755121735276"
+              "templateHash": "15622321909640551578"
             }
           },
           "parameters": {
@@ -345,7 +345,9 @@
               "apiVersion": "2023-05-01",
               "name": "[format('{0}/{1}', parameters('vnetName'), variables('vnetConfig').subnets[0].name)]",
               "properties": {
-                "networkSecurityGroup": "[reference(resourceId('Microsoft.Network/networkSecurityGroups', variables('bastionSubnetNSGName')), '2022-07-01', 'full')]",
+                "networkSecurityGroup": {
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('bastionSubnetNSGName'))]"
+                },
                 "addressPrefix": "[variables('vnetConfig').subnets[0].addressPrefix]"
               },
               "dependsOn": [
@@ -518,7 +520,7 @@
       ]
     },
     {
-      "condition": "[parameters('deployDataCollectionRule')]",
+      "condition": "[and(parameters('deployDataCollectionRule'), parameters('deploySentinel'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Data-Collection-Rule-Deployment', parameters('basename'))]",
