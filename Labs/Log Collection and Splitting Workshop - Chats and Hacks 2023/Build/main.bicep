@@ -69,7 +69,7 @@ module SentinelDeployment 'Sentinel/Sentinel.bicep' = if (deploySentinel) {
   }
 }
 
-module DataCollectionRuleDeployment 'Sentinel Data Collection/DataCollectionRules.bicep' = if (deployDataCollectionRule) {
+module DataCollectionRuleDeployment 'Sentinel Data Collection/DataCollectionRules.bicep' = if (deployDataCollectionRule && deploySentinel) {
   name: '${basename}-Data-Collection-Rule-Deployment'
   scope: SentinelResourceGroup
   params: {

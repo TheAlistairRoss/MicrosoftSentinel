@@ -193,7 +193,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-05-01' = {
 resource vnetBastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
   name: vnetConfig.subnets[0].name
   properties: {
-    networkSecurityGroup: bastionSubnetNSG
+    networkSecurityGroup: {
+      id: bastionSubnetNSG.id
+    }
     addressPrefix: vnetConfig.subnets[0].addressPrefix
   }
   parent: vnet
