@@ -3,8 +3,8 @@ name: Directory Zipper
 on:
   push:
     paths:
-      - 'tools/LinuxLogGenerator/src/**'
-      - 'tools/LinuxLogGenerator/install/**'
+      - 'Tools/LinuxLogGenerator/src/**'
+      - 'Tools/LinuxLogGenerator/install/**'
     branches-ignore:
       - main
   # Allows you to run this workflow manually from the Actions tab
