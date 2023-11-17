@@ -1,5 +1,16 @@
 """
 This script generates logs in either syslog or CEF format, with a specified logging facility, number of events, event logging rate, logging level, and total running time. The generated logs contain random data for various fields, such as device vendor, product, and version, as well as authentication-related fields like user, outcome, and reason.
+This script can be run on any Linux system with Python 3.10 or later installed. It requires the following Python packages:
+    - logging
+    - time
+    - argparse
+    - sys
+    - random
+    - requests
+    - configparser
+
+It can be installed as a systemd service by running the following commands:
+    /install/install.sh
 
 Usage:
     python log_simulator.py [--format FORMAT] [--facility FACILITY] [--events EVENTS] [--rate RATE] [--level LEVEL] [--runtime RUNTIME]
