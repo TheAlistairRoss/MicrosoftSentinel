@@ -2,7 +2,7 @@
 This script generates logs in either syslog or CEF format, with a specified logging facility, number of events, event logging rate, logging level, and total running time. The generated logs contain random data for various fields, such as device vendor, product, and version, as well as authentication-related fields like user, outcome, and reason.
 
 Usage:
-    python LoggingApp.py [--format FORMAT] [--facility FACILITY] [--events EVENTS] [--rate RATE] [--level LEVEL] [--runtime RUNTIME]
+    python log_simulator.py [--format FORMAT] [--facility FACILITY] [--events EVENTS] [--rate RATE] [--level LEVEL] [--runtime RUNTIME]
 
 Options:
     --format FORMAT         The logging format. Can be either 'syslog' or 'cef'. Default is 'syslog'.
@@ -14,12 +14,12 @@ Options:
     
 Examples:
     Generate 50 syslog events with a logging rate of 30 seconds per event:
-        python LoggingApp.py --format syslog --events 50 --rate 30
+        python log_simulator.py --format syslog --events 50 --rate 30
 
         <34>Oct 11 22:14:15 myhost myprogram[12345]: User 'admin' logged in
 
     Generate CEF events with a logging rate of 10 seconds per event and a total running time of 300 seconds:
-        python LoggingApp.py --format cef --rate 10 --runtime 300
+        python log_simulator.py --format cef --rate 10 --runtime 300
 """
 
 import logging
@@ -27,6 +27,7 @@ import time
 import argparse
 import sys
 import random
+import configparser
 
 if sys.version_info < (3, 10):
     print("This script requires Python 3.10 or later")
@@ -46,6 +47,7 @@ def check_facility(facility):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate logs in either syslog or CEF format.")
+    parser.add_argument("--config", type=str, help="Path to a configuration file.")
     parser.add_argument("--format", type=str, choices=["syslog", "cef"], default="syslog", help="The logging format. Default is 'syslog'.")
     parser.add_argument("--facility", type=str, choices=valid_facilities, default="syslog", help="The logging facility. Default is 'syslog'.")
     parser.add_argument("--events", type=int, default=20, help="The total number of events to log. Default is 20.")
@@ -53,6 +55,17 @@ def parse_arguments():
     parser.add_argument("--level", type=str, choices=valid_levels, default="INFO", help="The logging level. Default is 'INFO'.")
     parser.add_argument("--runtime", type=int, default=0, help="The total running time in seconds. If set to 0, the script will run indefinitely. Default is 0.")
     args = parser.parse_args()
+
+    if args.config:
+        config = configparser.ConfigParser()
+        config.read(args.config)
+
+        args.format = config.get('DEFAULT', 'format', fallback=args.format)
+        args.facility = config.get('DEFAULT', 'facility', fallback=args.facility)
+        args.events = config.getint('DEFAULT', 'events', fallback=args.events)
+        args.rate = config.getint('DEFAULT', 'rate', fallback=args.rate)
+        args.level = config.get('DEFAULT', 'level', fallback=args.level)
+        args.runtime = config.getint('DEFAULT', 'runtime', fallback=args.runtime)
 
     if not check_facility(args.facility):
         if args.facility == 'authpriv' and check_facility('security'):
