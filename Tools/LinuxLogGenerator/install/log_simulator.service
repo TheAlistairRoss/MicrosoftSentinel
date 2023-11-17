@@ -1,8 +1,0 @@
-[Unit]
-Description=log_simulator
-
-[Service]
-ExecStart=/usr/bin/python3 /opt/log_simulator/log_simulator.py --config /opt/log_simulator/config.json
-
-[Install]
-WantedBy=multi-user.target
