@@ -1,0 +1,980 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "4927977281051624131"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "uksouth",
+      "metadata": {
+        "description": "Azure Region"
+      }
+    },
+    "basename": {
+      "type": "string",
+      "defaultValue": "sent-adv-logging-workshop",
+      "minLength": 5,
+      "maxLength": 40
+    },
+    "adminUsername": {
+      "type": "string",
+      "defaultValue": "workshopadmin"
+    },
+    "authenticationType": {
+      "type": "string",
+      "defaultValue": "password",
+      "allowedValues": [
+        "sshPublicKey",
+        "password"
+      ],
+      "metadata": {
+        "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
+      }
+    },
+    "adminPasswordOrSSHKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+      }
+    },
+    "deployNetworks": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "deploySentinel": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "deployLinuxLogSource": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "deployDataCollectionRule": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "defaultValue": "[deployment().properties.templateLink.uri]",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      }
+    }
+  },
+  "variables": {
+    "logSourceResourceGroupName": "[format('{0}-log-source-rg', parameters('basename'))]",
+    "NetworkingResourceGroupName": "[format('{0}-networking-rg', parameters('basename'))]",
+    "SentinelResourceGroupName": "[format('{0}-sentinel-rg', parameters('basename'))]"
+  },
+  "resources": [
+    {
+      "condition": "[and(parameters('deployNetworks'), parameters('deployLinuxLogSource'))]",
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2023-07-01",
+      "name": "[variables('logSourceResourceGroupName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "condition": "[parameters('deployNetworks')]",
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2023-07-01",
+      "name": "[variables('NetworkingResourceGroupName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "condition": "[parameters('deploySentinel')]",
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2023-07-01",
+      "name": "[variables('SentinelResourceGroupName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "condition": "[parameters('deployNetworks')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Networking-Deployment', parameters('basename'))]",
+      "resourceGroup": "[variables('NetworkingResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "basename": {
+            "value": "[parameters('basename')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "vnetName": {
+            "value": "[format('{0}-vnet', parameters('basename'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "15622321909640551578"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Location of the resources"
+              }
+            },
+            "basename": {
+              "type": "string",
+              "defaultValue": "sent-adv-logging-workshop"
+            },
+            "vnetName": {
+              "type": "string",
+              "defaultValue": "[format('{0}-logging-vnet', parameters('basename'))]",
+              "metadata": {
+                "description": "Name for Log Source and Log Forwarder Vnets"
+              }
+            }
+          },
+          "variables": {
+            "vnetConfig": {
+              "addressSpacePrefix": "10.0.0.0/24",
+              "subnets": [
+                {
+                  "name": "AzureBastionSubnet",
+                  "addressPrefix": "10.0.0.0/25"
+                },
+                {
+                  "name": "logSource",
+                  "addressPrefix": "10.0.0.128/25"
+                }
+              ]
+            },
+            "bastionHostName": "[format('{0}-bastion', parameters('basename'))]",
+            "bastionSubnetNSGName": "[format('{0}-nsg', variables('bastionHostName'))]",
+            "publicIpAddressName": "[format('{0}-pip', variables('bastionHostName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkSecurityGroups",
+              "apiVersion": "2022-07-01",
+              "name": "[variables('bastionSubnetNSGName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "securityRules": [
+                  {
+                    "name": "AllowHttpsInBound",
+                    "properties": {
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "sourceAddressPrefix": "Internet",
+                      "destinationPortRange": "443",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 100,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "AllowGatewayManagerInBound",
+                    "properties": {
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "sourceAddressPrefix": "GatewayManager",
+                      "destinationPortRange": "443",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 110,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "AllowLoadBalancerInBound",
+                    "properties": {
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "sourceAddressPrefix": "AzureLoadBalancer",
+                      "destinationPortRange": "443",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 120,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "AllowBastionHostCommunicationInBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "sourceAddressPrefix": "VirtualNetwork",
+                      "destinationPortRanges": [
+                        "8080",
+                        "5701"
+                      ],
+                      "destinationAddressPrefix": "VirtualNetwork",
+                      "access": "Allow",
+                      "priority": 130,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "DenyAllInBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationPortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "access": "Deny",
+                      "priority": 1000,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "AllowSshRdpOutBound",
+                    "properties": {
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationPortRanges": [
+                        "22",
+                        "3389"
+                      ],
+                      "destinationAddressPrefix": "VirtualNetwork",
+                      "access": "Allow",
+                      "priority": 100,
+                      "direction": "Outbound"
+                    }
+                  },
+                  {
+                    "name": "AllowAzureCloudCommunicationOutBound",
+                    "properties": {
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationPortRange": "443",
+                      "destinationAddressPrefix": "AzureCloud",
+                      "access": "Allow",
+                      "priority": 110,
+                      "direction": "Outbound"
+                    }
+                  },
+                  {
+                    "name": "AllowBastionHostCommunicationOutBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "sourceAddressPrefix": "VirtualNetwork",
+                      "destinationPortRanges": [
+                        "8080",
+                        "5701"
+                      ],
+                      "destinationAddressPrefix": "VirtualNetwork",
+                      "access": "Allow",
+                      "priority": 120,
+                      "direction": "Outbound"
+                    }
+                  },
+                  {
+                    "name": "AllowGetSessionInformationOutBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "Internet",
+                      "destinationPortRanges": [
+                        "80",
+                        "443"
+                      ],
+                      "access": "Allow",
+                      "priority": 130,
+                      "direction": "Outbound"
+                    }
+                  },
+                  {
+                    "name": "DenyAllOutBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "*",
+                      "access": "Deny",
+                      "priority": 1000,
+                      "direction": "Outbound"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks",
+              "apiVersion": "2023-05-01",
+              "name": "[parameters('vnetName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "addressSpace": {
+                  "addressPrefixes": [
+                    "[variables('vnetConfig').addressSpacePrefix]"
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('bastionSubnetNSGName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('vnetName'), variables('vnetConfig').subnets[0].name)]",
+              "properties": {
+                "networkSecurityGroup": {
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('bastionSubnetNSGName'))]"
+                },
+                "addressPrefix": "[variables('vnetConfig').subnets[0].addressPrefix]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('bastionSubnetNSGName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', parameters('vnetName'), variables('vnetConfig').subnets[1].name)]",
+              "properties": {
+                "addressPrefix": "[variables('vnetConfig').subnets[1].addressPrefix]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/publicIPAddresses",
+              "apiVersion": "2022-07-01",
+              "name": "[variables('publicIpAddressName')]",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "Standard"
+              },
+              "properties": {
+                "publicIPAllocationMethod": "Static"
+              }
+            },
+            {
+              "type": "Microsoft.Network/bastionHosts",
+              "apiVersion": "2022-07-01",
+              "name": "[variables('bastionHostName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "ipConfigurations": [
+                  {
+                    "name": "IpConf",
+                    "properties": {
+                      "subnet": {
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('vnetConfig').subnets[0].name)]"
+                      },
+                      "publicIPAddress": {
+                        "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpAddressName'))]"
+                      }
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpAddressName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('vnetConfig').subnets[0].name)]"
+              ]
+            }
+          ],
+          "outputs": {
+            "LogSourceSubnetResourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('vnetConfig').subnets[1].name)]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('NetworkingResourceGroupName'))]"
+      ]
+    },
+    {
+      "condition": "[parameters('deploySentinel')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Sentinel-Deployment', parameters('basename'))]",
+      "resourceGroup": "[variables('SentinelResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "basename": {
+            "value": "[parameters('basename')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "4965969966943302049"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Location of the resources"
+              }
+            },
+            "basename": {
+              "type": "string",
+              "defaultValue": "sent-adv-logging-workshop"
+            },
+            "deployDataCollectionEndpoint": {
+              "type": "bool",
+              "defaultValue": false
+            }
+          },
+          "variables": {
+            "workspaceName": "[format('{0}-wksp', parameters('basename'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2022-10-01",
+              "name": "[variables('workspaceName')]",
+              "location": "[parameters('location')]"
+            },
+            {
+              "type": "Microsoft.OperationsManagement/solutions",
+              "apiVersion": "2015-11-01-preview",
+              "name": "[format('SecurityInsights({0})', variables('workspaceName'))]",
+              "location": "[parameters('location')]",
+              "plan": {
+                "name": "[format('SecurityInsights({0})', variables('workspaceName'))]",
+                "promotionCode": "",
+                "product": "OMSGallery/SecurityInsights",
+                "publisher": "Microsoft"
+              },
+              "properties": {
+                "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceName'))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceName'))]"
+              ]
+            },
+            {
+              "condition": "[parameters('deployDataCollectionEndpoint')]",
+              "type": "Microsoft.Insights/dataCollectionEndpoints",
+              "apiVersion": "2022-06-01",
+              "name": "[format('{0}-dce', parameters('basename'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "networkAcls": {
+                  "publicNetworkAccess": "Disabled"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "workspaceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceName'))]"
+            },
+            "dataCollectionEndpointId": {
+              "type": "string",
+              "value": "[if(parameters('deployDataCollectionEndpoint'), resourceId('Microsoft.Insights/dataCollectionEndpoints', format('{0}-dce', parameters('basename'))), '')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('SentinelResourceGroupName'))]"
+      ]
+    },
+    {
+      "condition": "[and(parameters('deployDataCollectionRule'), parameters('deploySentinel'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Data-Collection-Rule-Deployment', parameters('basename'))]",
+      "resourceGroup": "[variables('SentinelResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "basename": {
+            "value": "[parameters('basename')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "dataCollectionEndpointId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('SentinelResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Sentinel-Deployment', parameters('basename'))), '2022-09-01').outputs.dataCollectionEndpointId.value]"
+          },
+          "workspaceResourceId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('SentinelResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Sentinel-Deployment', parameters('basename'))), '2022-09-01').outputs.workspaceId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "2007400196039964233"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Location of the resources"
+              }
+            },
+            "workspaceResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Log Analytics Workspace Resource Id"
+              }
+            },
+            "dataCollectionEndpointId": {
+              "type": "string"
+            },
+            "basename": {
+              "type": "string",
+              "defaultValue": "sent-adv-logging-workshop",
+              "minLength": 5,
+              "maxLength": 40
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Insights/dataCollectionRules",
+              "apiVersion": "2022-06-01",
+              "name": "[format('{0}-cef-dcr', parameters('basename'))]",
+              "location": "[parameters('location')]",
+              "kind": "Linux",
+              "properties": {
+                "dataCollectionEndpointId": "[if(not(equals(parameters('dataCollectionEndpointId'), null())), parameters('dataCollectionEndpointId'), null())]",
+                "dataSources": {
+                  "syslog": [
+                    {
+                      "streams": [
+                        "Microsoft-CommonSecurityLog"
+                      ],
+                      "facilityNames": [
+                        "auth",
+                        "authpriv",
+                        "local0"
+                      ],
+                      "logLevels": [
+                        "Info",
+                        "Notice",
+                        "Warning",
+                        "Error",
+                        "Critical",
+                        "Alert",
+                        "Emergency"
+                      ],
+                      "name": "sysLogsDataSource"
+                    }
+                  ]
+                },
+                "destinations": {
+                  "logAnalytics": [
+                    {
+                      "workspaceResourceId": "[parameters('workspaceResourceId')]",
+                      "name": "DataCollectionEvent"
+                    }
+                  ]
+                },
+                "dataFlows": [
+                  {
+                    "streams": [
+                      "Microsoft-CommonSecurityLog"
+                    ],
+                    "destinations": [
+                      "DataCollectionEvent"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('SentinelResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Sentinel-Deployment', parameters('basename')))]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('SentinelResourceGroupName'))]"
+      ]
+    },
+    {
+      "condition": "[and(parameters('deployNetworks'), parameters('deployLinuxLogSource'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Log-Source-Deployment', parameters('basename'))]",
+      "resourceGroup": "[variables('logSourceResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "vmName": {
+            "value": "[parameters('basename')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "authenticationType": {
+            "value": "[parameters('authenticationType')]"
+          },
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrSSHKey')]"
+          },
+          "ubuntuOSVersion": {
+            "value": "Ubuntu-2004"
+          },
+          "securityType": {
+            "value": "TrustedLaunch"
+          },
+          "vmSize": {
+            "value": "Standard_D2s_v3"
+          },
+          "subnetResourceId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('NetworkingResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Networking-Deployment', parameters('basename'))), '2022-09-01').outputs.LogSourceSubnetResourceId.value]"
+          },
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken": {
+            "value": "[parameters('_artifactsLocationSasToken')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "4610878243273636682"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Location of the resources"
+              }
+            },
+            "vmName": {
+              "type": "string",
+              "defaultValue": "LinuxLogSource",
+              "metadata": {
+                "description": "The name of your Virtual Machine."
+              }
+            },
+            "adminUsername": {
+              "type": "string",
+              "metadata": {
+                "description": "Username for the Virtual Machine."
+              }
+            },
+            "authenticationType": {
+              "type": "string",
+              "defaultValue": "password",
+              "allowedValues": [
+                "sshPublicKey",
+                "password"
+              ],
+              "metadata": {
+                "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
+              }
+            },
+            "adminPasswordOrKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+              }
+            },
+            "ubuntuOSVersion": {
+              "type": "string",
+              "defaultValue": "Ubuntu-2004",
+              "allowedValues": [
+                "Ubuntu-1804",
+                "Ubuntu-2004",
+                "Ubuntu-2204"
+              ]
+            },
+            "vmSize": {
+              "type": "string",
+              "defaultValue": "Standard_D2s_v3",
+              "metadata": {
+                "description": "The size of the VM"
+              }
+            },
+            "subnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the subnet in the virtual network"
+              }
+            },
+            "securityType": {
+              "type": "string",
+              "defaultValue": "TrustedLaunch",
+              "allowedValues": [
+                "Standard",
+                "TrustedLaunch"
+              ],
+              "metadata": {
+                "description": "Security Type of the Virtual Machine."
+              }
+            },
+            "deployAMA": {
+              "type": "bool",
+              "defaultValue": true
+            },
+            "_artifactsLocation": {
+              "type": "string",
+              "defaultValue": "[deployment().properties.templateLink.uri]",
+              "metadata": {
+                "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+              }
+            },
+            "_artifactsLocationSasToken": {
+              "type": "securestring",
+              "metadata": {
+                "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+              }
+            }
+          },
+          "variables": {
+            "imageReference": {
+              "Ubuntu-1804": {
+                "publisher": "Canonical",
+                "offer": "UbuntuServer",
+                "sku": "18_04-lts-gen2",
+                "version": "latest"
+              },
+              "Ubuntu-2004": {
+                "publisher": "Canonical",
+                "offer": "0001-com-ubuntu-server-focal",
+                "sku": "20_04-lts-gen2",
+                "version": "latest"
+              },
+              "Ubuntu-2204": {
+                "publisher": "Canonical",
+                "offer": "0001-com-ubuntu-server-jammy",
+                "sku": "22_04-lts-gen2",
+                "version": "latest"
+              }
+            },
+            "networkInterfaceName": "[format('{0}NetInt', parameters('vmName'))]",
+            "osDiskType": "Standard_LRS",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": true,
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                    "keyData": "[parameters('adminPasswordOrKey')]"
+                  }
+                ]
+              }
+            },
+            "securityProfileJson": {
+              "uefiSettings": {
+                "secureBootEnabled": true,
+                "vTpmEnabled": true
+              },
+              "securityType": "[parameters('securityType')]"
+            },
+            "trustedLaunchExtension": {
+              "extensionName": "GuestAttestation",
+              "extensionPublisher": "Microsoft.Azure.Security.LinuxAttestation",
+              "extensionVersion": "1.0",
+              "maaTenantName": "GuestAttestation",
+              "maaEndpoint": "[substring('emptystring', 0, 0)]"
+            },
+            "scriptFolder": "/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config",
+            "scriptFileName": "cloudinit-ub.txt",
+            "scriptParameters": "",
+            "customScriptExtension": {
+              "extensionName": "CustomScriptExtension",
+              "extensionPublisher": "Microsoft.Compute",
+              "extensionVersion": "1.8",
+              "fileUris": [
+                "[uri(parameters('_artifactsLocation'), format('{0}/{1}{2}', variables('scriptFolder'), variables('scriptFileName'), parameters('_artifactsLocationSasToken')))]"
+              ],
+              "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0}/{1} {2}', variables('scriptFolder'), variables('scriptFileName'), variables('scriptParameters'))]"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2023-05-01",
+              "name": "[variables('networkInterfaceName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "subnet": {
+                        "id": "[parameters('subnetResourceId')]"
+                      },
+                      "privateIPAllocationMethod": "Dynamic"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2021-11-01",
+              "name": "[parameters('vmName')]",
+              "location": "[parameters('location')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('vmSize')]"
+                },
+                "storageProfile": {
+                  "osDisk": {
+                    "createOption": "FromImage",
+                    "managedDisk": {
+                      "storageAccountType": "[variables('osDiskType')]"
+                    }
+                  },
+                  "imageReference": "[variables('imageReference')[parameters('ubuntuOSVersion')]]"
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+                    }
+                  ]
+                },
+                "osProfile": {
+                  "computerName": "[parameters('vmName')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "adminPassword": "[parameters('adminPasswordOrKey')]",
+                  "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), null(), variables('linuxConfiguration'))]"
+                },
+                "securityProfile": "[if(equals(parameters('securityType'), 'TrustedLaunch'), variables('securityProfileJson'), null())]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+              ]
+            },
+            {
+              "condition": "[and(equals(parameters('securityType'), 'TrustedLaunch'), and(equals(variables('securityProfileJson').uefiSettings.secureBootEnabled, true()), equals(variables('securityProfileJson').uefiSettings.vTpmEnabled, true())))]",
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2022-03-01",
+              "name": "[format('{0}/{1}', parameters('vmName'), variables('trustedLaunchExtension').extensionName)]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "[variables('trustedLaunchExtension').extensionPublisher]",
+                "type": "[variables('trustedLaunchExtension').extensionName]",
+                "typeHandlerVersion": "[variables('trustedLaunchExtension').extensionVersion]",
+                "autoUpgradeMinorVersion": true,
+                "enableAutomaticUpgrade": true,
+                "settings": {
+                  "AttestationConfig": {
+                    "MaaSettings": {
+                      "maaEndpoint": "[variables('trustedLaunchExtension').maaEndpoint]",
+                      "maaTenantName": "[variables('trustedLaunchExtension').maaTenantName]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "condition": "[parameters('deployAMA')]",
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}', parameters('vmName'), 'AzureMonitorWindowsAgent')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "Microsoft.Azure.Monitor",
+                "type": "AzureMonitorWindowsAgent",
+                "typeHandlerVersion": "1.0",
+                "autoUpgradeMinorVersion": true,
+                "enableAutomaticUpgrade": true
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "condition": "[and(equals(parameters('securityType'), 'TrustedLaunch'), and(equals(variables('securityProfileJson').uefiSettings.secureBootEnabled, true()), equals(variables('securityProfileJson').uefiSettings.vTpmEnabled, true())))]",
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2022-03-01",
+              "name": "[format('{0}/{1}', parameters('vmName'), variables('customScriptExtension').extensionName)]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "[variables('customScriptExtension').extensionPublisher]",
+                "type": "[variables('customScriptExtension').extensionName]",
+                "typeHandlerVersion": "[variables('customScriptExtension').extensionVersion]",
+                "autoUpgradeMinorVersion": true,
+                "enableAutomaticUpgrade": true,
+                "settings": {
+                  "commandToExecute": "[variables('customScriptExtension').commandToExecute]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AzureMonitorWindowsAgent')]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('logSourceResourceGroupName'))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('NetworkingResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Networking-Deployment', parameters('basename')))]"
+      ]
+    }
+  ]
+}
