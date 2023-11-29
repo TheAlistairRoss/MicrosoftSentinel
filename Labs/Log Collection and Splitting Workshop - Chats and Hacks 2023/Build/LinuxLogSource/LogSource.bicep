@@ -192,12 +192,12 @@ resource vmExtension_TrustedLaunch 'Microsoft.Compute/virtualMachines/extensions
 
 resource vmExtension_AMA 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = if (deployAMA) {
   parent: vm
-  name: 'AzureMonitorWindowsAgent'
+  name: 'AzureMonitorLinuxAgent'
   location: location
   properties: {
     publisher: 'Microsoft.Azure.Monitor'
-    type: 'AzureMonitorWindowsAgent'
-    typeHandlerVersion: '1.0'
+    type: 'AzureMonitorLinuxAgent'
+    typeHandlerVersion: '1.28.11'
     autoUpgradeMinorVersion: true
     enableAutomaticUpgrade: true
   }
