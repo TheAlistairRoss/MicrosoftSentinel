@@ -101,17 +101,20 @@ var trustedLaunchExtension = {
 }
 
 var scriptFiles = [
-    '/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config/cloudinit-ub.sh'
-    '/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config/rsyslog-50-default.conf'
+    'LinuxLogSource/Config/config.sh'
+    'LinuxLogSource/Config/rsyslog-50-default.conf'
 ]
 var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
+
+output scriptFiles array = scriptFilesUris
 
 var customScriptExtension = {
   extensionName: 'CustomScript'
   extensionPublisher: 'Microsoft.Azure.Extensions'
   extensionVersion: '2.1'
   fileUris: scriptFilesUris
-  commandToExecute: './cloudinit-ub.sh' 
+  commandToExecute: './config.sh'
+  
 }
 
 
