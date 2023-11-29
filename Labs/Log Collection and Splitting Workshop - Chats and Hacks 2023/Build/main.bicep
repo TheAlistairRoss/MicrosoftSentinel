@@ -31,28 +31,17 @@ param _artifactsLocation string = deployment().properties.templateLink.uri
 @secure()
 param _artifactsLocationSasToken string = ''
 
-var logSourceResourceGroupName = '${basename}-log-source-rg'
-var NetworkingResourceGroupName = '${basename}-networking-rg'
-var SentinelResourceGroupName = '${basename}-sentinel-rg'
 
-resource logSourceResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = if (deployNetworks && deployLinuxLogSource) { 
-  name: logSourceResourceGroupName
-  location: location
-}
-
-resource NetworkingResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = if (deployNetworks) {
-  name: NetworkingResourceGroupName
-  location: location
-}
+var resourceGroupName = '${basename}-sentinel-rg'
 
 resource SentinelResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = if (deploySentinel) {
-  name: SentinelResourceGroupName
+  name: resourceGroupName
   location: location
 }
 
 module NetworkingDeployment 'Network/Networking.bicep' = if (deployNetworks) {
   name: '${basename}-Networking-Deployment'
-  scope: NetworkingResourceGroup
+  scope: SentinelResourceGroup
   params: {
     basename: basename
     location: location
@@ -81,7 +70,7 @@ module DataCollectionRuleDeployment 'Sentinel Data Collection/DataCollectionRule
 
 module LogSourceDeployment 'LinuxLogSource/LogSource.bicep' = if ((deployNetworks) && (deployLinuxLogSource)) {
   name: '${basename}-Log-Source-Deployment'
-  scope: logSourceResourceGroup
+  scope: SentinelResourceGroup
   dependsOn: [
     NetworkingDeployment
   ]

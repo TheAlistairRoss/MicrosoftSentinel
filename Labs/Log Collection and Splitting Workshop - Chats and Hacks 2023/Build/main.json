@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "4766968089434634807"
+      "templateHash": "15335140856418310088"
     }
   },
   "parameters": {
@@ -75,30 +75,14 @@
     }
   },
   "variables": {
-    "logSourceResourceGroupName": "[format('{0}-log-source-rg', parameters('basename'))]",
-    "NetworkingResourceGroupName": "[format('{0}-networking-rg', parameters('basename'))]",
-    "SentinelResourceGroupName": "[format('{0}-sentinel-rg', parameters('basename'))]"
+    "resourceGroupName": "[format('{0}-sentinel-rg', parameters('basename'))]"
   },
   "resources": [
-    {
-      "condition": "[and(parameters('deployNetworks'), parameters('deployLinuxLogSource'))]",
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2023-07-01",
-      "name": "[variables('logSourceResourceGroupName')]",
-      "location": "[parameters('location')]"
-    },
-    {
-      "condition": "[parameters('deployNetworks')]",
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2023-07-01",
-      "name": "[variables('NetworkingResourceGroupName')]",
-      "location": "[parameters('location')]"
-    },
     {
       "condition": "[parameters('deploySentinel')]",
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2023-07-01",
-      "name": "[variables('SentinelResourceGroupName')]",
+      "name": "[variables('resourceGroupName')]",
       "location": "[parameters('location')]"
     },
     {
@@ -106,7 +90,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Networking-Deployment', parameters('basename'))]",
-      "resourceGroup": "[variables('NetworkingResourceGroupName')]",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -413,7 +397,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('NetworkingResourceGroupName'))]"
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('resourceGroupName'))]"
       ]
     },
     {
@@ -421,7 +405,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Sentinel-Deployment', parameters('basename'))]",
-      "resourceGroup": "[variables('SentinelResourceGroupName')]",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -496,7 +480,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('SentinelResourceGroupName'))]"
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('resourceGroupName'))]"
       ]
     },
     {
@@ -504,7 +488,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Data-Collection-Rule-Deployment', parameters('basename'))]",
-      "resourceGroup": "[variables('SentinelResourceGroupName')]",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -518,7 +502,7 @@
             "value": "[parameters('location')]"
           },
           "workspaceResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('SentinelResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Sentinel-Deployment', parameters('basename'))), '2022-09-01').outputs.workspaceId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Sentinel-Deployment', parameters('basename'))), '2022-09-01').outputs.workspaceId.value]"
           }
         },
         "template": {
@@ -608,8 +592,8 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('SentinelResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Sentinel-Deployment', parameters('basename')))]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('SentinelResourceGroupName'))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Sentinel-Deployment', parameters('basename')))]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('resourceGroupName'))]"
       ]
     },
     {
@@ -617,7 +601,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Log-Source-Deployment', parameters('basename'))]",
-      "resourceGroup": "[variables('logSourceResourceGroupName')]",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -649,7 +633,7 @@
             "value": "Standard_D2s_v3"
           },
           "subnetResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('NetworkingResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Networking-Deployment', parameters('basename'))), '2022-09-01').outputs.LogSourceSubnetResourceId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Networking-Deployment', parameters('basename'))), '2022-09-01').outputs.LogSourceSubnetResourceId.value]"
           },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
@@ -951,8 +935,8 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('logSourceResourceGroupName'))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('NetworkingResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Networking-Deployment', parameters('basename')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Networking-Deployment', parameters('basename')))]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('resourceGroupName'))]"
       ]
     }
   ]
