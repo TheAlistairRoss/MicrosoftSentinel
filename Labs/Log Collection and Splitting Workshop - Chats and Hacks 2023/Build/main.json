@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "7368408809704665656"
+      "templateHash": "3734434584139327355"
     }
   },
   "parameters": {
@@ -649,7 +649,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "3546419526423826623"
+              "templateHash": "13021845704364537233"
             }
           },
           "parameters": {
@@ -921,7 +921,6 @@
                 "type": "[variables('customScriptExtension').extensionName]",
                 "typeHandlerVersion": "[variables('customScriptExtension').extensionVersion]",
                 "autoUpgradeMinorVersion": true,
-                "enableAutomaticUpgrade": true,
                 "settings": {
                   "commandToExecute": "[variables('customScriptExtension').commandToExecute]"
                 }
