@@ -197,7 +197,7 @@ resource vmExtension_AMA 'Microsoft.Compute/virtualMachines/extensions@2021-11-0
   properties: {
     publisher: 'Microsoft.Azure.Monitor'
     type: 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: '1.28.11'
+    typeHandlerVersion: '1.27'
     autoUpgradeMinorVersion: true
     enableAutomaticUpgrade: true
   }
