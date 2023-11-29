@@ -100,18 +100,18 @@ var trustedLaunchExtension = {
   maaEndpoint: substring('emptystring', 0, 0)
 }
 
-var scriptFolder = '/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config'
-var scriptFileName = 'cloudinit-ub.txt'
-var scriptParameters = ''
+var scriptFiles = [
+    '/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config/cloudinit-ub.sh'
+    '/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config/rsyslog-50-default.conf'
+]
+var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
 
 var customScriptExtension = {
-  extensionName: 'CustomScriptExtension'
-  extensionPublisher: 'Microsoft.Compute'
-  extensionVersion: '1.8'
-  fileUris:[
-    uri(_artifactsLocation, '${scriptFolder}/${scriptFileName}${_artifactsLocationSasToken}')
-  ]
-  commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${scriptFolder}/${scriptFileName} ${scriptParameters}' 
+  extensionName: 'CustomScript'
+  extensionPublisher: 'Microsoft.Azure.Extensions'
+  extensionVersion: '2.1'
+  fileUris: scriptFilesUris
+  commandToExecute: './cloudinit-ub.sh' 
 }
 
 resource networkInterface 'Microsoft.Network/networkInterfaces@2023-05-01' = {

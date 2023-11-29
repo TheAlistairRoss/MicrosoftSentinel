@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "4927977281051624131"
+      "templateHash": "5674296507021772659"
     }
   },
   "parameters": {
@@ -692,7 +692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "4610878243273636682"
+              "templateHash": "12810662348849284751"
             }
           },
           "parameters": {
@@ -785,6 +785,13 @@
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "scriptFilesUris",
+                "count": "[length(variables('scriptFiles'))]",
+                "input": "[uri(parameters('_artifactsLocation'), format('{0}{1}', variables('scriptFiles')[copyIndex('scriptFilesUris')], parameters('_artifactsLocationSasToken')))]"
+              }
+            ],
             "imageReference": {
               "Ubuntu-1804": {
                 "publisher": "Canonical",
@@ -832,17 +839,16 @@
               "maaTenantName": "GuestAttestation",
               "maaEndpoint": "[substring('emptystring', 0, 0)]"
             },
-            "scriptFolder": "/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config",
-            "scriptFileName": "cloudinit-ub.txt",
-            "scriptParameters": "",
+            "scriptFiles": [
+              "/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config/cloudinit-ub.sh",
+              "/Labs/Log Collection and Splitting Workshop - Chats and Hacks 2023/Build/LinuxLogSource/Config/rsyslog-50-default.conf"
+            ],
             "customScriptExtension": {
-              "extensionName": "CustomScriptExtension",
-              "extensionPublisher": "Microsoft.Compute",
-              "extensionVersion": "1.8",
-              "fileUris": [
-                "[uri(parameters('_artifactsLocation'), format('{0}/{1}{2}', variables('scriptFolder'), variables('scriptFileName'), parameters('_artifactsLocationSasToken')))]"
-              ],
-              "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0}/{1} {2}', variables('scriptFolder'), variables('scriptFileName'), variables('scriptParameters'))]"
+              "extensionName": "CustomScript",
+              "extensionPublisher": "Microsoft.Azure.Extensions",
+              "extensionVersion": "2.1",
+              "fileUris": "[variables('scriptFilesUris')]",
+              "commandToExecute": "./cloudinit-ub.sh"
             }
           },
           "resources": [
