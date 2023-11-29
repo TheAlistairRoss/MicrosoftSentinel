@@ -8,7 +8,18 @@ echo "root         -    nofile         65536" | sudo tee -a /etc/security/limits
   
 # Allow any to have 65536 open files
 echo "*         -    nofile         65536" | sudo tee -a /etc/security/limits.conf
-  
+
+log_file="/var/log/user.log"
+# Check if the log file doesn't exist
+if [ ! -f "$log_file" ]; then
+    # Create the log file
+    touch "$log_file"
+    echo "Log file created."
+    sudo chown syslog: $log_file
+else
+    echo "Log file already exists."
+fi
+
 # copy ./rsyslog-50-default.conf to /etc/rsyslog.d/50-default.conf and force copy
 sudo cp -f ./rsyslog-50-default.conf /etc/rsyslog.d/50-default.conf
 
