@@ -25,7 +25,7 @@ var bastionSubnetNSGName = '${bastionHostName}-nsg'
 var publicIpAddressName = '${bastionHostName}-pip'
 
 
-resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' =   {
+resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' =  {
   name: bastionSubnetNSGName
   location: location
   properties: {

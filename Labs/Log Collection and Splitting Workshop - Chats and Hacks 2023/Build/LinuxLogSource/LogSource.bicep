@@ -215,7 +215,6 @@ resource vmExtension_CustomScript 'Microsoft.Compute/virtualMachines/extensions@
     type: customScriptExtension.extensionName
     typeHandlerVersion: customScriptExtension.extensionVersion
     autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: true
     settings: {
       commandToExecute: customScriptExtension.commandToExecute
     }
