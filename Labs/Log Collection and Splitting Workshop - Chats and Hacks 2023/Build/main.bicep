@@ -75,7 +75,6 @@ module DataCollectionRuleDeployment 'Sentinel Data Collection/DataCollectionRule
   params: {
     basename: basename
     location: location
-    dataCollectionEndpointId: SentinelDeployment.outputs.dataCollectionEndpointId
     workspaceResourceId: SentinelDeployment.outputs.workspaceId
   }
 }
