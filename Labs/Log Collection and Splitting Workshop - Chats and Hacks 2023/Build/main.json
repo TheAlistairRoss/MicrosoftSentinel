@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "5674296507021772659"
+      "templateHash": "4766968089434634807"
     }
   },
   "parameters": {
@@ -442,7 +442,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "4965969966943302049"
+              "templateHash": "6121855619236386089"
             }
           },
           "parameters": {
@@ -456,10 +456,6 @@
             "basename": {
               "type": "string",
               "defaultValue": "sent-adv-logging-workshop"
-            },
-            "deployDataCollectionEndpoint": {
-              "type": "bool",
-              "defaultValue": false
             }
           },
           "variables": {
@@ -489,28 +485,12 @@
               "dependsOn": [
                 "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceName'))]"
               ]
-            },
-            {
-              "condition": "[parameters('deployDataCollectionEndpoint')]",
-              "type": "Microsoft.Insights/dataCollectionEndpoints",
-              "apiVersion": "2022-06-01",
-              "name": "[format('{0}-dce', parameters('basename'))]",
-              "location": "[parameters('location')]",
-              "properties": {
-                "networkAcls": {
-                  "publicNetworkAccess": "Disabled"
-                }
-              }
             }
           ],
           "outputs": {
             "workspaceId": {
               "type": "string",
               "value": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceName'))]"
-            },
-            "dataCollectionEndpointId": {
-              "type": "string",
-              "value": "[if(parameters('deployDataCollectionEndpoint'), resourceId('Microsoft.Insights/dataCollectionEndpoints', format('{0}-dce', parameters('basename'))), '')]"
             }
           }
         }
@@ -537,9 +517,6 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "dataCollectionEndpointId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('SentinelResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Sentinel-Deployment', parameters('basename'))), '2022-09-01').outputs.dataCollectionEndpointId.value]"
-          },
           "workspaceResourceId": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('SentinelResourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Sentinel-Deployment', parameters('basename'))), '2022-09-01').outputs.workspaceId.value]"
           }
@@ -551,7 +528,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "2007400196039964233"
+              "templateHash": "5854581424080948875"
             }
           },
           "parameters": {
@@ -568,9 +545,6 @@
                 "description": "Log Analytics Workspace Resource Id"
               }
             },
-            "dataCollectionEndpointId": {
-              "type": "string"
-            },
             "basename": {
               "type": "string",
               "defaultValue": "sent-adv-logging-workshop",
@@ -586,7 +560,6 @@
               "location": "[parameters('location')]",
               "kind": "Linux",
               "properties": {
-                "dataCollectionEndpointId": "[if(not(equals(parameters('dataCollectionEndpointId'), null())), parameters('dataCollectionEndpointId'), null())]",
                 "dataSources": {
                   "syslog": [
                     {
@@ -692,7 +665,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "12810662348849284751"
+              "templateHash": "8818106511347435354"
             }
           },
           "parameters": {
@@ -940,12 +913,12 @@
               "condition": "[parameters('deployAMA')]",
               "type": "Microsoft.Compute/virtualMachines/extensions",
               "apiVersion": "2021-11-01",
-              "name": "[format('{0}/{1}', parameters('vmName'), 'AzureMonitorWindowsAgent')]",
+              "name": "[format('{0}/{1}', parameters('vmName'), 'AzureMonitorLinuxAgent')]",
               "location": "[parameters('location')]",
               "properties": {
                 "publisher": "Microsoft.Azure.Monitor",
-                "type": "AzureMonitorWindowsAgent",
-                "typeHandlerVersion": "1.0",
+                "type": "AzureMonitorLinuxAgent",
+                "typeHandlerVersion": "1.28.11",
                 "autoUpgradeMinorVersion": true,
                 "enableAutomaticUpgrade": true
               },
@@ -971,7 +944,7 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AzureMonitorWindowsAgent')]"
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AzureMonitorLinuxAgent')]"
               ]
             }
           ]

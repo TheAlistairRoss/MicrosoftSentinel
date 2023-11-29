@@ -4,8 +4,6 @@ param location string = resourceGroup().location
 @description('Log Analytics Workspace Resource Id')
 param workspaceResourceId string
 
-param dataCollectionEndpointId string
-
 @minLength(5)
 @maxLength(40)
 param basename string = 'sent-adv-logging-workshop'
@@ -15,7 +13,6 @@ resource cefDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-0
   location: location
   kind: 'Linux'
   properties: {
-    dataCollectionEndpointId: dataCollectionEndpointId != null ? dataCollectionEndpointId : null
     dataSources: {
       syslog: [
         {
