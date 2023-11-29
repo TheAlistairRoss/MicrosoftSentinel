@@ -1,0 +1,37 @@
+name: Directory Zipper
+
+on:
+  push:
+    paths:
+      - 'tools/LinuxLogGenerator/src/**'
+      - 'tools/LinuxLogGenerator/install/**'
+    branches-ignore:
+      - main
+
+jobs:
+  zip-directory:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Zip directory
+        run: |
+          # Define variables
+          APP_DIRECTORY=tools/LinuxLogGenerator
+          DIRECTORY_TO_ZIP=src
+          OUTPUT_DIRECTORY=build
+          ZIP_FILE_NAME=LinuxLogGenerator.zip
+
+          # Create output directory if it doesn't exist
+          mkdir -p $APP_DIRECTORY/$OUTPUT_DIRECTORY
+
+          # Zip directory
+          cd $APP_DIRECTORY/$DIRECTORY_TO_ZIP
+          zip -r ../../$APP_DIRECTORY/$OUTPUT_DIRECTORY/$ZIP_FILE_NAME .
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Zip directory $DIRECTORY_TO_ZIP"
+          commit_options: "--no-verify"
