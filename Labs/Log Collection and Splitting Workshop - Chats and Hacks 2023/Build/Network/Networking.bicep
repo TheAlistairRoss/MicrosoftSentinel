@@ -6,6 +6,8 @@ param basename string = 'sent-adv-logging-workshop'
 @description('Name for Log Source and Log Forwarder Vnets')
 param vnetName string = '${basename}-logging-vnet'
 
+param deployBasiton bool = false
+
 var vnetConfig = {
   addressSpacePrefix: '10.0.0.0/24'
   subnets: [
@@ -24,7 +26,8 @@ var bastionHostName = '${basename}-bastion'
 var bastionSubnetNSGName = '${bastionHostName}-nsg'
 var publicIpAddressName = '${bastionHostName}-pip'
 
-resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
+
+resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = if (deployBasiton)  {
   name: bastionSubnetNSGName
   location: location
   properties: {
@@ -210,7 +213,7 @@ resource vnetLogSourceSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-
 }
 
 
-resource publicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' = {
+resource publicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' = if (deployBasiton) {
   name: publicIpAddressName
   location: location
   sku: {
@@ -221,7 +224,7 @@ resource publicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' = {
   }
 }
 
-resource bastionHost 'Microsoft.Network/bastionHosts@2022-07-01' = {
+resource bastionHost 'Microsoft.Network/bastionHosts@2022-07-01' = if (deployBasiton) {
   name: bastionHostName
   location: location
   properties: {
