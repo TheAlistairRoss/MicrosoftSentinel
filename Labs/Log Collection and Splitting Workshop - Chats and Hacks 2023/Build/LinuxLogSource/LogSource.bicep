@@ -28,8 +28,6 @@ param ubuntuOSVersion string = 'Ubuntu-2004'
 @description('The size of the VM')
 param vmSize string = 'Standard_D2s_v3'
 
-param deployPublicIP bool = true
-
 @description('Name of the subnet in the virtual network')
 param subnetResourceId string
 
@@ -116,14 +114,6 @@ var customScriptExtension = {
   commandToExecute: './cloudinit-ub.sh' 
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2023-05-01' = if (deployPublicIP) {
-  name: '${vmName}PublicIP'
-  location: location
-  properties: {
-    publicIPAllocationMethod: 'Dynamic'
-  }
-}
-
 
 
 resource networkInterface 'Microsoft.Network/networkInterfaces@2023-05-01' = {
@@ -137,7 +127,6 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2023-05-01' = {
           subnet: {
             id: subnetResourceId
           }
-          publicIPAddress: deployPublicIP ? {id: publicIP.id} : {}
           privateIPAllocationMethod: 'Dynamic'
         }
       }

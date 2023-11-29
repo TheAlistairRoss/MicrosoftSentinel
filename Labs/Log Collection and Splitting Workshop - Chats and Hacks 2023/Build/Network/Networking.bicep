@@ -6,8 +6,6 @@ param basename string = 'sent-adv-logging-workshop'
 @description('Name for Log Source and Log Forwarder Vnets')
 param vnetName string = '${basename}-logging-vnet'
 
-param deployBasiton bool = false
-
 var vnetConfig = {
   addressSpacePrefix: '10.0.0.0/24'
   subnets: [
@@ -27,7 +25,7 @@ var bastionSubnetNSGName = '${bastionHostName}-nsg'
 var publicIpAddressName = '${bastionHostName}-pip'
 
 
-resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = if (deployBasiton)  {
+resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' =   {
   name: bastionSubnetNSGName
   location: location
   properties: {
@@ -196,9 +194,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-05-01' = {
 resource vnetBastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
   name: vnetConfig.subnets[0].name
   properties: {
-    networkSecurityGroup: (deployBasiton) ? {
+    networkSecurityGroup: {
       id: bastionSubnetNSG.id
-    } : {}
+    }
     addressPrefix: vnetConfig.subnets[0].addressPrefix
   }
   parent: vnet
@@ -213,7 +211,7 @@ resource vnetLogSourceSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-
 }
 
 
-resource publicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' = if (deployBasiton) {
+resource publicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' =  {
   name: publicIpAddressName
   location: location
   sku: {
@@ -224,7 +222,7 @@ resource publicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' = if (deployB
   }
 }
 
-resource bastionHost 'Microsoft.Network/bastionHosts@2022-07-01' = if (deployBasiton) {
+resource bastionHost 'Microsoft.Network/bastionHosts@2022-07-01' = {
   name: bastionHostName
   location: location
   properties: {
