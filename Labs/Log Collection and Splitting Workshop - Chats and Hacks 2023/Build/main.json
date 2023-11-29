@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "8953684896258616446"
+      "templateHash": "7368408809704665656"
     }
   },
   "parameters": {
@@ -114,7 +114,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "17168064005326404138"
+              "templateHash": "15622321909640551578"
             }
           },
           "parameters": {
@@ -135,10 +135,6 @@
               "metadata": {
                 "description": "Name for Log Source and Log Forwarder Vnets"
               }
-            },
-            "deployBasiton": {
-              "type": "bool",
-              "defaultValue": false
             }
           },
           "variables": {
@@ -161,7 +157,6 @@
           },
           "resources": [
             {
-              "condition": "[parameters('deployBasiton')]",
               "type": "Microsoft.Network/networkSecurityGroups",
               "apiVersion": "2022-07-01",
               "name": "[variables('bastionSubnetNSGName')]",
@@ -356,7 +351,6 @@
               ]
             },
             {
-              "condition": "[parameters('deployBasiton')]",
               "type": "Microsoft.Network/publicIPAddresses",
               "apiVersion": "2022-07-01",
               "name": "[variables('publicIpAddressName')]",
@@ -369,7 +363,6 @@
               }
             },
             {
-              "condition": "[parameters('deployBasiton')]",
               "type": "Microsoft.Network/bastionHosts",
               "apiVersion": "2022-07-01",
               "name": "[variables('bastionHostName')]",
@@ -656,7 +649,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "5832076827980573515"
+              "templateHash": "3546419526423826623"
             }
           },
           "parameters": {
@@ -712,10 +705,6 @@
               "metadata": {
                 "description": "The size of the VM"
               }
-            },
-            "deployPublicIP": {
-              "type": "bool",
-              "defaultValue": true
             },
             "subnetResourceId": {
               "type": "string",
@@ -821,16 +810,6 @@
           },
           "resources": [
             {
-              "condition": "[parameters('deployPublicIP')]",
-              "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2023-05-01",
-              "name": "[format('{0}PublicIP', parameters('vmName'))]",
-              "location": "[parameters('location')]",
-              "properties": {
-                "publicIPAllocationMethod": "Dynamic"
-              }
-            },
-            {
               "type": "Microsoft.Network/networkInterfaces",
               "apiVersion": "2023-05-01",
               "name": "[variables('networkInterfaceName')]",
@@ -843,15 +822,11 @@
                       "subnet": {
                         "id": "[parameters('subnetResourceId')]"
                       },
-                      "publicIPAddress": "[if(parameters('deployPublicIP'), createObject('id', resourceId('Microsoft.Network/publicIPAddresses', format('{0}PublicIP', parameters('vmName')))), createObject())]",
                       "privateIPAllocationMethod": "Dynamic"
                     }
                   }
                 ]
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', format('{0}PublicIP', parameters('vmName')))]"
-              ]
+              }
             },
             {
               "type": "Microsoft.Compute/virtualMachines",
