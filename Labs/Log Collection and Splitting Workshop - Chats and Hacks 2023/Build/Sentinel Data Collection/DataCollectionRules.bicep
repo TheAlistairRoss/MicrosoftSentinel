@@ -20,9 +20,9 @@ resource cefDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-0
             'Microsoft-CommonSecurityLog'
           ]
           facilityNames: [
+            'user'
             'auth'
             'authpriv'
-            'local0'
           ]
           logLevels: [
             'Info'
