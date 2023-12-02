@@ -109,12 +109,11 @@ var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '$
 output scriptFiles array = scriptFilesUris
 
 var customScriptExtension = {
-  extensionName: 'CustomScript'
-  extensionPublisher: 'Microsoft.Azure.Extensions'
-  extensionVersion: '2.1'
+  name: 'CustomScript'
+  publisher: 'Microsoft.Azure.Extensions'
+  typeHandlerVersion: '2.1'
   fileUris: scriptFilesUris
   commandToExecute: './config.sh'
-  
 }
 
 
@@ -208,18 +207,19 @@ resource vmExtension_AMA 'Microsoft.Compute/virtualMachines/extensions@2021-11-0
   }
 }
 
-resource vmExtension_CustomScript 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = if ((securityType == 'TrustedLaunch') && ((securityProfileJson.uefiSettings.secureBootEnabled == true) && (securityProfileJson.uefiSettings.vTpmEnabled == true))) {
+resource vmExtension_CustomScript 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = {
   parent: vm
-  name: customScriptExtension.extensionName
+  name: customScriptExtension.name
   location: location
   dependsOn: deployAMA ? [vmExtension_AMA] : []
   properties: {
-    publisher: customScriptExtension.extensionPublisher
-    type: customScriptExtension.extensionName
-    typeHandlerVersion: customScriptExtension.extensionVersion
+    publisher: customScriptExtension.publisher
+    type: customScriptExtension.name
+    typeHandlerVersion: customScriptExtension.typeHandlerVersion
     autoUpgradeMinorVersion: true
     settings: {
       commandToExecute: customScriptExtension.commandToExecute
+      fileUris: customScriptExtension.fileUris
     }
   }
 }

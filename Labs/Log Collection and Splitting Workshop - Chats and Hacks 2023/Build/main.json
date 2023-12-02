@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "2464769821659388580"
+      "templateHash": "10408948223889055402"
     }
   },
   "parameters": {
@@ -669,7 +669,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "13077041546842644569"
+              "templateHash": "13091674644318749569"
             }
           },
           "parameters": {
@@ -821,9 +821,9 @@
               "LinuxLogSource/Config/rsyslog-50-default.conf"
             ],
             "customScriptExtension": {
-              "extensionName": "CustomScript",
-              "extensionPublisher": "Microsoft.Azure.Extensions",
-              "extensionVersion": "2.1",
+              "name": "CustomScript",
+              "publisher": "Microsoft.Azure.Extensions",
+              "typeHandlerVersion": "2.1",
               "fileUris": "[variables('scriptFilesUris')]",
               "commandToExecute": "./config.sh"
             }
@@ -931,18 +931,18 @@
               ]
             },
             {
-              "condition": "[and(equals(parameters('securityType'), 'TrustedLaunch'), and(equals(variables('securityProfileJson').uefiSettings.secureBootEnabled, true()), equals(variables('securityProfileJson').uefiSettings.vTpmEnabled, true())))]",
               "type": "Microsoft.Compute/virtualMachines/extensions",
               "apiVersion": "2022-03-01",
-              "name": "[format('{0}/{1}', parameters('vmName'), variables('customScriptExtension').extensionName)]",
+              "name": "[format('{0}/{1}', parameters('vmName'), variables('customScriptExtension').name)]",
               "location": "[parameters('location')]",
               "properties": {
-                "publisher": "[variables('customScriptExtension').extensionPublisher]",
-                "type": "[variables('customScriptExtension').extensionName]",
-                "typeHandlerVersion": "[variables('customScriptExtension').extensionVersion]",
+                "publisher": "[variables('customScriptExtension').publisher]",
+                "type": "[variables('customScriptExtension').name]",
+                "typeHandlerVersion": "[variables('customScriptExtension').typeHandlerVersion]",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
-                  "commandToExecute": "[variables('customScriptExtension').commandToExecute]"
+                  "commandToExecute": "[variables('customScriptExtension').commandToExecute]",
+                  "fileUris": "[variables('customScriptExtension').fileUris]"
                 }
               },
               "dependsOn": [
