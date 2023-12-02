@@ -5,6 +5,9 @@ sudo apt-get update
 
 # install pip3
 sudo apt-get install -y python3-pip
+
+# installl unzip
+sudo apt-get install -y unzip
   
 # Allow root to have 65536 open files
 echo "root         -    nofile         65536" | sudo tee -a /etc/security/limits.conf
