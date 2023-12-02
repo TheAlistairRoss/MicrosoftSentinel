@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9376575297705421947"
+      "templateHash": "2464769821659388580"
     }
   },
   "parameters": {
@@ -126,7 +126,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "7592727416944257343"
+              "templateHash": "6852396530813593041"
             }
           },
           "parameters": {
@@ -157,7 +157,7 @@
             }
           },
           "variables": {
-            "vnetAddressIPv4": "[substring(parameters('vnetAddressIpV4Id'), 0, sub(lastIndexOf(parameters('vnetAddressIpV4Id'), '.'), 1))]",
+            "vnetAddressIPv4": "[substring(parameters('vnetAddressIpV4Id'), 0, lastIndexOf(parameters('vnetAddressIpV4Id'), '.'))]",
             "vnetConfig": {
               "addressSpacePrefix": "[format('{0}.0/24', variables('vnetAddressIPv4'))]",
               "subnets": [
