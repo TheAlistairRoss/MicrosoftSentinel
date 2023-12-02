@@ -85,6 +85,9 @@ module LogSourceDeployment 'LinuxLogSource/LogSource.bicep' = {
     securityType: 'TrustedLaunch'
     vmSize: 'Standard_D2s_v3'
     subnetResourceId: NetworkingDeployment.outputs.LogSourceSubnetResourceId
+    dataCollectionRuleResourceId: [
+      DataCollectionRuleDeployment.outputs.syslogDcrResourceId
+    ]
     _artifactsLocation: _artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
 

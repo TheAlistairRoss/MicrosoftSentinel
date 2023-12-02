@@ -40,6 +40,8 @@ param securityType string = 'TrustedLaunch'
 
 param deployAMA bool = true
 
+param dataCollectionRuleResourceId array = []
+
 @description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
 param _artifactsLocation string = deployment().properties.templateLink.uri
 
@@ -100,9 +102,14 @@ var trustedLaunchExtension = {
   maaEndpoint: substring('emptystring', 0, 0)
 }
 
+var dcrResourceAssociations = [for dcrResourceId in dataCollectionRuleResourceId: {
+  dataCollectionRuleName: '${guid(dcrResourceId)}-dcrassociation'
+  dataCollectionRuleId: dcrResourceId
+}]
+
 var scriptFiles = [
-    'LinuxLogSource/Config/config.sh'
-    'LinuxLogSource/Config/rsyslog-50-default.conf'
+  'LinuxLogSource/Config/config.sh'
+  'LinuxLogSource/Config/rsyslog-50-default.conf'
 ]
 var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
 
@@ -115,8 +122,6 @@ var customScriptExtension = {
   fileUris: scriptFilesUris
   commandToExecute: './config.sh'
 }
-
-
 
 resource networkInterface 'Microsoft.Network/networkInterfaces@2023-05-01' = {
   name: networkInterfaceName
@@ -143,7 +148,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
     type: 'SystemAssigned'
   }
   properties: {
-    
+
     hardwareProfile: {
       vmSize: vmSize
     }
@@ -211,7 +216,7 @@ resource vmExtension_CustomScript 'Microsoft.Compute/virtualMachines/extensions@
   parent: vm
   name: customScriptExtension.name
   location: location
-  dependsOn: deployAMA ? [vmExtension_AMA] : []
+  dependsOn: deployAMA ? [ vmExtension_AMA ] : []
   properties: {
     publisher: customScriptExtension.publisher
     type: customScriptExtension.name
@@ -223,3 +228,12 @@ resource vmExtension_CustomScript 'Microsoft.Compute/virtualMachines/extensions@
     }
   }
 }
+
+resource dcrAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2021-04-01' = [for dcrResourceId in dcrResourceAssociations: {
+  scope: vm
+  name: dcrResourceId.dataCollectionRuleName
+  properties: {
+    dataCollectionRuleId: dcrResourceId.dataCollectionRuleId
+  }
+}
+]

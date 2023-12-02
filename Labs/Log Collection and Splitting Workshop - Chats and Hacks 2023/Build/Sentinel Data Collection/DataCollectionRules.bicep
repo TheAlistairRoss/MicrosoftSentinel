@@ -8,8 +8,8 @@ param workspaceResourceId string
 @maxLength(40)
 param basename string = 'sent-adv-logging-workshop'
 
-resource cefDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
-  name: '${basename}-cef-dcr'
+resource syslogDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
+  name: '${basename}-syslog-dcr'
   location: location
   kind: 'Linux'
   properties: {
@@ -17,7 +17,7 @@ resource cefDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-0
       syslog: [
         {
           streams: [
-            'Microsoft-CommonSecurityLog'
+            'Microsoft-Syslog'
           ]
           facilityNames: [
             'user'
@@ -48,7 +48,7 @@ resource cefDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-0
     dataFlows: [
       {
         streams: [
-          'Microsoft-CommonSecurityLog'
+          'Microsoft-Syslog' 
         ]
         destinations: [
           'DataCollectionEvent'
@@ -57,3 +57,5 @@ resource cefDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-0
     ]
   }
 }
+
+output syslogDcrResourceId string = syslogDataCollectionRule.id

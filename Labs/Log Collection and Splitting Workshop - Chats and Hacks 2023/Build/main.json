@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "1804735029586474010"
+      "templateHash": "10302216199825682567"
     }
   },
   "parameters": {
@@ -512,7 +512,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "9532695677150487984"
+              "templateHash": "4049697473566669900"
             }
           },
           "parameters": {
@@ -540,7 +540,7 @@
             {
               "type": "Microsoft.Insights/dataCollectionRules",
               "apiVersion": "2022-06-01",
-              "name": "[format('{0}-cef-dcr', parameters('basename'))]",
+              "name": "[format('{0}-syslog-dcr', parameters('basename'))]",
               "location": "[parameters('location')]",
               "kind": "Linux",
               "properties": {
@@ -548,7 +548,7 @@
                   "syslog": [
                     {
                       "streams": [
-                        "Microsoft-CommonSecurityLog"
+                        "Microsoft-Syslog"
                       ],
                       "facilityNames": [
                         "user",
@@ -579,7 +579,7 @@
                 "dataFlows": [
                   {
                     "streams": [
-                      "Microsoft-CommonSecurityLog"
+                      "Microsoft-Syslog"
                     ],
                     "destinations": [
                       "DataCollectionEvent"
@@ -588,7 +588,13 @@
                 ]
               }
             }
-          ]
+          ],
+          "outputs": {
+            "syslogDcrResourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Insights/dataCollectionRules', format('{0}-syslog-dcr', parameters('basename')))]"
+            }
+          }
         }
       },
       "dependsOn": [
@@ -634,6 +640,11 @@
           "subnetResourceId": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Networking-Deployment', parameters('basename'))), '2022-09-01').outputs.LogSourceSubnetResourceId.value]"
           },
+          "dataCollectionRuleResourceId": {
+            "value": [
+              "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Data-Collection-Rule-Deployment', parameters('basename'))), '2022-09-01').outputs.syslogDcrResourceId.value]"
+            ]
+          },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
           },
@@ -648,7 +659,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "13091674644318749569"
+              "templateHash": "7550560659197729914"
             }
           },
           "parameters": {
@@ -726,6 +737,10 @@
               "type": "bool",
               "defaultValue": true
             },
+            "dataCollectionRuleResourceId": {
+              "type": "array",
+              "defaultValue": []
+            },
             "_artifactsLocation": {
               "type": "string",
               "defaultValue": "[deployment().properties.templateLink.uri]",
@@ -742,6 +757,14 @@
           },
           "variables": {
             "copy": [
+              {
+                "name": "dcrResourceAssociations",
+                "count": "[length(parameters('dataCollectionRuleResourceId'))]",
+                "input": {
+                  "dataCollectionRuleName": "[format('{0}-dcrassociation', guid(parameters('dataCollectionRuleResourceId')[copyIndex('dcrResourceAssociations')]))]",
+                  "dataCollectionRuleId": "[parameters('dataCollectionRuleResourceId')[copyIndex('dcrResourceAssociations')]]"
+                }
+              },
               {
                 "name": "scriptFilesUris",
                 "count": "[length(variables('scriptFiles'))]",
@@ -928,6 +951,22 @@
                 "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]",
                 "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AzureMonitorLinuxAgent')]"
               ]
+            },
+            {
+              "copy": {
+                "name": "dcrAssociation",
+                "count": "[length(variables('dcrResourceAssociations'))]"
+              },
+              "type": "Microsoft.Insights/dataCollectionRuleAssociations",
+              "apiVersion": "2021-04-01",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
+              "name": "[variables('dcrResourceAssociations')[copyIndex()].dataCollectionRuleName]",
+              "properties": {
+                "dataCollectionRuleId": "[variables('dcrResourceAssociations')[copyIndex()].dataCollectionRuleId]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
             }
           ],
           "outputs": {
@@ -939,6 +978,7 @@
         }
       },
       "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Data-Collection-Rule-Deployment', parameters('basename')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Networking-Deployment', parameters('basename')))]",
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('resourceGroupName'))]"
       ]
