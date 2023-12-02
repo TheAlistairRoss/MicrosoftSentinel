@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "665309724129826143"
+      "templateHash": "9376575297705421947"
     }
   },
   "parameters": {
@@ -18,9 +18,18 @@
     },
     "basename": {
       "type": "string",
-      "defaultValue": "sent-adv-logging-workshop",
+      "defaultValue": "sent-chatsnhacks-workshop",
       "minLength": 5,
       "maxLength": 40
+    },
+    "vnetAddressIPv4Id": {
+      "type": "string",
+      "defaultValue": "10.0.0.0",
+      "minLength": 7,
+      "maxLength": 13,
+      "metadata": {
+        "description": "Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)"
+      }
     },
     "adminUsername": {
       "type": "string",
@@ -105,6 +114,9 @@
           },
           "vnetName": {
             "value": "[format('{0}-vnet', parameters('basename'))]"
+          },
+          "vnetAddressIPv4Id": {
+            "value": "[parameters('vnetAddressIPv4Id')]"
           }
         },
         "template": {
@@ -114,7 +126,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "15622321909640551578"
+              "templateHash": "7592727416944257343"
             }
           },
           "parameters": {
@@ -135,19 +147,27 @@
               "metadata": {
                 "description": "Name for Log Source and Log Forwarder Vnets"
               }
+            },
+            "vnetAddressIPv4Id": {
+              "type": "string",
+              "defaultValue": "10.0.0.0",
+              "metadata": {
+                "description": "Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)"
+              }
             }
           },
           "variables": {
+            "vnetAddressIPv4": "[substring(parameters('vnetAddressIPv4Id'), 0, sub(lastIndexOf(parameters('vnetAddressIPv4Id'), '.'), 1))]",
             "vnetConfig": {
-              "addressSpacePrefix": "10.0.0.0/24",
+              "addressSpacePrefix": "[format('{0}.0/24', variables('vnetAddressIPv4'))]",
               "subnets": [
                 {
                   "name": "AzureBastionSubnet",
-                  "addressPrefix": "10.0.0.0/25"
+                  "addressPrefix": "[format('{0}.0/25', variables('vnetAddressIPv4'))]"
                 },
                 {
                   "name": "logSource",
-                  "addressPrefix": "10.0.0.128/25"
+                  "addressPrefix": "[format('{0}.128/25', variables('vnetAddressIPv4'))]"
                 }
               ]
             },

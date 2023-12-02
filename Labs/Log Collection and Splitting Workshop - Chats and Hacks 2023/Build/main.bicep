@@ -5,7 +5,7 @@ param location string = 'uksouth'
 
 @minLength(5)
 @maxLength(40)
-param basename string = 'sent-adv-logging-workshop'
+param basename string = 'sent-chatsnhacks-workshop'
 
 @description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)') 
 @minLength(7)
