@@ -6,16 +6,24 @@ param basename string = 'sent-adv-logging-workshop'
 @description('Name for Log Source and Log Forwarder Vnets')
 param vnetName string = '${basename}-logging-vnet'
 
+@description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)') 
+param vnetAddressIPv4Id string = '10.0.0.0'
+
+// Remove the last octet from the IP address
+//var vnetAddressIPv4 = vnetAddressIPv4Id.split('.').slice(0,3).join('.')
+
+var vnetAddressIPv4 = substring(vnetAddressIPv4Id,0, lastIndexOf(vnetAddressIPv4Id, '.') -1)
+
 var vnetConfig = {
-  addressSpacePrefix: '10.0.0.0/24'
+  addressSpacePrefix: '${vnetAddressIPv4}.0/24'
   subnets: [
     {
       name: 'AzureBastionSubnet'
-      addressPrefix: '10.0.0.0/25'
+      addressPrefix: '${vnetAddressIPv4}.0/25'
     }
     {
       name: 'logSource'
-      addressPrefix: '10.0.0.128/25'
+      addressPrefix: '${vnetAddressIPv4}.128/25'
     }
   ]
 }
