@@ -24,11 +24,6 @@ param authenticationType string = 'password'
 @secure()
 param adminPasswordOrSSHKey string
 
-param deployNetworks bool = true
-param deploySentinel bool = true
-param deployLinuxLogSource bool = true
-param deployDataCollectionRule bool = true
-
 @description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
 param _artifactsLocation string = deployment().properties.templateLink.uri
 
@@ -39,12 +34,12 @@ param _artifactsLocationSasToken string = ''
 
 var resourceGroupName = '${basename}-sentinel-rg'
 
-resource SentinelResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = if (deploySentinel) {
+resource SentinelResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: resourceGroupName
   location: location
 }
 
-module NetworkingDeployment 'Network/Networking.bicep' = if (deployNetworks) {
+module NetworkingDeployment 'Network/Networking.bicep' = {
   name: '${basename}-Networking-Deployment'
   scope: SentinelResourceGroup
   params: {
@@ -55,7 +50,7 @@ module NetworkingDeployment 'Network/Networking.bicep' = if (deployNetworks) {
   }
 }
 
-module SentinelDeployment 'Sentinel/Sentinel.bicep' = if (deploySentinel) {
+module SentinelDeployment 'Sentinel/Sentinel.bicep' = {
   name: '${basename}-Sentinel-Deployment'
   scope: SentinelResourceGroup
   params: {
@@ -64,7 +59,7 @@ module SentinelDeployment 'Sentinel/Sentinel.bicep' = if (deploySentinel) {
   }
 }
 
-module DataCollectionRuleDeployment 'Sentinel Data Collection/DataCollectionRules.bicep' = if (deployDataCollectionRule && deploySentinel) {
+module DataCollectionRuleDeployment 'Sentinel Data Collection/DataCollectionRules.bicep' = {
   name: '${basename}-Data-Collection-Rule-Deployment'
   scope: SentinelResourceGroup
   params: {
@@ -74,7 +69,7 @@ module DataCollectionRuleDeployment 'Sentinel Data Collection/DataCollectionRule
   }
 }
 
-module LogSourceDeployment 'LinuxLogSource/LogSource.bicep' = if ((deployNetworks) && (deployLinuxLogSource)) {
+module LogSourceDeployment 'LinuxLogSource/LogSource.bicep' = {
   name: '${basename}-Log-Source-Deployment'
   scope: SentinelResourceGroup
   dependsOn: [

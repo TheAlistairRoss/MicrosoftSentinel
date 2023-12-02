@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "10408948223889055402"
+      "templateHash": "1804735029586474010"
     }
   },
   "parameters": {
@@ -52,22 +52,6 @@
         "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
       }
     },
-    "deployNetworks": {
-      "type": "bool",
-      "defaultValue": true
-    },
-    "deploySentinel": {
-      "type": "bool",
-      "defaultValue": true
-    },
-    "deployLinuxLogSource": {
-      "type": "bool",
-      "defaultValue": true
-    },
-    "deployDataCollectionRule": {
-      "type": "bool",
-      "defaultValue": true
-    },
     "_artifactsLocation": {
       "type": "string",
       "defaultValue": "[deployment().properties.templateLink.uri]",
@@ -88,14 +72,12 @@
   },
   "resources": [
     {
-      "condition": "[parameters('deploySentinel')]",
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2023-07-01",
       "name": "[variables('resourceGroupName')]",
       "location": "[parameters('location')]"
     },
     {
-      "condition": "[parameters('deployNetworks')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Networking-Deployment', parameters('basename'))]",
@@ -421,7 +403,6 @@
       ]
     },
     {
-      "condition": "[parameters('deploySentinel')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Sentinel-Deployment', parameters('basename'))]",
@@ -504,7 +485,6 @@
       ]
     },
     {
-      "condition": "[and(parameters('deployDataCollectionRule'), parameters('deploySentinel'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Data-Collection-Rule-Deployment', parameters('basename'))]",
@@ -617,7 +597,6 @@
       ]
     },
     {
-      "condition": "[and(parameters('deployNetworks'), parameters('deployLinuxLogSource'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Log-Source-Deployment', parameters('basename'))]",
