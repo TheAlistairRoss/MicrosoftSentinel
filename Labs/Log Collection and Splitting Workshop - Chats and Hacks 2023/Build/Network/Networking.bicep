@@ -12,7 +12,7 @@ param vnetAddressIpV4Id string = '10.0.0.0'
 // Remove the last octet from the IP address
 //var vnetAddressIPv4 = vnetAddressIpV4Id.split('.').slice(0,3).join('.')
 
-var vnetAddressIPv4 = substring(vnetAddressIpV4Id,0, lastIndexOf(vnetAddressIpV4Id, '.') -1)
+var vnetAddressIPv4 = substring(vnetAddressIpV4Id,0, lastIndexOf(vnetAddressIpV4Id, '.'))
 
 var vnetConfig = {
   addressSpacePrefix: '${vnetAddressIPv4}.0/24'
