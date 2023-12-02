@@ -7,12 +7,12 @@ param basename string = 'sent-adv-logging-workshop'
 param vnetName string = '${basename}-logging-vnet'
 
 @description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)') 
-param vnetAddressIPv4Id string = '10.0.0.0'
+param vnetAddressIpV4Id string = '10.0.0.0'
 
 // Remove the last octet from the IP address
-//var vnetAddressIPv4 = vnetAddressIPv4Id.split('.').slice(0,3).join('.')
+//var vnetAddressIPv4 = vnetAddressIpV4Id.split('.').slice(0,3).join('.')
 
-var vnetAddressIPv4 = substring(vnetAddressIPv4Id,0, lastIndexOf(vnetAddressIPv4Id, '.') -1)
+var vnetAddressIPv4 = substring(vnetAddressIpV4Id,0, lastIndexOf(vnetAddressIpV4Id, '.') -1)
 
 var vnetConfig = {
   addressSpacePrefix: '${vnetAddressIPv4}.0/24'

@@ -22,7 +22,7 @@
       "minLength": 5,
       "maxLength": 40
     },
-    "vnetAddressIPv4Id": {
+    "vnetAddressIpV4Id": {
       "type": "string",
       "defaultValue": "10.0.0.0",
       "minLength": 7,
@@ -115,8 +115,8 @@
           "vnetName": {
             "value": "[format('{0}-vnet', parameters('basename'))]"
           },
-          "vnetAddressIPv4Id": {
-            "value": "[parameters('vnetAddressIPv4Id')]"
+          "vnetAddressIpV4Id": {
+            "value": "[parameters('vnetAddressIpV4Id')]"
           }
         },
         "template": {
@@ -148,7 +148,7 @@
                 "description": "Name for Log Source and Log Forwarder Vnets"
               }
             },
-            "vnetAddressIPv4Id": {
+            "vnetAddressIpV4Id": {
               "type": "string",
               "defaultValue": "10.0.0.0",
               "metadata": {
@@ -157,7 +157,7 @@
             }
           },
           "variables": {
-            "vnetAddressIPv4": "[substring(parameters('vnetAddressIPv4Id'), 0, sub(lastIndexOf(parameters('vnetAddressIPv4Id'), '.'), 1))]",
+            "vnetAddressIPv4": "[substring(parameters('vnetAddressIpV4Id'), 0, sub(lastIndexOf(parameters('vnetAddressIpV4Id'), '.'), 1))]",
             "vnetConfig": {
               "addressSpacePrefix": "[format('{0}.0/24', variables('vnetAddressIPv4'))]",
               "subnets": [

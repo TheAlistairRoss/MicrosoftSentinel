@@ -10,7 +10,7 @@ param basename string = 'sent-chatsnhacks-workshop'
 @description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)') 
 @minLength(7)
 @maxLength(13)
-param vnetAddressIPv4Id string = '10.0.0.0'
+param vnetAddressIpV4Id string = '10.0.0.0'
 
 param adminUsername string = 'workshopadmin'
 @description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
@@ -51,7 +51,7 @@ module NetworkingDeployment 'Network/Networking.bicep' = if (deployNetworks) {
     basename: basename
     location: location
     vnetName: '${basename}-vnet'
-    vnetAddressIPv4Id: vnetAddressIPv4Id
+    vnetAddressIpV4Id: vnetAddressIpV4Id
   }
 }
 
