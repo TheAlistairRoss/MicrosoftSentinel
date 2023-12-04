@@ -29,6 +29,9 @@ fi
 # copy ./rsyslog-50-default.conf to /etc/rsyslog.d/50-default.conf and force copy
 sudo cp -f ./rsyslog-50-default.conf /etc/rsyslog.d/50-default.conf
 
+# restart rsyslog
+sudo systemctl restart rsyslog
+
 # Create force Log Generator Directory in current directory 
 mkdir -p ./LogGenerator
 
