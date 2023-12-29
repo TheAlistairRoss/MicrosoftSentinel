@@ -3,12 +3,20 @@ param location string = resourceGroup().location
 
 param basename string = 'sentinel-bootcamp'
 
-@description('Name for Log Source and Log Forwarder Vnets')
-param vnetName string = '${basename}-logging-vnet'
+@description('Name for the virtual network')
+param vnetName string = '${basename}-vnet'
 
 @description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)')
 param vnetAddressIpV4Id string = '10.0.0.0'
 
+@description('Name for the Log Source Subnet')
+param logSourceSubnetName string = 'logSourceSubnet'
+
+@description('Name for the Log Forwarder Subnet')
+param logForwarderSubnetName string = 'logForwarderSubnet'
+
+@description('Name for the Private Endpoint Subnet')
+param privateEndpointSubnetName string = 'privateEndpointSubnet'
 // Remove the last octet from the IP address
 //var vnetAddressIPv4 = vnetAddressIpV4Id.split('.').slice(0,3).join('.')
 
@@ -18,19 +26,19 @@ var vnetConfig = {
   addressSpacePrefix: '${vnetAddressIPv4}.0/24'
   subnets: {
     azureBastionSubnet: {
-      name: 'AzureBastionSubnet'
+      name: logSourceSubnetName
       addressPrefix: '${vnetAddressIPv4}.0/26'
     }
     logSourceSubnet: {
-      name: 'logSourceSubnet'
+      name: logForwarderSubnetName
       addressPrefix: '${vnetAddressIPv4}.64/27'
     }
     logForwarderSubnet: {
-      name: 'logForwarderSubnet'
+      name: logForwarderSubnetName
       addressPrefix: '${vnetAddressIPv4}.96/27'
     }
     privateEndpointSubnet: {
-      name: 'privateEndpointSubnet'
+      name: privateEndpointSubnetName
       addressPrefix: '${vnetAddressIPv4}.128/27'
     }
   }
@@ -252,5 +260,5 @@ resource vnetLogForwarderSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-
   parent: vnet
 }
 
-output Subnets object = vnetConfig.subnets
+output vNetId string = vnet.id
 
