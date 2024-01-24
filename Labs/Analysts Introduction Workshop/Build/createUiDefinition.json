@@ -9,7 +9,7 @@
                 "type": "Microsoft.Common.TextBox",
                 "label": "Microsoft Sentinel Workspace Name",
                 "toolTip": "Name of the Microsoft Sentinel Log Analytics Workspace",
-                "defaultValue": "",
+                "defaultValue": "sentinel",
                 "constraints": {
                     "required": true
                 }
@@ -19,7 +19,7 @@
                 "type": "Microsoft.Common.TextBox",
                 "label": "Workshop Name",
                 "toolTip": "This is be used in the naming of the workshop deployed resources.",
-                "defaultValue": "",
+                "defaultValue": "analyst-workshop",
                 "constraints": {
                     "required": true,
                     "validations": [

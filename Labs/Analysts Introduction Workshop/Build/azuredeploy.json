@@ -5,16 +5,17 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "9930050344858290340"
+      "templateHash": "10391462074930946485"
     }
   },
   "parameters": {
     "sentinelWorkspaceName": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "sentinel"
     },
     "labName": {
       "type": "string",
-      "defaultValue": "analyst-hunting"
+      "defaultValue": "analyst-workshop"
     },
     "location": {
       "type": "string",

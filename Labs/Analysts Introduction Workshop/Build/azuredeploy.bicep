@@ -1,6 +1,6 @@
-param sentinelWorkspaceName string
+param sentinelWorkspaceName string = 'sentinel'
 
-param labName string = 'analyst-hunting'
+param labName string = 'analyst-workshop'
 
 param location string = resourceGroup().location
 
