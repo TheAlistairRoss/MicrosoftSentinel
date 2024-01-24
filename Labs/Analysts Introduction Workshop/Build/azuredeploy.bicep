@@ -124,36 +124,6 @@ var microsoftLogicAppContributorRoleId = '87a39d53-fc1b-424a-814c-f7e04687dc9e'
 
 var azureSecurityInsightsObjectId = '0afe49b8-0930-494a-a17e-2ac3402ec098'
 
-var roleAssignments = [
-  {
-    roleAssignmentName: guid(applicationObjectId, monitoringMetricsPublisherRoleId, resourceGroup().name)
-    scope: resourceGroup()
-    roleDefinitionId: monitoringMetricsPublisherRoleId
-    principalId: applicationObjectId
-    principalType: 'ServicePrincipal'
-  }
-  {
-    roleAssignmentName: guid(azureSecurityInsightsObjectId, microsoftSentinelAutomationContributorRoleId, resourceGroup().name)
-    scope: resourceGroup()
-    roleDefinitionId: microsoftSentinelAutomationContributorRoleId
-    principalId: applicationObjectId
-    principalType: 'ServicePrincipal'
-  }
-  {
-    roleAssignmentName: guid(userGroupId, microsoftSentinelContributorRoleId, resourceGroup().name)
-    scope: resourceGroup()
-    roleDefinitionId: microsoftSentinelContributorRoleId
-    principalId: userGroupId
-    principalType: 'Group'
-  }
-  {
-    roleAssignmentName: guid(userGroupId, microsoftLogicAppContributorRoleId, resourceGroup().name)
-    scope: resourceGroup()
-    roleDefinitionId: microsoftLogicAppContributorRoleId
-    principalId: userGroupId
-    principalType: 'Group'
-  }
-]
 
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
@@ -507,25 +477,52 @@ resource playbookDemoDisableUserAccount 'Microsoft.Logic/workflows@2019-05-01' =
   }
 }
 
-resource variableRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleAssignment in roleAssignments : {
+resource monitoringMetricsRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   scope: resourceGroup()
-  dependsOn: [
-    playbookDemoDisableUserAccount
-  ]
-  name: roleAssignment.roleAssignmentName
+  name:  guid(applicationObjectId, monitoringMetricsPublisherRoleId, resourceGroup().name)
   properties: {
-    roleDefinitionId: roleAssignment.roleDefinitionId
-    principalId: roleAssignment.principalId
-    principalType: roleAssignment.principalType
+    roleDefinitionId: resourceId('microsoft.authorization/roleDefinitions', monitoringMetricsPublisherRoleId)
+    principalId: applicationObjectId
+    principalType: 'ServicePrincipal'
   }
 }
-]
+
+resource sentinelAutomationRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  scope: resourceGroup()
+  name:  guid(azureSecurityInsightsObjectId, microsoftSentinelAutomationContributorRoleId, resourceGroup().name)
+  properties: {
+    roleDefinitionId: resourceId('microsoft.authorization/roleDefinitions', microsoftSentinelAutomationContributorRoleId)
+    principalId: applicationObjectId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource sentinelContributorGroupRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  scope: resourceGroup()
+  name:  guid(userGroupId, microsoftSentinelContributorRoleId, resourceGroup().name)
+  properties: {
+    roleDefinitionId: resourceId('microsoft.authorization/roleDefinitions', microsoftSentinelContributorRoleId)
+    principalId: userGroupId
+    principalType: 'Group'
+  }
+}
+
+resource logicAppContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  scope: resourceGroup()
+  name:   guid(userGroupId, microsoftLogicAppContributorRoleId, resourceGroup().name)
+  properties: {
+    roleDefinitionId: resourceId('microsoft.authorization/roleDefinitions', microsoftLogicAppContributorRoleId)
+    principalId: userGroupId
+    principalType: 'Group'
+  }
+}
+
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   scope: resourceGroup()
   name:  guid('${resourceGroup().id}/providers/Microsoft.Logic/workflows/${playbookDemoDisableUserAccountName}', microsoftSentinelAutomationContributorRoleId, resourceGroup().name)
   properties: {
-    roleDefinitionId: microsoftSentinelResponderRoleId
+    roleDefinitionId: resourceId('microsoft.authorization/roleDefinitions', microsoftSentinelResponderRoleId)
     principalId:  playbookDemoDisableUserAccount.identity.principalId
     principalType: 'ServicePrincipal'
   }
