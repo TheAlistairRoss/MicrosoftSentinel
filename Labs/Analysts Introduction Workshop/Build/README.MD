@@ -11,13 +11,16 @@
 
 1. Deploy the ARM template:
    1. [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2Fmain%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2Fazuredeploy.json)
-2. Set the Parameters
+   
+    2.  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2FAnalystWorkshopUpdate%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2FAnalystWorkshopUpdate%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2createUiDefinition.json)
+   
+1. Set the Parameters
    1. **Region** - This is automatically set based on your Resource Group location
    2. **Sentinel Workspace Name** - If using an existing workspace in the same resource group, then specify the name here. If a workspace does not exisit, then a new workspace will be created
    3. **Lab Name** - Leave as default (analyst-hunting)
    4. **Location** - Leave as default ([resourceGroup().location])
    5. **Number of Analytic Rules** - This will duplicate the Analytic rules for the number of times specified. Ensure you have enough for each attendee. (Default 15)
-3. Record the outputs from the script:
+1. Record the outputs from the script:
    1. **DCEIngestionEndpoint**: This is the Uri needed for ingesting custom data
    2. **DCRImmutableId**: This is the id of the data collection rule which the endpoint will forward the data to.
 

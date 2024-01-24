@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "3798202993004772334"
+      "version": "0.24.24.22086",
+      "templateHash": "9930050344858290340"
     }
   },
   "parameters": {
@@ -23,6 +23,18 @@
     "numberOfAnalyticRules": {
       "type": "int",
       "defaultValue": 15
+    },
+    "userGroupId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Object Id of the Microsoft Entra security group which the users will be added to"
+      }
+    },
+    "applicationObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Object Id of the Microsoft Entra App Registration"
+      }
     }
   },
   "variables": {
@@ -123,7 +135,43 @@
     "contosoBreakGlassAlertId": "[guid(parameters('sentinelWorkspaceName'), variables('contosoBreakGlassAlertName'))]",
     "AutomationRuleName": "Demo: Add Tasks To Contoso Break Glass Incident",
     "MicrosoftSentinelConnectionName": "Demo-Disable_User_Account-Connection",
-    "playbookDemoDisableUserAccountName": "Demo-Disable_User_Account"
+    "playbookDemoDisableUserAccountName": "Demo-Disable_User_Account",
+    "monitoringMetricsPublisherRoleId": "3913510d-42f4-4e42-8a64-420c390055eb",
+    "microsoftSentinelAutomationContributorRoleId": "f4c81013-99ee-4d62-a7ee-b3f1f648599a",
+    "microsoftSentinelContributorRoleId": "ab8e14d6-4a74-4a29-9ba8-549422addade",
+    "microsoftSentinelResponderRoleId": "3e150937-b8fe-4cfb-8069-0eaf05ecd056",
+    "microsoftLogicAppContributorRoleId": "87a39d53-fc1b-424a-814c-f7e04687dc9e",
+    "azureSecurityInsightsObjectId": "0afe49b8-0930-494a-a17e-2ac3402ec098",
+    "roleAssignments": [
+      {
+        "roleAssignmentName": "[guid(parameters('applicationObjectId'), variables('monitoringMetricsPublisherRoleId'), resourceGroup().name)]",
+        "scope": "[resourceGroup()]",
+        "roleDefinitionId": "[variables('monitoringMetricsPublisherRoleId')]",
+        "principalId": "[parameters('applicationObjectId')]",
+        "principalType": "ServicePrincipal"
+      },
+      {
+        "roleAssignmentName": "[guid(variables('azureSecurityInsightsObjectId'), variables('microsoftSentinelAutomationContributorRoleId'), resourceGroup().name)]",
+        "scope": "[resourceGroup()]",
+        "roleDefinitionId": "[variables('microsoftSentinelAutomationContributorRoleId')]",
+        "principalId": "[parameters('applicationObjectId')]",
+        "principalType": "ServicePrincipal"
+      },
+      {
+        "roleAssignmentName": "[guid(parameters('userGroupId'), variables('microsoftSentinelContributorRoleId'), resourceGroup().name)]",
+        "scope": "[resourceGroup()]",
+        "roleDefinitionId": "[variables('microsoftSentinelContributorRoleId')]",
+        "principalId": "[parameters('userGroupId')]",
+        "principalType": "Group"
+      },
+      {
+        "roleAssignmentName": "[guid(parameters('userGroupId'), variables('microsoftLogicAppContributorRoleId'), resourceGroup().name)]",
+        "scope": "[resourceGroup()]",
+        "roleDefinitionId": "[variables('microsoftLogicAppContributorRoleId')]",
+        "principalId": "[parameters('userGroupId')]",
+        "principalType": "Group"
+      }
+    ]
   },
   "resources": [
     {
@@ -505,6 +553,33 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/connections', variables('MicrosoftSentinelConnectionName'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "variableRoleAssignments",
+        "count": "[length(variables('roleAssignments'))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-04-01-preview",
+      "name": "[variables('roleAssignments')[copyIndex()].name]",
+      "properties": {
+        "roleDefinitionId": "[variables('roleAssignments')[copyIndex()].roleDefinitionId]",
+        "principalId": "[variables('roleAssignments')[copyIndex()].principalId]",
+        "principalType": "[variables('roleAssignments')[copyIndex()].principalType]"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-04-01-preview",
+      "name": "[guid(format('{0}/providers/Microsoft.Logic/workflows/{1}', resourceGroup().id, variables('playbookDemoDisableUserAccountName')), variables('microsoftSentinelAutomationContributorRoleId'), resourceGroup().name)]",
+      "properties": {
+        "roleDefinitionId": "[variables('microsoftSentinelResponderRoleId')]",
+        "principalId": "[reference(resourceId('Microsoft.Logic/workflows', variables('playbookDemoDisableUserAccountName')), '2019-05-01', 'full').identity.principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Logic/workflows', variables('playbookDemoDisableUserAccountName'))]"
       ]
     }
   ],

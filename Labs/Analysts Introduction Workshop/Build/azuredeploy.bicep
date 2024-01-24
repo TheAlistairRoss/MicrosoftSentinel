@@ -6,6 +6,12 @@ param location string = resourceGroup().location
 
 param numberOfAnalyticRules int = 15
 
+@description('The Object Id of the Microsoft Entra security group which the users will be added to')
+param userGroupId string 
+
+@description('The Object Id of the Microsoft Entra App Registration')
+param applicationObjectId string
+
 var dataCollectionEndpointName = '${sentinelWorkspaceName}-${labName}-dce'
 var dataCollectionRuleName = '${sentinelWorkspaceName}-${labName}-dcr'
 var sentinelSolutionName = 'SecurityInsights(${sentinelWorkspaceName})'
@@ -109,6 +115,46 @@ var AutomationRuleName = 'Demo: Add Tasks To Contoso Break Glass Incident'
 
 var MicrosoftSentinelConnectionName = 'Demo-Disable_User_Account-Connection'
 var playbookDemoDisableUserAccountName = 'Demo-Disable_User_Account'
+
+var monitoringMetricsPublisherRoleId = '3913510d-42f4-4e42-8a64-420c390055eb'
+var microsoftSentinelAutomationContributorRoleId = 'f4c81013-99ee-4d62-a7ee-b3f1f648599a'
+var microsoftSentinelContributorRoleId = 'ab8e14d6-4a74-4a29-9ba8-549422addade'
+var microsoftSentinelResponderRoleId = '3e150937-b8fe-4cfb-8069-0eaf05ecd056'
+var microsoftLogicAppContributorRoleId = '87a39d53-fc1b-424a-814c-f7e04687dc9e' 
+
+var azureSecurityInsightsObjectId = '0afe49b8-0930-494a-a17e-2ac3402ec098'
+
+var roleAssignments = [
+  {
+    roleAssignmentName: guid(applicationObjectId, monitoringMetricsPublisherRoleId, resourceGroup().name)
+    scope: resourceGroup()
+    roleDefinitionId: monitoringMetricsPublisherRoleId
+    principalId: applicationObjectId
+    principalType: 'ServicePrincipal'
+  }
+  {
+    roleAssignmentName: guid(azureSecurityInsightsObjectId, microsoftSentinelAutomationContributorRoleId, resourceGroup().name)
+    scope: resourceGroup()
+    roleDefinitionId: microsoftSentinelAutomationContributorRoleId
+    principalId: applicationObjectId
+    principalType: 'ServicePrincipal'
+  }
+  {
+    roleAssignmentName: guid(userGroupId, microsoftSentinelContributorRoleId, resourceGroup().name)
+    scope: resourceGroup()
+    roleDefinitionId: microsoftSentinelContributorRoleId
+    principalId: userGroupId
+    principalType: 'Group'
+  }
+  {
+    roleAssignmentName: guid(userGroupId, microsoftLogicAppContributorRoleId, resourceGroup().name)
+    scope: resourceGroup()
+    roleDefinitionId: microsoftLogicAppContributorRoleId
+    principalId: userGroupId
+    principalType: 'Group'
+  }
+]
+
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: sentinelWorkspaceName
@@ -460,6 +506,28 @@ resource playbookDemoDisableUserAccount 'Microsoft.Logic/workflows@2019-05-01' =
     }
   }
 }
+
+resource variableRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleAssignment in roleAssignments : {
+  scope: resourceGroup()
+  name: roleAssignment.name
+  properties: {
+    roleDefinitionId: roleAssignment.roleDefinitionId
+    principalId: roleAssignment.principalId
+    principalType: roleAssignment.principalType
+  }
+}
+]
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  scope: resourceGroup()
+  name:  guid('${resourceGroup().id}/providers/Microsoft.Logic/workflows/${playbookDemoDisableUserAccountName}', microsoftSentinelAutomationContributorRoleId, resourceGroup().name)
+  properties: {
+    roleDefinitionId: microsoftSentinelResponderRoleId
+    principalId:  playbookDemoDisableUserAccount.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 
 output DCEIngestionEndpoint string = dataCollectionEndpoint.properties.logsIngestion.endpoint
 output DCRImmutableId string = dataCollectionRule.properties.immutableId
