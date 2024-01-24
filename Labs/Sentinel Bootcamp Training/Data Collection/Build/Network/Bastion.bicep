@@ -1,12 +1,19 @@
+// Parameters
+
+@description('Resources Name Prefix. This will be used to name most of the resources and the resource group')
+param basename string = 'sentinel-bootcamp'
+
+
+@description('Resource Id of the Azure Bastion Subnet')
+param subnetResourceId string 
+
 @description('Location of the resources')
 param location string = resourceGroup().location
 
-param basename string = 'sentinel-bootcamp'
-
-@description('Resource Id of the Azure Bastion Subnet')
-param bastionVnetSubnetResourceId string 
+// Variables
 
 var bastionHostName = '${basename}-bastion'
+
 var publicIpAddressName = '${bastionHostName}-pip'
 
 
@@ -30,7 +37,7 @@ resource bastionHost 'Microsoft.Network/bastionHosts@2022-07-01' = {
         name: 'IpConf'
         properties: {
           subnet: {
-            id: bastionVnetSubnetResourceId 
+            id: subnetResourceId 
           }
           publicIPAddress: {
             id: publicIp.id

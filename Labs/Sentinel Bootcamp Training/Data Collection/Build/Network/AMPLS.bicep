@@ -1,18 +1,21 @@
+// Parameters
+
+@description('Resources Name Prefix. This will be used to name most of the resources and the resource group')
 param basename string = 'sentinel-bootcamp'
+
+
+@description('Location of the resources')
 param location string = resourceGroup().location
 
-@description('The resource ID of the virtual network')
-param virtualNetworkId string
+@description('The ResourceId of the subnet to use for the virtual machine')
+param subnetResourceId string
 
-@description('The name of the subnet to use for the private endpoint')
-param privateEndpointSubnetName string
-
+// Variables
 var amplsName = '${basename}-ampls'
-var amplsQueryAccessMode = 'Enabled'
+
 var amplsIngestionAccessMode = 'Enabled'
-var privateEndpointSubnetResourceId = '${virtualNetworkId}/subnets/${privateEndpointSubnetName}'
-var privateEndpointName = '${basename}-ampls-privateEndpoint'
-var privateEndpointNICName = '${privateEndpointName}-nic'
+
+var amplsQueryAccessMode = 'Enabled'
 
 var DNSZones = [
   'privatelink.monitor.azure.com'
@@ -21,6 +24,14 @@ var DNSZones = [
   'privatelink.agentsvc.azure-automation.net'
   'privatelink.blob.${environment().suffixes.storage}'
 ]
+
+var privateEndpointName = '${basename}-ampls-privateEndpoint'
+
+var privateEndpointNICName = '${privateEndpointName}-nic'
+
+var virtualNetworkId = substring(subnetResourceId, 0, indexOf(subnetResourceId, '/subnets/ '))
+
+// Resources
 
 resource ampls 'microsoft.insights/privatelinkscopes@2021-07-01-preview' = {
   name: amplsName
@@ -40,7 +51,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
   tags: {}
   properties: {
     subnet: {
-      id: privateEndpointSubnetResourceId
+      id: subnetResourceId
     }
     customNetworkInterfaceName: privateEndpointNICName
     privateLinkServiceConnections: [
