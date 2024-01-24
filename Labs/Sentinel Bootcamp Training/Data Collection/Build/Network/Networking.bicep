@@ -1,24 +1,35 @@
-@description('Location of the resources')
-param location string = resourceGroup().location
+// Parameters
 
+@description('Resources Name Prefix. This will be used to name most of the resources')
 param basename string = 'sentinel-bootcamp'
 
-@description('Name for the virtual network')
-param vnetName string = '${basename}-vnet'
-
-@description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)')
-param vnetAddressIpV4Id string = '10.0.0.0'
-
-@description('Name for the Log Source Subnet')
-param logSourceSubnetName string = 'logSourceSubnet'
+@description('Location of the resources')
+param location string = resourceGroup().location
 
 @description('Name for the Log Forwarder Subnet')
 param logForwarderSubnetName string = 'logForwarderSubnet'
 
+@description('Name for the Log Source Subnet')
+param logSourceSubnetName string = 'logSourceSubnet'
+
 @description('Name for the Private Endpoint Subnet')
 param privateEndpointSubnetName string = 'privateEndpointSubnet'
-// Remove the last octet from the IP address
-//var vnetAddressIPv4 = vnetAddressIpV4Id.split('.').slice(0,3).join('.')
+
+@description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)')
+param vnetAddressIpV4Id string = '10.0.0.0'
+
+@description('Name for the virtual network')
+param vnetName string = '${basename}-vnet'
+
+// Variables
+
+var bastionSubnetNSGName = '${basename}-AzureBastionSubnet-nsg'
+
+var logSourceSubnetNSGName = '${basename}-${logSourceSubnetName}-nsg'
+
+var logForwarderSubnetNSGName = '${basename}-${logForwarderSubnetName}-nsg'
+
+var privateEndpointSubnetNSGName = '${basename}-${privateEndpointSubnetName}-nsg'
 
 var vnetAddressIPv4 = substring(vnetAddressIpV4Id, 0, lastIndexOf(vnetAddressIpV4Id, '.'))
 
@@ -26,7 +37,7 @@ var vnetConfig = {
   addressSpacePrefix: '${vnetAddressIPv4}.0/24'
   subnets: {
     azureBastionSubnet: {
-      name: logSourceSubnetName
+      name: 'AzureBastionSubnet'
       addressPrefix: '${vnetAddressIPv4}.0/26'
     }
     logSourceSubnet: {
@@ -44,10 +55,8 @@ var vnetConfig = {
   }
 }
 
-var bastionSubnetNSGName = '${basename}-azurebastionsubnet-nsg'
-var logSourceSubnetNSGName = '${basename}-logsourcesubnet-nsg'
-var logForwarderSubnetNSGName = '${basename}-logforwardersubnet-nsg'
-
+// Resources
+// Resources - Network Security Groups
 resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   name: bastionSubnetNSGName
   location: location
@@ -199,6 +208,49 @@ resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' =
   }
 }
 
+resource logForwarderSubnetNSG 'Microsoft.Network/networkSecurityGroups@2023-06-01' = {
+  name: logForwarderSubnetNSGName
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'Allow-Syslog'
+        properties: {
+          protocol: 'TCP'
+          sourcePortRange: '*'
+          destinationPortRange: '514'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 1000
+          direction: 'Inbound'
+          sourcePortRanges: []
+          destinationPortRanges: []
+          sourceAddressPrefixes: []
+          destinationAddressPrefixes: []
+        }
+      }
+      {
+        name: 'Allow-SSH'
+        properties: {
+          protocol: 'TCP'
+          sourcePortRange: '*'
+          destinationPortRange: '22'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 1001
+          direction: 'Inbound'
+          sourcePortRanges: []
+          destinationPortRanges: []
+          sourceAddressPrefixes: []
+          destinationAddressPrefixes: []
+        }
+      }
+    ]
+  }
+}
+
 resource logSourceSubnetNSG 'Microsoft.Network/networkSecurityGroups@2023-06-01' = {
   name: logSourceSubnetNSGName
   location: location
@@ -207,14 +259,15 @@ resource logSourceSubnetNSG 'Microsoft.Network/networkSecurityGroups@2023-06-01'
   }
 }
 
-resource logForwarderSubnetNSG 'Microsoft.Network/networkSecurityGroups@2023-06-01' = {
-  name: logForwarderSubnetNSGName
+resource privateEndpointSubnetNSG 'Microsoft.Network/networkSecurityGroups@2023-06-01' = {
+  name: privateEndpointSubnetNSGName
   location: location
   properties: {
     securityRules: []
   }
 }
 
+// Resources - Virtual Network
 resource vnet 'Microsoft.Network/virtualNetworks@2023-05-01' = {
   name: vnetName
   location: location
@@ -227,6 +280,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-05-01' = {
   }
 }
 
+// Resources - Virtual Network Subnets
 resource vnetBastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
   name: vnetConfig.subnets.azureBastionSubnet.name
   properties: {
@@ -234,17 +288,6 @@ resource vnetBastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01
       id: bastionSubnetNSG.id
     }
     addressPrefix: vnetConfig.subnets.azureBastionSubnet.addressPrefix
-  }
-  parent: vnet
-}
-
-resource vnetLogSourceSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
-  name: vnetConfig.subnets.logSourceSubnet.name
-  properties: {
-    networkSecurityGroup: {
-      id: logSourceSubnetNSG.id
-    }
-    addressPrefix: vnetConfig.subnets.logSourceSubnet.addressPrefix
   }
   parent: vnet
 }
@@ -260,5 +303,31 @@ resource vnetLogForwarderSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-
   parent: vnet
 }
 
-output vNetId string = vnet.id
+resource vnetLogSourceSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
+  name: vnetConfig.subnets.logSourceSubnet.name
+  properties: {
+    networkSecurityGroup: {
+      id: logSourceSubnetNSG.id
+    }
+    addressPrefix: vnetConfig.subnets.logSourceSubnet.addressPrefix
+  }
+  parent: vnet
+}
 
+resource vnetPrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
+  name: vnetConfig.subnets.privateEndpointSubnet.name
+  properties: {
+    networkSecurityGroup: {
+      id: logSourceSubnetNSG.id
+    }
+    addressPrefix: vnetConfig.subnets.privateEndpointSubnet.addressPrefix
+  }
+  parent: vnet
+}
+
+// Outputs
+output virtualNetworkId string = vnet.id
+output azureBastionSubnetId string = vnetBastionSubnet.id
+output logForwarderSubnetId string = vnetLogForwarderSubnet.id
+output logSourceSubnetId string = vnetLogSourceSubnet.id
+output privateEndpointSubnetId string = vnetPrivateEndpointSubnet.id

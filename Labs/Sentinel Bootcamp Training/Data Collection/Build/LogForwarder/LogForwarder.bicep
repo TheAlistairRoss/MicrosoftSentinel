@@ -1,10 +1,8 @@
-@description('Location of the resources')
-param location string = resourceGroup().location
+// Parameters
 
-param basename string = 'sentinel-bootcamp'
-
-@description('The name of your Virtual Machine.')
-param vmssName string = 'LinuxLogForwarder'
+@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
+@secure()
+param adminPasswordOrKey string
 
 @description('Username for the Virtual Machine.')
 param adminUsername string
@@ -16,30 +14,28 @@ param adminUsername string
 ])
 param authenticationType string = 'password'
 
-@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
-@secure()
-param adminPasswordOrKey string
+@description('The maximum number of VMs in the scale set')
+param autoscaleMax int = 3
+
+@description('The minimum number of VMs in the scale set')
+param autoscaleMin int = 1
+
+@description('Resources Name Prefix')
+param basename string = 'sentinel-bootcamp'
+
+@description('The data collection rule resource ids to associate with the VM')
+param dataCollectionRuleResourceIds array = []
+
+@description('Location of the resources')
+param location string = resourceGroup().location
 
 @allowed([
   'Ubuntu-1804'
   'Ubuntu-2004'
   'Ubuntu-2204'
 ])
-param ubuntuOSVersion string = 'Ubuntu-2004'
-
-@description('The size of the VM')
-param vmSize string = 'Standard_D2s_v3'
-
-@description('The minimum number of VMs in the scale set')
-param autoscaleMin int = 1
-
-@description('The maximum number of VMs in the scale set')
-param autoscaleMax int = 3
-@description('Name of the virtual network')
-param vnetResourceId string
-
-@description('Name of the subnet in the virtual network')
-param subnetName string
+@description('The version of the Ubuntu to use for the Virtual Machine Scale Set')
+param OSVersion string = 'Ubuntu-2004'
 
 @description('Security Type of the Virtual Machine.')
 @allowed([
@@ -48,9 +44,14 @@ param subnetName string
 ])
 param securityType string = 'TrustedLaunch'
 
-param deployAMA bool = true
+@description('The ResourceId of the subnet to use for the virtual machine')
+param subnetResourceId string
 
-param dataCollectionRuleResourceId array = []
+@description('The name of your Virtual Machine.')
+param vmssName string = 'LinuxLogForwarder'
+
+@description('The size of the VM')
+param vmssSize string = 'Standard_D2s_v3'
 
 @description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
 param _artifactsLocation string = deployment().properties.templateLink.uri
@@ -58,6 +59,18 @@ param _artifactsLocation string = deployment().properties.templateLink.uri
 @description('The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated.')
 @secure()
 param _artifactsLocationSasToken string
+
+// Variables
+
+var autoscaleName = '${basename}-autoscale'
+
+var customScriptExtension = {
+  name: 'CustomScript'
+  publisher: 'Microsoft.Azure.Extensions'
+  typeHandlerVersion: '2.1'
+  fileUris: scriptFilesUris
+  commandToExecute: './config.sh'
+}
 
 var imageReference = {
   'Ubuntu-1804': {
@@ -80,17 +93,6 @@ var imageReference = {
   }
 }
 
-var vmssOSdiskType = 'Standard_LRS'
-
-var subnetResourceId = '${vnetResourceId}/subnets/${subnetName}'
-
-var vmssNICName = '${vmssName}-nic'
-
-var storageName = toLower(replace('${basename}diag', '-', ''))
-var autoscaleName = '${basename}-autoscale'
-var loadbalancerName = '${basename}-lb'
-var maxPortRange = ((autoscaleMax <= 9) ? '5000' : '500')
-
 var linuxPasswordConfiguration = {
   disablePasswordAuthentication: false
   provisionVMAgent: true
@@ -109,13 +111,18 @@ var linuxSSHConfiguration = {
   }
 }
 
+var loadbalancerName = '${basename}-lb'
+
+var maxPortRange = ((autoscaleMax <= 9) ? '5000' : '500')
+
+var loadBalancerIPAddress= '${basename}-lb-nic'
+
 var scriptFiles = [
   'LinuxLogForwarder/Config/config.sh'
   'LinuxLogForwarder/Config/rsyslog-50-default.conf'
 ]
-var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
 
-output scriptFiles array = scriptFilesUris
+var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
 
 var securityProfileJson = {
   uefiSettings: {
@@ -125,6 +132,8 @@ var securityProfileJson = {
   securityType: securityType
 }
 
+var storageAccountName = toLower(replace('${basename}diag', '-', ''))
+
 var trustedLaunchExtension = {
   extensionName: 'GuestAttestation'
   extensionPublisher: 'Microsoft.Azure.Security.LinuxAttestation'
@@ -133,18 +142,18 @@ var trustedLaunchExtension = {
   maaEndpoint: substring('emptystring', 0, 0)
 }
 
-var customScriptExtension = {
-  name: 'CustomScript'
-  publisher: 'Microsoft.Azure.Extensions'
-  typeHandlerVersion: '2.1'
-  fileUris: scriptFilesUris
-  commandToExecute: './config.sh'
+var vmssNICName = '${vmssName}-nic'
+
+var vmssOSdiskType = 'Standard_LRS'
+
+// Resources
+
+resource existingSubnet  'Microsoft.Network/virtualNetworks/subnets@2023-05-01' existing = {
+  name: '${split(subnetResourceId, '/')[8]}/${split(subnetResourceId, '/')[10]}'
 }
 
-
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
-  name: storageName
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+  name: storageAccountName
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -155,7 +164,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   }
 }
 
-resource loadbalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
+resource loadbalancer 'Microsoft.Network/loadBalancers@2023-06-01' = {
   name: loadbalancerName
   location: location
   sku: {
@@ -169,6 +178,7 @@ resource loadbalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
         properties: {
           privateIPAddressVersion: 'IPv4'
           privateIPAllocationMethod: 'Dynamic'
+          privateIPAddress:  '${substring(existingSubnet.properties.addressPrefix, 0, lastIndexOf(existingSubnet.properties.addressPrefix, '.'))}.100'
           subnet: {
             id: subnetResourceId
           }
@@ -261,11 +271,11 @@ resource loadbalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
   }
 }
 
-resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-03-01' = {
+resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
   name: vmssName
   location: location
   sku: {
-    name: vmSize
+    name: vmssSize
     tier: 'Standard'
     capacity: autoscaleMin
   }
@@ -291,7 +301,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-03-01' = {
           }
           diskSizeGB: 32
         }
-        imageReference: imageReference[ubuntuOSVersion]
+        imageReference: imageReference[OSVersion]
       }
       networkProfile: {
         networkInterfaceConfigurations: [
@@ -343,13 +353,13 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-03-01' = {
   }
 }
 
-resource autoscale 'microsoft.insights/autoscalesettings@2014-04-01' = {
+resource autoscale 'Microsoft.Insights/autoscalesettings@2022-10-01' = {
   name: autoscaleName
   location: location
   properties: {
     profiles: [
       {
-        name: 'Profile1'
+        name: 'CPU Scaling'
         capacity: {
           minimum: '${autoscaleMin}'
           maximum: '${autoscaleMax}'
@@ -407,7 +417,8 @@ resource autoscale 'microsoft.insights/autoscalesettings@2014-04-01' = {
   }
 }
 
-resource vmssLinux_AzureMonitorAgent 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-03-01' = {
+// If there are any 
+resource vmssLinux_AzureMonitorAgent 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = if (!empty((dataCollectionRuleResourceIds))) {
   parent: vmss
   name: 'AzureMonitorLinuxAgent'
   properties: {
@@ -418,7 +429,7 @@ resource vmssLinux_AzureMonitorAgent 'Microsoft.Compute/virtualMachineScaleSets/
   }
 }
 
-resource vmssLinux_TrustedLaunch 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-03-01' = if ((securityType == 'TrustedLaunch') && ((securityProfileJson.uefiSettings.secureBootEnabled == true) && (securityProfileJson.uefiSettings.vTpmEnabled == true))) {
+resource vmssLinux_TrustedLaunch 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = if ((securityType == 'TrustedLaunch') && ((securityProfileJson.uefiSettings.secureBootEnabled == true) && (securityProfileJson.uefiSettings.vTpmEnabled == true))) {
   parent: vmss
   name: trustedLaunchExtension.extensionName
   properties: {
@@ -438,10 +449,10 @@ resource vmssLinux_TrustedLaunch 'Microsoft.Compute/virtualMachineScaleSets/exte
   }
 }
 
-resource vmssLinux_CustomScript 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-03-01' = {
+resource vmssLinux_CustomScript 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = {
   parent: vmss
   name: customScriptExtension.name
-  dependsOn: deployAMA ? [vmssLinux_AzureMonitorAgent] : []
+  dependsOn:  (!empty((dataCollectionRuleResourceIds))) ? [vmssLinux_AzureMonitorAgent] : []
   properties: {
     publisher: customScriptExtension.publisher
     type: customScriptExtension.name
@@ -453,3 +464,13 @@ resource vmssLinux_CustomScript 'Microsoft.Compute/virtualMachineScaleSets/exten
     }
   }
 }
+
+// If there are any data collection rules to associate with the VM, create the association
+resource dcrAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2022-06-01' = [for (dcrResourceId, i) in dataCollectionRuleResourceIds: {
+  scope: vmss
+  name: '${uniqueString(vmss.id, dataCollectionRuleResourceIds[i])}-dcrassociation)}'
+  properties: {
+    dataCollectionRuleId: dataCollectionRuleResourceIds[i]
+  }
+}
+]

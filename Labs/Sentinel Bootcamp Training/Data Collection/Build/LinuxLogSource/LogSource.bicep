@@ -1,8 +1,8 @@
-@description('Location of the resources')
-param location string = resourceGroup().location
+// Parameters
 
-@description('The name of your Virtual Machine.')
-param vmName string = 'LinuxLogSource'
+@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
+@secure()
+param adminPasswordOrKey string
 
 @description('Username for the Virtual Machine.')
 param adminUsername string
@@ -14,22 +14,19 @@ param adminUsername string
 ])
 param authenticationType string = 'password'
 
-@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
-@secure()
-param adminPasswordOrKey string
+@description('Resources Name Prefix')
+param basename string = 'sentinel-bootcamp'
+
+@description('Location of the resources')
+param location string = resourceGroup().location
 
 @allowed([
   'Ubuntu-1804'
   'Ubuntu-2004'
   'Ubuntu-2204'
 ])
-param ubuntuOSVersion string = 'Ubuntu-2004'
-
-@description('The size of the VM')
-param vmSize string = 'Standard_D2s_v3'
-
-@description('Name of the subnet in the virtual network')
-param subnetResourceId string
+@description('The version of the Ubuntu to use for the Virtual Machine.')
+param osVersion string = 'Ubuntu-2004'
 
 @description('Security Type of the Virtual Machine.')
 @allowed([
@@ -38,9 +35,14 @@ param subnetResourceId string
 ])
 param securityType string = 'TrustedLaunch'
 
-param deployAMA bool = true
+@description('The Resource Id of the subnet to use for the virtual machine')
+param subnetResourceId string
 
-param dataCollectionRuleResourceId array = []
+@description('The name of your Virtual Machine.')
+param vmName string = 'LinuxLogSource'
+
+@description('The size of the VM')
+param vmSize string = 'Standard_D2s_v3'
 
 @description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
 param _artifactsLocation string = deployment().properties.templateLink.uri
@@ -48,6 +50,16 @@ param _artifactsLocation string = deployment().properties.templateLink.uri
 @description('The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated.')
 @secure()
 param _artifactsLocationSasToken string
+
+// Variables
+
+var customScriptExtension = {
+  name: 'CustomScript'
+  publisher: 'Microsoft.Azure.Extensions'
+  typeHandlerVersion: '2.1'
+  fileUris: scriptFilesUris
+  commandToExecute: './config.sh'
+}
 
 var imageReference = {
   'Ubuntu-1804': {
@@ -70,10 +82,6 @@ var imageReference = {
   }
 }
 
-var networkInterfaceName = '${vmName}NetInt'
-
-var osDiskType = 'Standard_LRS'
-
 var linuxConfiguration = {
   disablePasswordAuthentication: true
   ssh: {
@@ -86,6 +94,15 @@ var linuxConfiguration = {
   }
 }
 
+var osDiskType = 'Standard_LRS'
+
+var scriptFiles = [
+  'LinuxLogSource/Config/config.sh'
+  'LinuxLogSource/Config/rsyslog-50-default.conf'
+]
+
+var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
+
 var securityProfileJson = {
   uefiSettings: {
     secureBootEnabled: true
@@ -93,6 +110,8 @@ var securityProfileJson = {
   }
   securityType: securityType
 }
+
+var storageAccountName = toLower(replace('${basename}diag', '-', ''))
 
 var trustedLaunchExtension = {
   extensionName: 'GuestAttestation'
@@ -102,29 +121,23 @@ var trustedLaunchExtension = {
   maaEndpoint: substring('emptystring', 0, 0)
 }
 
-var dcrResourceAssociations = [for dcrResourceId in dataCollectionRuleResourceId: {
-  dataCollectionRuleName: '${guid(dcrResourceId)}-dcrassociation'
-  dataCollectionRuleId: dcrResourceId
-}]
+var vmNetworkInterfaceName = '${vmName}NetInt'
 
-var scriptFiles = [
-  'LinuxLogSource/Config/config.sh'
-  'LinuxLogSource/Config/rsyslog-50-default.conf'
-]
-var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
-
-output scriptFiles array = scriptFilesUris
-
-var customScriptExtension = {
-  name: 'CustomScript'
-  publisher: 'Microsoft.Azure.Extensions'
-  typeHandlerVersion: '2.1'
-  fileUris: scriptFilesUris
-  commandToExecute: './config.sh'
+// Resources
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    supportsHttpsTrafficOnly: true
+  }
 }
 
-resource networkInterface 'Microsoft.Network/networkInterfaces@2023-05-01' = {
-  name: networkInterfaceName
+resource vmNetworkInterface 'Microsoft.Network/networkInterfaces@2023-05-01' = {
+  name: vmNetworkInterfaceName
   location: location
   properties: {
     ipConfigurations: [
@@ -159,14 +172,20 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
           storageAccountType: osDiskType
         }
       }
-      imageReference: imageReference[ubuntuOSVersion]
+      imageReference: imageReference[osVersion]
     }
     networkProfile: {
       networkInterfaces: [
         {
-          id: networkInterface.id
+          id: vmNetworkInterface.id
         }
       ]
+    }
+    diagnosticsProfile: {
+      bootDiagnostics: {
+        enabled: true
+        storageUri: storageAccount.properties.primaryEndpoints.blob
+      }
     }
     osProfile: {
       computerName: vmName
@@ -199,24 +218,10 @@ resource vmExtension_TrustedLaunch 'Microsoft.Compute/virtualMachines/extensions
   }
 }
 
-resource vmExtension_AMA 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = if (deployAMA) {
-  parent: vm
-  name: 'AzureMonitorLinuxAgent'
-  location: location
-  properties: {
-    publisher: 'Microsoft.Azure.Monitor'
-    type: 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: '1.27'
-    autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: true
-  }
-}
-
 resource vmExtension_CustomScript 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = {
   parent: vm
   name: customScriptExtension.name
   location: location
-  dependsOn: deployAMA ? [ vmExtension_AMA ] : []
   properties: {
     publisher: customScriptExtension.publisher
     type: customScriptExtension.name
@@ -229,11 +234,3 @@ resource vmExtension_CustomScript 'Microsoft.Compute/virtualMachines/extensions@
   }
 }
 
-resource dcrAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2021-04-01' = [for dcrResourceId in dcrResourceAssociations: {
-  scope: vm
-  name: dcrResourceId.dataCollectionRuleName
-  properties: {
-    dataCollectionRuleId: dcrResourceId.dataCollectionRuleId
-  }
-}
-]
