@@ -14,7 +14,7 @@
    
     2.  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2FAnalystWorkshopUpdate%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2FAnalystWorkshopUpdate%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2FcreateUiDefinition.json)
      
-    1. <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2FAnalystWorkshopUpdate%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2FAnalystWorkshopUpdate%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2FcreateUiDefinition.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2FAnalystWorkshopUpdate%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2FAnalystWorkshopUpdate%2FLabs%2FAnalysts%2520Introduction%2520Workshop%2FBuild%2FcreateUiDefinition.json" target="_blank">
   <img src="https://aka.ms/deploytoazurebutton"/>
 </a>
    
