@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "10391462074930946485"
+      "templateHash": "7327092288855209596"
     }
   },
   "parameters": {
@@ -563,7 +563,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-04-01-preview",
-      "name": "[variables('roleAssignments')[copyIndex()].name]",
+      "name": "[variables('roleAssignments')[copyIndex()].roleAssignmentName]",
       "properties": {
         "roleDefinitionId": "[variables('roleAssignments')[copyIndex()].roleDefinitionId]",
         "principalId": "[variables('roleAssignments')[copyIndex()].principalId]",
