@@ -509,6 +509,9 @@ resource playbookDemoDisableUserAccount 'Microsoft.Logic/workflows@2019-05-01' =
 
 resource variableRoleAssignments 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for roleAssignment in roleAssignments : {
   scope: resourceGroup()
+  dependsOn: [
+    playbookDemoDisableUserAccount
+  ]
   name: roleAssignment.roleAssignmentName
   properties: {
     roleDefinitionId: roleAssignment.roleDefinitionId

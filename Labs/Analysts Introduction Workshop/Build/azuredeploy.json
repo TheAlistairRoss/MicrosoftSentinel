@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "7327092288855209596"
+      "templateHash": "3012794142458793358"
     }
   },
   "parameters": {
@@ -568,7 +568,10 @@
         "roleDefinitionId": "[variables('roleAssignments')[copyIndex()].roleDefinitionId]",
         "principalId": "[variables('roleAssignments')[copyIndex()].principalId]",
         "principalType": "[variables('roleAssignments')[copyIndex()].principalType]"
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Logic/workflows', variables('playbookDemoDisableUserAccountName'))]"
+      ]
     },
     {
       "type": "Microsoft.Authorization/roleAssignments",
