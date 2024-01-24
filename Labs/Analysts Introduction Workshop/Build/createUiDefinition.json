@@ -106,7 +106,7 @@
             "labName": "[basics('labName')]",
             "numberOfAnalyticRules": "[basics('numberOfAnalyticRules')]",
             "userGroupId": "[basics('userGroupId')]",
-            "applicationObjectId": "[basics('ServicePrincipal').objectId]"
+            "applicationObjectId": "[first(basics('ServicePrincipal').objectId)]"
         }
     }
 }
