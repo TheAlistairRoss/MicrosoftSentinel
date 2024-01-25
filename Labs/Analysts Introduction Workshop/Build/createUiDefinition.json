@@ -1,0 +1,112 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "basics": [
+            {
+                "name": "sentinelWorkspaceName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Microsoft Sentinel Workspace Name",
+                "toolTip": "Name of the Microsoft Sentinel Log Analytics Workspace",
+                "defaultValue": "sentinel",
+                "constraints": {
+                    "required": true
+                }
+            },
+            {
+                "name": "labName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Workshop Name",
+                "toolTip": "This is be used in the naming of the workshop deployed resources.",
+                "defaultValue": "analyst-workshop",
+                "constraints": {
+                    "required": true,
+                    "validations": [
+                        {
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-]{0,19}[a-zA-Z0-9]$",
+                            "message": "The name must start and end with an alphanumeric character, can contain alphanumeric characters and hyphens, and be between 1 and 20 characters long."
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "numberOfAnalyticRules",
+                "type": "Microsoft.Common.Slider",
+                "min": 2,
+                "max": 16,
+                "label": "Analytic Rules",
+                "subLabel": "#",
+                "defaultValue": 2,
+                "showStepMarkers": false,
+                "toolTip": "Pick the number of analytic rules to be deployed",
+                "constraints": {
+                    "required": false
+                },
+                "visible": true
+            },
+            {
+                "name": "userGroupIdText",
+                "type": "Microsoft.Common.TextBlock",
+                "visible": true,
+                "options": {
+                    "link": {
+                        "label": "Click here to find the Group Object Id",
+                        "uri": "https://portal.azure.com/#view/Microsoft_AAD_IAM/GroupsManagementMenuBlade/~/AllGroups"
+                    }
+                }
+            },
+            {
+                "name": "userGroupId",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Microsoft Entra User Group Id",
+                "toolTip": "This is user group which permissions will be assigned to for workshop access",
+                "defaultValue": "",
+                "constraints": {
+                    "required": true,
+                    "validations": [
+                        {
+                            "regex": "^[{]?[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}[}]?$",
+                            "message": "The id must be a valid GUID."
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "ServicePrincipal",
+                "type": "Microsoft.Common.ServicePrincipalSelector",
+                "label": {
+                    "password": "Leave Field Blank",
+                    "authenticationType": "Authentication Type",
+                    "sectionHeader": "Service Principal"
+                },
+                "toolTip": {
+                    "password": "App Registration Password not required at this stage. This field cannot be removed",
+                    "certificateThumbprint": "Certificate thumbprint",
+                    "authenticationType": "Authentication Type"
+                },
+                "defaultValue": {
+                    "principalId": "<default guid>",
+                    "name": "(New) default App Id"
+                },
+                "constraints": {
+                    "required": false,
+                    "validationMessage": "App Registration Password not required at this stage. This field cannot be removed"
+                },
+                "options": {
+                    "hideCertificate": true
+                },
+                "visible": true
+            }
+        ],
+        "steps": [],
+        "outputs": {
+            "location": "[location()]",
+            "sentinelWorkspaceName": "[basics('sentinelWorkspaceName')]",
+            "labName": "[basics('labName')]",
+            "numberOfAnalyticRules": "[basics('numberOfAnalyticRules')]",
+            "userGroupId": "[basics('userGroupId')]",
+            "applicationObjectId": "[first(basics('ServicePrincipal').objectId)]"
+        }
+    }
+}
