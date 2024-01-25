@@ -289,7 +289,7 @@ resource analyticRuleContosoBreakGlass 'Microsoft.SecurityInsights/alertRules@20
       groupingConfiguration: {
         enabled: true
         lookbackDuration: 'PT5H'
-        matchingMethod: 'AnyAlert'
+        matchingMethod: 'Selected'
         reopenClosedIncident: false
         groupByCustomDetails: [
           'User'
@@ -299,7 +299,7 @@ resource analyticRuleContosoBreakGlass 'Microsoft.SecurityInsights/alertRules@20
     customDetails: {
       User: 'alertNumber'
     }
-    query: 'fSigninLogs\r\n| where UserPrincipalName =~ "BreakGlass@contoso.com"\r\n| extend alertNumber = range(1,${numberOfAnalyticRules + 1})\r\n| mv-expand alertNumber'
+    query: 'fSigninLogs\r\n| where UserPrincipalName =~ "BreakGlass@contoso.com"\r\n| extend alertNumber = range(1,${numberOfAnalyticRules})\r\n| mv-expand alertNumber'
     queryFrequency: 'PT1H'
     queryPeriod: 'P14D'
     severity: 'Informational'

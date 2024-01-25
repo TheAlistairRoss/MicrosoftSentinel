@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12152324238767812449"
+      "templateHash": "12611734292105497327"
     }
   },
   "parameters": {
@@ -328,7 +328,7 @@
           "groupingConfiguration": {
             "enabled": true,
             "lookbackDuration": "PT5H",
-            "matchingMethod": "AnyAlert",
+            "matchingMethod": "Selected",
             "reopenClosedIncident": false,
             "groupByCustomDetails": [
               "User"
@@ -338,7 +338,7 @@
         "customDetails": {
           "User": "alertNumber"
         },
-        "query": "[format('fSigninLogs\r\n| where UserPrincipalName =~ \"BreakGlass@contoso.com\"\r\n| extend alertNumber = range(1,{0})\r\n| mv-expand alertNumber', add(parameters('numberOfAnalyticRules'), 1))]",
+        "query": "[format('fSigninLogs\r\n| where UserPrincipalName =~ \"BreakGlass@contoso.com\"\r\n| extend alertNumber = range(1,{0})\r\n| mv-expand alertNumber', parameters('numberOfAnalyticRules'))]",
         "queryFrequency": "PT1H",
         "queryPeriod": "P14D",
         "severity": "Informational",
