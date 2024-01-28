@@ -17,6 +17,8 @@ param authenticationType string = 'password'
 @description('Resources Name Prefix. This will be used to name most of the resources and the resource group')
 param basename string = 'sentinel-bootcamp'
 
+@secure()
+param datetime string = utcNow()
 
 param deployAMPLS bool = true
 param deployBastion bool = true
@@ -44,10 +46,12 @@ param _artifactsLocationSasToken string = ''
 
 // Variables
 
+
+
 // Resources
 
 resource deployedResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
-  name: '${basename}-rg'
+  name: '${datetime}-${basename}-rg'
   location: location
 }
 
@@ -57,7 +61,7 @@ resource deployedResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' =
 // Modules
 
 module networkingDeployment 'Network/Networking.bicep' = if(deployNetworking){
-  name: '${deployment().name}-${basename}-Networking'
+  name: '${datetime}-${deployment().name}-${basename}-Networking'
   scope: deployedResourceGroup
   params: {
     basename: basename
@@ -68,7 +72,7 @@ module networkingDeployment 'Network/Networking.bicep' = if(deployNetworking){
 }
 
 module bastionDeployment 'Network/Bastion.bicep' = if(deployBastion) {
-  name: '${deployment().name}-${basename}-Bastion'
+  name: '${datetime}-${deployment().name}-${basename}-Bastion'
   scope: deployedResourceGroup
   params: {
     basename: basename
@@ -78,7 +82,7 @@ module bastionDeployment 'Network/Bastion.bicep' = if(deployBastion) {
 }
 
 module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
-  name: '${deployment().name}-${basename}-AMPLS'
+  name: '${datetime}-${deployment().name}-${basename}-AMPLS'
   scope: deployedResourceGroup
   params: {
     basename: basename
@@ -88,7 +92,7 @@ module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
 }
 
 module sentinelDeployment 'Sentinel/Sentinel.bicep' = if(deploySentinel){
-  name: '${deployment().name}-${basename}-Wksp'
+  name: '${datetime}-${deployment().name}-${basename}-Wksp'
   scope: deployedResourceGroup
   params: {
     basename: basename
@@ -97,7 +101,7 @@ module sentinelDeployment 'Sentinel/Sentinel.bicep' = if(deploySentinel){
 }
 
 module dataCollectionRuleDeployment 'SentinelDataCollection/DataCollectionRules.bicep' = if(deployDataCollectionRule){
-  name: '${deployment().name}-${basename}-DCR'
+  name: '${datetime}-${deployment().name}-${basename}-DCR'
   scope: deployedResourceGroup
   params: {
     basename: basename
@@ -107,7 +111,7 @@ module dataCollectionRuleDeployment 'SentinelDataCollection/DataCollectionRules.
 }
 
 module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogSource){
-  name: '${deployment().name}-${basename}-Log-Source'
+  name: '${datetime}-${deployment().name}-${basename}-Log-Source'
   scope: deployedResourceGroup
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
@@ -127,7 +131,7 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogS
 }
 
 module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinuxLogForwarder){
-  name: '${deployment().name}-${basename}-Log-Forwarder'
+  name: '${datetime}-${deployment().name}-${basename}-Log-Forwarder'
   scope: deployedResourceGroup
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
@@ -151,7 +155,7 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinux
 }
 
 module logForwarderPoliciesDeployment 'PolicyAssignment/PolicyAssignment.bicep' = if(deployLogForwarderPolicies){
-  name: '${deployment().name}-${basename}-LF-Policies'
+  name: '${datetime}-${deployment().name}-${basename}-LF-Policies'
   scope: deployedResourceGroup
   params: {
     policyDefinitionID : '/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda'
