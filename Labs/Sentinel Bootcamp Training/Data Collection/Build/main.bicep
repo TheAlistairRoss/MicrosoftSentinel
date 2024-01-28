@@ -137,10 +137,32 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if (deployLinuxLog
   }
 }
 
+resource logForwarderPolicyAssignment 'Microsoft.Authorization/policyAssignments@2023-04-01' = if (deployLogForwarderPolicies) {
+  name: '${datetime}-${basename}-LF-Policies'
+  location: resourceGroup().location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    description: 'Assign the Log Forwarder Scale set to data collection rules'
+    displayName: 'Assign the Log Forwarder Scale set to data collection rules'
+    policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda'
+    parameters: {
+      effect: {value: 'DeployIfNotExists'}
+
+      listOfLinuxImageIdToInclude: {value: []}
+      dcrResourceId: {value: dataCollectionRuleDeployment.outputs.syslogDcrResourceId} // DCR OR DCE Resource Id
+      resourceType: {value: 'Microsoft.Insights/dataCollectionEndpoints'} //'Microsoft.Insights/dataCollectionRules' OR 'Microsoft.Insights/dataCollectionEndpoints'
+    }
+  }
+}
+
+
 module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if (deployLinuxLogForwarder) {
   name: '${datetime}-${basename}-Log-Forwarder'
   dependsOn: [
     networkingDeployment
+    logForwarderPolicyAssignment
   ]
 
   params: {
@@ -161,21 +183,5 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if (deployLinu
     vmssSize: 'Standard_D2s_v3'
     _artifactsLocation: artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
-  }
-}
-
-resource logForwarderPolicyAssignment 'Microsoft.Authorization/policyAssignments@2023-04-01' = {
-  name: '${datetime}-${basename}-LF-Policies'
-  properties: {
-    description: 'Assign the Log Forwarder Scale set to data collection rules'
-    displayName: 'Assign the Log Forwarder Scale set to data collection rules'
-    policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda'
-    parameters: {
-      effect: {value: 'DeployIfNotExists'}
-
-      listOfLinuxImageIdToInclude: {value: []}
-      dcrResourceId: {value: dataCollectionRuleDeployment.outputs.syslogDcrResourceId} // DCR OR DCE Resource Id
-      resourceType: {value: 'Microsoft.Insights/dataCollectionEndpoints'} //'Microsoft.Insights/dataCollectionRules' OR 'Microsoft.Insights/dataCollectionEndpoints'
-    }
   }
 }
