@@ -17,7 +17,6 @@ param authenticationType string = 'password'
 @description('Resources Name Prefix. This will be used to name most of the resources and the resource group')
 param basename string = 'sentinel-bootcamp'
 
-@secure()
 param datetime string = utcNow()
 
 param deployAMPLS bool = true
