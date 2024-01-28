@@ -2,9 +2,9 @@ targetScope = 'subscription'
 
 // Parameters
 
-@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
+@description('SSH Key or password for the Virtual Machine.')
 @secure()
-param adminPasswordOrSSHKey string
+param adminPasswordOrSSHKey string = 'WorkshopPassword1234'
 
 param adminUsername string = 'workshopadmin'
 @description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
@@ -62,9 +62,6 @@ resource deployedResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' =
   name: '${basename}-rg'
   location: location
 }
-
-
-
 
 // Modules
 

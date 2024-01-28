@@ -5,14 +5,15 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "17017722292600836868"
+      "templateHash": "8218141290438981031"
     }
   },
   "parameters": {
     "adminPasswordOrSSHKey": {
       "type": "securestring",
+      "defaultValue": "WorkshopPassword1234",
       "metadata": {
-        "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+        "description": "SSH Key or password for the Virtual Machine."
       }
     },
     "adminUsername": {
