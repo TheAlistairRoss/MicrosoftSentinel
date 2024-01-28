@@ -336,6 +336,9 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
             }
           }
         ]
+        healthProbe: {
+          id: '${loadbalancer.id}/probes/tcpProbe'
+        }
       }
       diagnosticsProfile: {
         bootDiagnostics: {
