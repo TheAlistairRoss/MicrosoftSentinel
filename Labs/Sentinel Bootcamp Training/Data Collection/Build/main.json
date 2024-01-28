@@ -1,11 +1,11 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "8202388845838797823"
+      "templateHash": "15059857664427157275"
     }
   },
   "parameters": {
@@ -119,17 +119,10 @@
   },
   "resources": [
     {
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2023-07-01",
-      "name": "[format('{0}-rg', parameters('basename'))]",
-      "location": "[parameters('location')]"
-    },
-    {
       "condition": "[parameters('deployNetworking')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-Networking', parameters('datetime'), parameters('basename'))]",
-      "resourceGroup": "[format('{0}-rg', parameters('basename'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -562,17 +555,13 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename')))]"
-      ]
+      }
     },
     {
       "condition": "[parameters('deployBastion')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-Bastion', parameters('datetime'), parameters('basename'))]",
-      "resourceGroup": "[format('{0}-rg', parameters('basename'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -666,8 +655,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename')))]"
+        "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename')))]"
       ]
     },
     {
@@ -675,7 +663,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-AMPLS', parameters('datetime'), parameters('basename'))]",
-      "resourceGroup": "[format('{0}-rg', parameters('basename'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -838,8 +825,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename')))]"
+        "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename')))]"
       ]
     },
     {
@@ -847,7 +833,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-Wksp', parameters('datetime'), parameters('basename'))]",
-      "resourceGroup": "[format('{0}-rg', parameters('basename'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -920,17 +905,13 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename')))]"
-      ]
+      }
     },
     {
       "condition": "[parameters('deployDataCollectionRule')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-DCR', parameters('datetime'), parameters('basename'))]",
-      "resourceGroup": "[format('{0}-rg', parameters('basename'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -944,7 +925,7 @@
             "value": "[parameters('location')]"
           },
           "workspaceResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-Wksp', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.workspaceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}-Wksp', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.workspaceId.value]"
           }
         },
         "template": {
@@ -1040,8 +1021,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-Wksp', parameters('datetime'), parameters('basename')))]"
+        "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-Wksp', parameters('datetime'), parameters('basename')))]"
       ]
     },
     {
@@ -1049,7 +1029,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-Log-Source', parameters('datetime'), parameters('basename'))]",
-      "resourceGroup": "[format('{0}-rg', parameters('basename'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1394,8 +1373,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename')))]"
+        "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename')))]"
       ]
     },
     {
@@ -1403,7 +1381,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-Log-Forwarder', parameters('datetime'), parameters('basename'))]",
-      "resourceGroup": "[format('{0}-rg', parameters('basename'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1430,7 +1407,7 @@
           },
           "dataCollectionRuleResourceIds": {
             "value": [
-              "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.syslogDcrResourceId.value]"
+              "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.syslogDcrResourceId.value]"
             ]
           },
           "location": {
@@ -2014,9 +1991,8 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename')))]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename')))]"
+        "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename')))]",
+        "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename')))]"
       ]
     },
     {
@@ -2024,7 +2000,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-LF-Policies', parameters('datetime'), parameters('basename'))]",
-      "resourceGroup": "[format('{0}-rg', parameters('basename'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2041,7 +2016,7 @@
             "value": {
               "effect": "DeployIfNotExists",
               "listOfLinuxImageIdToInclude": [],
-              "dcrResourceId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.syslogDcrResourceId.value]",
+              "dcrResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.syslogDcrResourceId.value]",
               "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
             }
           }
@@ -2093,8 +2068,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename')))]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename')))]"
+        "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename')))]"
       ]
     }
   ]

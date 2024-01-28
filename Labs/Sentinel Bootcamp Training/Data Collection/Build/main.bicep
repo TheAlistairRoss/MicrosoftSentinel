@@ -1,5 +1,3 @@
-targetScope = 'subscription'
-
 // Parameters
 
 @description('SSH Key or password for the Virtual Machine.')
@@ -58,16 +56,11 @@ var privateEndpointSubnetName = '${basename}-AMPLS-Subnet'
 
 // Resources
 
-resource deployedResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
-  name: '${basename}-rg'
-  location: location
-}
-
 // Modules
 
 module networkingDeployment 'Network/Networking.bicep' = if(deployNetworking){
   name: '${datetime}-${basename}-Networking'
-  scope: deployedResourceGroup
+  
   params: {
     basename: basename
     location: location
@@ -84,7 +77,7 @@ module bastionDeployment 'Network/Bastion.bicep' = if(deployBastion) {
   dependsOn:[
     networkingDeployment
   ]
-  scope: resourceGroup(deployedResourceGroup.name)
+  
   params: {
     basename: basename
     location: location
@@ -97,7 +90,7 @@ module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
   dependsOn:[
     networkingDeployment
   ]
-  scope: resourceGroup(deployedResourceGroup.name)
+  
   params: {
     basename: basename
     location: location
@@ -107,7 +100,6 @@ module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
 
 module sentinelDeployment 'Sentinel/Sentinel.bicep' = if(deploySentinel){
   name: '${datetime}-${basename}-Wksp'
-  scope: resourceGroup(deployedResourceGroup.name)
   params: {
     basename: basename
     location: location
@@ -116,7 +108,6 @@ module sentinelDeployment 'Sentinel/Sentinel.bicep' = if(deploySentinel){
 
 module dataCollectionRuleDeployment 'SentinelDataCollection/DataCollectionRules.bicep' = if(deployDataCollectionRule){
   name: '${datetime}-${basename}-DCR'
-  scope: resourceGroup(deployedResourceGroup.name)
   params: {
     basename: basename
     location: location
@@ -129,7 +120,7 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogS
   dependsOn:[
     networkingDeployment
   ]
-  scope: resourceGroup(deployedResourceGroup.name)
+  
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
     adminUsername: adminUsername
@@ -152,7 +143,7 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinux
   dependsOn:[
     networkingDeployment
   ]
-  scope: resourceGroup(deployedResourceGroup.name)
+  
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
     adminUsername: adminUsername
@@ -176,7 +167,6 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinux
 
 module logForwarderPoliciesDeployment 'PolicyAssignment/PolicyAssignment.bicep' = if(deployLogForwarderPolicies){
   name: '${datetime}-${basename}-LF-Policies'
-  scope: resourceGroup(deployedResourceGroup.name)
   params: {
     policyDefinitionID : '/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda'
     policyAssignmentName : '${basename}-Configure Log Forwarder with DCR'
