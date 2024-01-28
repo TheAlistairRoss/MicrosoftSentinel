@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "627250597215369142"
+      "templateHash": "17017722292600836868"
     }
   },
   "parameters": {
@@ -63,7 +63,7 @@
     },
     "deployLogForwarderPolicies": {
       "type": "bool",
-      "defaultValue": false
+      "defaultValue": true
     },
     "deployNetworking": {
       "type": "bool",
@@ -582,7 +582,7 @@
             "value": "[parameters('location')]"
           },
           "subnetResourceId": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('{0}/{1}', variables('vnetName'), variables('azureBastionSubnetName')))]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('azureBastionSubnetName'))]"
           }
         },
         "template": {
@@ -685,7 +685,7 @@
             "value": "[parameters('location')]"
           },
           "subnetResourceId": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('{0}/{1}', variables('vnetName'), variables('privateEndpointSubnetName')))]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('privateEndpointSubnetName'))]"
           }
         },
         "template": {
@@ -1074,7 +1074,7 @@
             "value": "TrustedLaunch"
           },
           "subnetResourceId": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('{0}/{1}', variables('vnetName'), variables('logSourceSubnetName')))]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('logSourceSubnetName'))]"
           },
           "vmName": {
             "value": "[format('{0}-LogSource', parameters('basename'))]"
@@ -1439,7 +1439,7 @@
             "value": "TrustedLaunch"
           },
           "subnetResourceId": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('{0}/{1}', variables('vnetName'), variables('logForwarderSubnetName')))]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('logForwarderSubnetName'))]"
           },
           "vmssName": {
             "value": "[format('{0}-Log-Forwarder', parameters('basename'))]"
