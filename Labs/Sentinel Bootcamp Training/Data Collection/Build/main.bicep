@@ -72,7 +72,7 @@ module networkingDeployment 'Network/Networking.bicep' = if(deployNetworking){
 }
 
 module bastionDeployment 'Network/Bastion.bicep' = if(deployBastion) {
-  name: '${datetime}}-${basename}-Bastion'
+  name: '${datetime}-${basename}-Bastion'
   scope: deployedResourceGroup
   params: {
     basename: basename
