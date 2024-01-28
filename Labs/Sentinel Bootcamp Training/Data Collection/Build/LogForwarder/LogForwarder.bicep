@@ -115,8 +115,6 @@ var loadbalancerName = '${basename}-lb'
 
 var maxPortRange = ((autoscaleMax <= 9) ? '5000' : '500')
 
-var loadBalancerIPAddress= '${basename}-lb-nic'
-
 var scriptFiles = [
   'LinuxLogForwarder/Config/config.sh'
   'LinuxLogForwarder/Config/rsyslog-50-default.conf'
@@ -148,7 +146,7 @@ var vmssOSdiskType = 'Standard_LRS'
 
 // Resources
 
-resource existingSubnet  'Microsoft.Network/virtualNetworks/subnets@2023-05-01' existing = {
+resource existingSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' existing = {
   name: '${split(subnetResourceId, '/')[8]}/${split(subnetResourceId, '/')[10]}'
 }
 
@@ -178,7 +176,7 @@ resource loadbalancer 'Microsoft.Network/loadBalancers@2023-06-01' = {
         properties: {
           privateIPAddressVersion: 'IPv4'
           privateIPAllocationMethod: 'Dynamic'
-          privateIPAddress:  '${substring(existingSubnet.properties.addressPrefix, 0, lastIndexOf(existingSubnet.properties.addressPrefix, '.'))}.100'
+          privateIPAddress: '${substring(existingSubnet.properties.addressPrefix, 0, lastIndexOf(existingSubnet.properties.addressPrefix, '.'))}.100'
           subnet: {
             id: subnetResourceId
           }
@@ -417,7 +415,6 @@ resource autoscale 'Microsoft.Insights/autoscalesettings@2022-10-01' = {
   }
 }
 
-// If there are any 
 resource vmssLinux_AzureMonitorAgent 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = if (!empty((dataCollectionRuleResourceIds))) {
   parent: vmss
   name: 'AzureMonitorLinuxAgent'
@@ -452,7 +449,7 @@ resource vmssLinux_TrustedLaunch 'Microsoft.Compute/virtualMachineScaleSets/exte
 resource vmssLinux_CustomScript 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = {
   parent: vmss
   name: customScriptExtension.name
-  dependsOn:  (!empty((dataCollectionRuleResourceIds))) ? [vmssLinux_AzureMonitorAgent] : []
+  dependsOn: (!empty((dataCollectionRuleResourceIds))) ? [ vmssLinux_AzureMonitorAgent ] : []
   properties: {
     publisher: customScriptExtension.publisher
     type: customScriptExtension.name

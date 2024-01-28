@@ -13,9 +13,9 @@ param subnetResourceId string
 // Variables
 var amplsName = '${basename}-ampls'
 
-var amplsIngestionAccessMode = 'Enabled'
+var amplsIngestionAccessMode = 'Open' // 'Open' OR 'PrivateOnly'
 
-var amplsQueryAccessMode = 'Enabled'
+var amplsQueryAccessMode = 'Open' // 'Open' OR 'PrivateOnly'
 
 var DNSZones = [
   'privatelink.monitor.azure.com'
@@ -29,7 +29,7 @@ var privateEndpointName = '${basename}-ampls-privateEndpoint'
 
 var privateEndpointNICName = '${privateEndpointName}-nic'
 
-var virtualNetworkId = substring(subnetResourceId, 0, indexOf(subnetResourceId, '/subnets/ '))
+var virtualNetworkId = substring(subnetResourceId, 0, indexOf(subnetResourceId, '/subnets/'))
 
 // Resources
 
@@ -77,8 +77,11 @@ resource privateDNSZones 'Microsoft.Network/privateDnsZones@2018-09-01' = [for D
 }
 ]
 
-resource privatelink_virtualNetworkIds 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = [for DNSZone in DNSZones: {
+resource privateDNSZonesVirtualNetworkLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = [for DNSZone in DNSZones: {
   name: '${DNSZone}/${uniqueString(virtualNetworkId)}'
+  dependsOn: [
+    privateDNSZones
+  ]
   location: 'global'
   properties: {
     virtualNetwork: {

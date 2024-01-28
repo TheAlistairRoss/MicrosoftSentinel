@@ -41,7 +41,7 @@ var vnetConfig = {
       addressPrefix: '${vnetAddressIPv4}.0/26'
     }
     logSourceSubnet: {
-      name: logForwarderSubnetName
+      name: logSourceSubnetName
       addressPrefix: '${vnetAddressIPv4}.64/27'
     }
     logForwarderSubnet: {
@@ -294,6 +294,9 @@ resource vnetBastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01
 
 resource vnetLogForwarderSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
   name: vnetConfig.subnets.logForwarderSubnet.name
+  dependsOn:[
+    vnetBastionSubnet
+  ]
   properties: {
     networkSecurityGroup: {
       id: logForwarderSubnetNSG.id
@@ -305,6 +308,9 @@ resource vnetLogForwarderSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-
 
 resource vnetLogSourceSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
   name: vnetConfig.subnets.logSourceSubnet.name
+  dependsOn: [
+    vnetLogForwarderSubnet
+  ]
   properties: {
     networkSecurityGroup: {
       id: logSourceSubnetNSG.id
@@ -316,6 +322,9 @@ resource vnetLogSourceSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-
 
 resource vnetPrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
   name: vnetConfig.subnets.privateEndpointSubnet.name
+  dependsOn: [
+    vnetLogSourceSubnet
+  ]
   properties: {
     networkSecurityGroup: {
       id: logSourceSubnetNSG.id

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminPasswordOrSSHKey": {
+      "value": "Workshop1234!"
+    },
+    "adminUsername": {
+      "value": "workshopadmin"
+    },
+    "authenticationType": {
+      "value": "password"
+    },
+    "basename": {
+      "value": "sentinel-bootcamp"
+    },
+    "deployAMPLS": {
+      "value": true
+    },
+    "deployBastion": {
+      "value": false
+    },
+    "deployDataCollectionRule": {
+      "value": false
+    },
+    "deployLinuxLogForwarder": {
+      "value": false
+    },
+    "deployLinuxLogSource": {
+      "value": true
+    },
+    "deployLogForwarderPolicies": {
+      "value": false
+    },
+    "deployNetworking": {
+      "value": true
+    },
+    "deploySentinel": {
+      "value": true
+    },
+    "location": {
+      "value": "uksouth"
+    },
+    "vnetAddressIpV4Id": {
+      "value": "10.0.0.0"
+    },
+    "_artifactsLocation": {
+      "value": "[deployment().properties.templateLink.uri]"
+    },
+    "_artifactsLocationSasToken": {
+      "value": ""
+    }
+  }
+}
