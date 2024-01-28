@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "3225023676450071400"
+      "templateHash": "2525935256467616606"
     }
   },
   "parameters": {
@@ -127,10 +127,18 @@
         "displayName": "Assign the Log Forwarder Scale set to data collection rules",
         "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda",
         "parameters": {
-          "effect": "DeployIfNotExists",
-          "listOfLinuxImageIdToInclude": [],
-          "dcrResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.syslogDcrResourceId.value]",
-          "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "listOfLinuxImageIdToInclude": {
+            "value": []
+          },
+          "dcrResourceId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.syslogDcrResourceId.value]"
+          },
+          "resourceType": {
+            "value": "Microsoft.Insights/dataCollectionEndpoints"
+          }
         }
       },
       "dependsOn": [

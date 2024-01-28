@@ -171,10 +171,11 @@ resource logForwarderPolicyAssignment 'Microsoft.Authorization/policyAssignments
     displayName: 'Assign the Log Forwarder Scale set to data collection rules'
     policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda'
     parameters: {
-      effect: 'DeployIfNotExists'
-      listOfLinuxImageIdToInclude: []
-      dcrResourceId: dataCollectionRuleDeployment.outputs.syslogDcrResourceId // DCR OR DCE Resource Id
-      resourceType: 'Microsoft.Insights/dataCollectionEndpoints' //'Microsoft.Insights/dataCollectionRules' OR 'Microsoft.Insights/dataCollectionEndpoints'
+      effect: {value: 'DeployIfNotExists'}
+
+      listOfLinuxImageIdToInclude: {value: []}
+      dcrResourceId: {value: dataCollectionRuleDeployment.outputs.syslogDcrResourceId} // DCR OR DCE Resource Id
+      resourceType: {value: 'Microsoft.Insights/dataCollectionEndpoints'} //'Microsoft.Insights/dataCollectionRules' OR 'Microsoft.Insights/dataCollectionEndpoints'
     }
   }
 }
