@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "8218141290438981031"
+      "templateHash": "8202388845838797823"
     }
   },
   "parameters": {
@@ -39,8 +39,11 @@
       }
     },
     "datetime": {
-      "type": "securestring",
-      "defaultValue": "[utcNow()]"
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "Current UTC Datetime in the format YYYYMMDDhhmmss"
+      }
     },
     "deployAMPLS": {
       "type": "bool",
@@ -2050,7 +2053,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "9760379159494364233"
+              "templateHash": "4637480906151467105"
             }
           },
           "parameters": {
@@ -2081,7 +2084,7 @@
               "apiVersion": "2023-04-01",
               "name": "[parameters('policyAssignmentName')]",
               "properties": {
-                "scope": "[resourceGroup()]",
+                "scope": "[resourceGroup().id]",
                 "policyDefinitionId": "[parameters('policyDefinitionID')]",
                 "parameters": "[parameters('policyParameters')]"
               }

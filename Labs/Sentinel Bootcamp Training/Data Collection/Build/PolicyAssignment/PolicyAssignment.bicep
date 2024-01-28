@@ -11,7 +11,7 @@ param policyParameters object = {Parameter1: 'value1', Parameter2: 'value2'}
 resource policyAssignment 'Microsoft.Authorization/policyAssignments@2023-04-01' = {
   name: policyAssignmentName
   properties: {
-    scope: resourceGroup()
+    scope: resourceGroup().id
     policyDefinitionId: policyDefinitionID
     parameters: policyParameters
   }
