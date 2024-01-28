@@ -91,8 +91,8 @@ module bastionDeployment 'Network/Bastion.bicep' = if(deployBastion) {
   params: {
     basename: basename
     location: location
-    subnetResourceId:  resourceId(subscription().id, deployedResourceGroup.id, 'Microsoft.Network/virtualNetworks/subnets', vnetName,  azureBastionSubnetName)
-  }
+    subnetResourceId:  resourceId('Microsoft.Network/virtualNetworks/subnets', '${vnetName}/${azureBastionSubnetName}')
+    }
 }
 
 module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
@@ -104,7 +104,7 @@ module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
   params: {
     basename: basename
     location: location
-    subnetResourceId: resourceId(subscription().id, deployedResourceGroup.id, 'Microsoft.Network/virtualNetworks/subnets', vnetName,  privateEndpointSubnetName)
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', '${vnetName}/${privateEndpointSubnetName}')
   }
 }
 
@@ -141,7 +141,7 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogS
     location: location
     osVersion  : 'Ubuntu-2004'
     securityType: 'TrustedLaunch'
-    subnetResourceId: resourceId(subscription().id, deployedResourceGroup.id, 'Microsoft.Network/virtualNetworks/subnets', vnetName,  logSourceSubnetName)
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', '${vnetName}/${logSourceSubnetName}')
     vmName: '${basename}-LogSource'
     vmSize: 'Standard_D2s_v3'
     _artifactsLocation: artifactsLocation
@@ -169,7 +169,7 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinux
     location: location
     OSVersion: 'Ubuntu-2004'
     securityType: 'TrustedLaunch'
-    subnetResourceId: resourceId(subscription().id, deployedResourceGroup.id, 'Microsoft.Network/virtualNetworks/subnets', vnetName,  logForwarderSubnetName)
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', '${vnetName}/${logForwarderSubnetName}')
     vmssName: '${basename}-Log-Forwarder'
     vmssSize: 'Standard_D2s_v3'
     _artifactsLocation: artifactsLocation
