@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "15059857664427157275"
+      "templateHash": "3225023676450071400"
     }
   },
   "parameters": {
@@ -118,6 +118,25 @@
     "privateEndpointSubnetName": "[format('{0}-AMPLS-Subnet', parameters('basename'))]"
   },
   "resources": [
+    {
+      "type": "Microsoft.Authorization/policyAssignments",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}-{1}-LF-Policies', parameters('datetime'), parameters('basename'))]",
+      "properties": {
+        "description": "Assign the Log Forwarder Scale set to data collection rules",
+        "displayName": "Assign the Log Forwarder Scale set to data collection rules",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda",
+        "parameters": {
+          "effect": "DeployIfNotExists",
+          "listOfLinuxImageIdToInclude": [],
+          "dcrResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.syslogDcrResourceId.value]",
+          "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename')))]"
+      ]
+    },
     {
       "condition": "[parameters('deployNetworking')]",
       "type": "Microsoft.Resources/deployments",
@@ -1442,7 +1461,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "15071892415835648632"
+              "templateHash": "6666504840750358070"
             }
           },
           "parameters": {
@@ -1826,7 +1845,10 @@
                           ]
                         }
                       }
-                    ]
+                    ],
+                    "healthProbe": {
+                      "id": "[format('{0}/probes/tcpProbe', resourceId('Microsoft.Network/loadBalancers', variables('loadbalancerName')))]"
+                    }
                   },
                   "diagnosticsProfile": {
                     "bootDiagnostics": {
@@ -1993,82 +2015,6 @@
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename')))]",
         "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename')))]"
-      ]
-    },
-    {
-      "condition": "[parameters('deployLogForwarderPolicies')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-LF-Policies', parameters('datetime'), parameters('basename'))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "policyDefinitionID": {
-            "value": "/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda"
-          },
-          "policyAssignmentName": {
-            "value": "[format('{0}-Configure Log Forwarder with DCR', parameters('basename'))]"
-          },
-          "policyParameters": {
-            "value": {
-              "effect": "DeployIfNotExists",
-              "listOfLinuxImageIdToInclude": [],
-              "dcrResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.syslogDcrResourceId.value]",
-              "resourceType": "Microsoft.Insights/dataCollectionEndpoints"
-            }
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "4637480906151467105"
-            }
-          },
-          "parameters": {
-            "policyDefinitionID": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the ID of the policy definition or policy set definition being assigned."
-              }
-            },
-            "policyAssignmentName": {
-              "type": "string",
-              "defaultValue": "[guid(parameters('policyDefinitionID'), resourceGroup().name)]",
-              "metadata": {
-                "description": "Specifies the name of the policy assignment, can be used defined or an idempotent name as the defaultValue provides."
-              }
-            },
-            "policyParameters": {
-              "type": "object",
-              "defaultValue": {
-                "Parameter1": "value1",
-                "Parameter2": "value2"
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Authorization/policyAssignments",
-              "apiVersion": "2023-04-01",
-              "name": "[parameters('policyAssignmentName')]",
-              "properties": {
-                "scope": "[resourceGroup().id]",
-                "policyDefinitionId": "[parameters('policyDefinitionID')]",
-                "parameters": "[parameters('policyParameters')]"
-              }
-            }
-          ]
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename')))]"
       ]
     }
   ]

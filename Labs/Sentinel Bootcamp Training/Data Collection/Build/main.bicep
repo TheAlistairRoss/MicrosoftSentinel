@@ -30,7 +30,7 @@ param deploySentinel bool = true
 @description('Azure Region')
 param location string = 'uksouth'
 
-@description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)') 
+@description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)')
 @minLength(7)
 @maxLength(13)
 param vnetAddressIpV4Id string = '10.0.0.0'
@@ -44,7 +44,7 @@ param _artifactsLocationSasToken string = ''
 
 // Variables
 
-var replaceUriSpaces = replace(_artifactsLocation, ' ', '%20') 
+var replaceUriSpaces = replace(_artifactsLocation, ' ', '%20')
 var artifactsLocation = '${replaceUriSpaces}${_artifactsLocationSasToken}'
 
 var vnetName = '${basename}-vnet'
@@ -53,14 +53,13 @@ var logSourceSubnetName = '${basename}-LogSource-Subnet'
 var logForwarderSubnetName = '${basename}-LogForwarder-Subnet'
 var privateEndpointSubnetName = '${basename}-AMPLS-Subnet'
 
-
 // Resources
 
 // Modules
 
-module networkingDeployment 'Network/Networking.bicep' = if(deployNetworking){
+module networkingDeployment 'Network/Networking.bicep' = if (deployNetworking) {
   name: '${datetime}-${basename}-Networking'
-  
+
   params: {
     basename: basename
     location: location
@@ -72,25 +71,25 @@ module networkingDeployment 'Network/Networking.bicep' = if(deployNetworking){
   }
 }
 
-module bastionDeployment 'Network/Bastion.bicep' = if(deployBastion) {
+module bastionDeployment 'Network/Bastion.bicep' = if (deployBastion) {
   name: '${datetime}-${basename}-Bastion'
-  dependsOn:[
+  dependsOn: [
     networkingDeployment
   ]
-  
+
   params: {
     basename: basename
     location: location
-    subnetResourceId:  resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, azureBastionSubnetName)
-    }
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, azureBastionSubnetName)
+  }
 }
 
-module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
+module amplsDeployment 'Network/AMPLS.bicep' = if (deployAMPLS) {
   name: '${datetime}-${basename}-AMPLS'
-  dependsOn:[
+  dependsOn: [
     networkingDeployment
   ]
-  
+
   params: {
     basename: basename
     location: location
@@ -98,7 +97,7 @@ module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
   }
 }
 
-module sentinelDeployment 'Sentinel/Sentinel.bicep' = if(deploySentinel){
+module sentinelDeployment 'Sentinel/Sentinel.bicep' = if (deploySentinel) {
   name: '${datetime}-${basename}-Wksp'
   params: {
     basename: basename
@@ -106,7 +105,7 @@ module sentinelDeployment 'Sentinel/Sentinel.bicep' = if(deploySentinel){
   }
 }
 
-module dataCollectionRuleDeployment 'SentinelDataCollection/DataCollectionRules.bicep' = if(deployDataCollectionRule){
+module dataCollectionRuleDeployment 'SentinelDataCollection/DataCollectionRules.bicep' = if (deployDataCollectionRule) {
   name: '${datetime}-${basename}-DCR'
   params: {
     basename: basename
@@ -115,19 +114,19 @@ module dataCollectionRuleDeployment 'SentinelDataCollection/DataCollectionRules.
   }
 }
 
-module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogSource){
+module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if (deployLinuxLogSource) {
   name: '${datetime}-${basename}-Log-Source'
-  dependsOn:[
+  dependsOn: [
     networkingDeployment
   ]
-  
+
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
     adminUsername: adminUsername
     authenticationType: authenticationType
     basename: basename
     location: location
-    osVersion  : 'Ubuntu-2004'
+    osVersion: 'Ubuntu-2004'
     securityType: 'TrustedLaunch'
     subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, logSourceSubnetName)
     vmName: '${basename}-LogSource'
@@ -138,12 +137,12 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogS
   }
 }
 
-module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinuxLogForwarder){
+module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if (deployLinuxLogForwarder) {
   name: '${datetime}-${basename}-Log-Forwarder'
-  dependsOn:[
+  dependsOn: [
     networkingDeployment
   ]
-  
+
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
     adminUsername: adminUsername
@@ -165,16 +164,17 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinux
   }
 }
 
-module logForwarderPoliciesDeployment 'PolicyAssignment/PolicyAssignment.bicep' = if(deployLogForwarderPolicies){
+resource logForwarderPolicyAssignment 'Microsoft.Authorization/policyAssignments@2023-04-01' = {
   name: '${datetime}-${basename}-LF-Policies'
-  params: {
-    policyDefinitionID : '/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda'
-    policyAssignmentName : '${basename}-Configure Log Forwarder with DCR'
-    policyParameters : {
-      effect : 'DeployIfNotExists'
-      listOfLinuxImageIdToInclude : []
-      dcrResourceId : dataCollectionRuleDeployment.outputs.syslogDcrResourceId // DCR OR DCE Resource Id
-      resourceType : 'Microsoft.Insights/dataCollectionEndpoints' //'Microsoft.Insights/dataCollectionRules' OR 'Microsoft.Insights/dataCollectionEndpoints'
+  properties: {
+    description: 'Assign the Log Forwarder Scale set to data collection rules'
+    displayName: 'Assign the Log Forwarder Scale set to data collection rules'
+    policyDefinitionId: '/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda'
+    parameters: {
+      effect: 'DeployIfNotExists'
+      listOfLinuxImageIdToInclude: []
+      dcrResourceId: dataCollectionRuleDeployment.outputs.syslogDcrResourceId // DCR OR DCE Resource Id
+      resourceType: 'Microsoft.Insights/dataCollectionEndpoints' //'Microsoft.Insights/dataCollectionRules' OR 'Microsoft.Insights/dataCollectionEndpoints'
     }
   }
 }
