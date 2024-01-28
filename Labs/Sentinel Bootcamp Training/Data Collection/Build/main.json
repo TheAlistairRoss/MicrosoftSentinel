@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "5577725466043408318"
+      "templateHash": "11464593483642194390"
     }
   },
   "parameters": {
@@ -106,7 +106,12 @@
   },
   "variables": {
     "replaceUriSpaces": "[replace(parameters('_artifactsLocation'), ' ', '%20')]",
-    "artifactsLocation": "[format('{0}{1}', variables('replaceUriSpaces'), parameters('_artifactsLocationSasToken'))]"
+    "artifactsLocation": "[format('{0}{1}', variables('replaceUriSpaces'), parameters('_artifactsLocationSasToken'))]",
+    "vnetName": "[format('{0}-vnet', parameters('basename'))]",
+    "azureBastionSubnetName": "AzureBastionSubnet",
+    "logSourceSubnetName": "[format('{0}-LogSource-Subnet', parameters('basename'))]",
+    "logForwarderSubnetName": "[format('{0}-LogForwarder-Subnet', parameters('basename'))]",
+    "privateEndpointSubnetName": "[format('{0}-AMPLS-Subnet', parameters('basename'))]"
   },
   "resources": [
     {
@@ -133,11 +138,20 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "vnetName": {
-            "value": "[format('{0}-vnet', parameters('basename'))]"
+          "logForwarderSubnetName": {
+            "value": "[variables('logForwarderSubnetName')]"
+          },
+          "logSourceSubnetName": {
+            "value": "[variables('logSourceSubnetName')]"
+          },
+          "privateEndpointSubnetName": {
+            "value": "[variables('privateEndpointSubnetName')]"
           },
           "vnetAddressIpV4Id": {
             "value": "[parameters('vnetAddressIpV4Id')]"
+          },
+          "vnetName": {
+            "value": "[variables('vnetName')]"
           }
         },
         "template": {
@@ -568,7 +582,7 @@
             "value": "[parameters('location')]"
           },
           "subnetResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.azureBastionSubnetId.value]"
+            "value": "[resourceId(subscription().id, subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename'))), 'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('azureBastionSubnetName'))]"
           }
         },
         "template": {
@@ -671,7 +685,7 @@
             "value": "[parameters('location')]"
           },
           "subnetResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.privateEndpointSubnetId.value]"
+            "value": "[resourceId(subscription().id, subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename'))), 'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('privateEndpointSubnetName'))]"
           }
         },
         "template": {
@@ -1060,7 +1074,7 @@
             "value": "TrustedLaunch"
           },
           "subnetResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.logSourceSubnetId.value]"
+            "value": "[resourceId(subscription().id, subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename'))), 'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('logSourceSubnetName'))]"
           },
           "vmName": {
             "value": "[format('{0}-LogSource', parameters('basename'))]"
@@ -1425,7 +1439,7 @@
             "value": "TrustedLaunch"
           },
           "subnetResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('{0}-rg', parameters('basename'))), 'Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename'))), '2022-09-01').outputs.logForwarderSubnetId.value]"
+            "value": "[resourceId(subscription().id, subscriptionResourceId('Microsoft.Resources/resourceGroups', format('{0}-rg', parameters('basename'))), 'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('logForwarderSubnetName'))]"
           },
           "vmssName": {
             "value": "[format('{0}-Log-Forwarder', parameters('basename'))]"
@@ -2017,7 +2031,7 @@
             "value": "/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda"
           },
           "policyAssignmentName": {
-            "value": "[format('{0}-Configure Log Forwarder with Data Collection Endpoint', parameters('basename'))]"
+            "value": "[format('{0}-Configure Log Forwarder with DCR', parameters('basename'))]"
           },
           "policyParameters": {
             "value": {

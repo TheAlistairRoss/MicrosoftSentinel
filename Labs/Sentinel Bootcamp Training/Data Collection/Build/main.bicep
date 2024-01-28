@@ -48,6 +48,14 @@ param _artifactsLocationSasToken string = ''
 
 var replaceUriSpaces = replace(_artifactsLocation, ' ', '%20') 
 var artifactsLocation = '${replaceUriSpaces}${_artifactsLocationSasToken}'
+
+var vnetName = '${basename}-vnet'
+var azureBastionSubnetName = 'AzureBastionSubnet'
+var logSourceSubnetName = '${basename}-LogSource-Subnet'
+var logForwarderSubnetName = '${basename}-LogForwarder-Subnet'
+var privateEndpointSubnetName = '${basename}-AMPLS-Subnet'
+
+
 // Resources
 
 resource deployedResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
@@ -66,28 +74,37 @@ module networkingDeployment 'Network/Networking.bicep' = if(deployNetworking){
   params: {
     basename: basename
     location: location
-    vnetName: '${basename}-vnet'
+    logForwarderSubnetName: logForwarderSubnetName
+    logSourceSubnetName: logSourceSubnetName
+    privateEndpointSubnetName: privateEndpointSubnetName
     vnetAddressIpV4Id: vnetAddressIpV4Id
+    vnetName: vnetName
   }
 }
 
 module bastionDeployment 'Network/Bastion.bicep' = if(deployBastion) {
   name: '${datetime}-${basename}-Bastion'
+  dependsOn:[
+    networkingDeployment
+  ]
   scope: deployedResourceGroup
   params: {
     basename: basename
     location: location
-    subnetResourceId: networkingDeployment.outputs.azureBastionSubnetId
+    subnetResourceId:  resourceId(subscription().id, deployedResourceGroup.id, 'Microsoft.Network/virtualNetworks/subnets', vnetName,  azureBastionSubnetName)
   }
 }
 
 module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
   name: '${datetime}-${basename}-AMPLS'
+  dependsOn:[
+    networkingDeployment
+  ]
   scope: deployedResourceGroup
   params: {
     basename: basename
     location: location
-    subnetResourceId: networkingDeployment.outputs.privateEndpointSubnetId
+    subnetResourceId: resourceId(subscription().id, deployedResourceGroup.id, 'Microsoft.Network/virtualNetworks/subnets', vnetName,  privateEndpointSubnetName)
   }
 }
 
@@ -112,6 +129,9 @@ module dataCollectionRuleDeployment 'SentinelDataCollection/DataCollectionRules.
 
 module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogSource){
   name: '${datetime}-${basename}-Log-Source'
+  dependsOn:[
+    networkingDeployment
+  ]
   scope: deployedResourceGroup
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
@@ -121,7 +141,7 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogS
     location: location
     osVersion  : 'Ubuntu-2004'
     securityType: 'TrustedLaunch'
-    subnetResourceId: networkingDeployment.outputs.logSourceSubnetId
+    subnetResourceId: resourceId(subscription().id, deployedResourceGroup.id, 'Microsoft.Network/virtualNetworks/subnets', vnetName,  logSourceSubnetName)
     vmName: '${basename}-LogSource'
     vmSize: 'Standard_D2s_v3'
     _artifactsLocation: artifactsLocation
@@ -132,6 +152,9 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogS
 
 module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinuxLogForwarder){
   name: '${datetime}-${basename}-Log-Forwarder'
+  dependsOn:[
+    networkingDeployment
+  ]
   scope: deployedResourceGroup
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
@@ -146,7 +169,7 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinux
     location: location
     OSVersion: 'Ubuntu-2004'
     securityType: 'TrustedLaunch'
-    subnetResourceId: networkingDeployment.outputs.logForwarderSubnetId
+    subnetResourceId: resourceId(subscription().id, deployedResourceGroup.id, 'Microsoft.Network/virtualNetworks/subnets', vnetName,  logForwarderSubnetName)
     vmssName: '${basename}-Log-Forwarder'
     vmssSize: 'Standard_D2s_v3'
     _artifactsLocation: artifactsLocation
@@ -159,7 +182,7 @@ module logForwarderPoliciesDeployment 'PolicyAssignment/PolicyAssignment.bicep' 
   scope: deployedResourceGroup
   params: {
     policyDefinitionID : '/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda'
-    policyAssignmentName : '${basename}-Configure Log Forwarder with Data Collection Endpoint'
+    policyAssignmentName : '${basename}-Configure Log Forwarder with DCR'
     policyParameters : {
       effect : 'DeployIfNotExists'
       listOfLinuxImageIdToInclude : []

@@ -1,5 +1,4 @@
 // Parameters
-
 @description('Resources Name Prefix. This will be used to name most of the resources')
 param basename string = 'sentinel-bootcamp'
 
@@ -279,6 +278,8 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-05-01' = {
     }
   }
 }
+
+
 
 // Resources - Virtual Network Subnets
 resource vnetBastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
