@@ -46,8 +46,8 @@ param _artifactsLocationSasToken string = ''
 
 // Variables
 
-
-
+var replaceUriSpaces = replace(_artifactsLocation, ' ', '%20') 
+var artifactsLocation = '${replaceUriSpaces}${_artifactsLocationSasToken}'
 // Resources
 
 resource deployedResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
@@ -124,7 +124,7 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogS
     subnetResourceId: networkingDeployment.outputs.logSourceSubnetId
     vmName: '${basename}-LogSource'
     vmSize: 'Standard_D2s_v3'
-    _artifactsLocation: _artifactsLocation
+    _artifactsLocation: artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
 
   }
@@ -149,7 +149,7 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinux
     subnetResourceId: networkingDeployment.outputs.logForwarderSubnetId
     vmssName: '${basename}-Log-Forwarder'
     vmssSize: 'Standard_D2s_v3'
-    _artifactsLocation: _artifactsLocation
+    _artifactsLocation: artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
   }
 }

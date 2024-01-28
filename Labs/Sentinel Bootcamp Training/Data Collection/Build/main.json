@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "354737563670545228"
+      "templateHash": "5577725466043408318"
     }
   },
   "parameters": {
@@ -103,6 +103,10 @@
         "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
       }
     }
+  },
+  "variables": {
+    "replaceUriSpaces": "[replace(parameters('_artifactsLocation'), ' ', '%20')]",
+    "artifactsLocation": "[format('{0}{1}', variables('replaceUriSpaces'), parameters('_artifactsLocationSasToken'))]"
   },
   "resources": [
     {
@@ -549,7 +553,7 @@
       "condition": "[parameters('deployBastion')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}}}-{1}-Bastion', parameters('datetime'), parameters('basename'))]",
+      "name": "[format('{0}-{1}-Bastion', parameters('datetime'), parameters('basename'))]",
       "resourceGroup": "[format('{0}-rg', parameters('basename'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1065,7 +1069,7 @@
             "value": "Standard_D2s_v3"
           },
           "_artifactsLocation": {
-            "value": "[parameters('_artifactsLocation')]"
+            "value": "[variables('artifactsLocation')]"
           },
           "_artifactsLocationSasToken": {
             "value": "[parameters('_artifactsLocationSasToken')]"
@@ -1430,7 +1434,7 @@
             "value": "Standard_D2s_v3"
           },
           "_artifactsLocation": {
-            "value": "[parameters('_artifactsLocation')]"
+            "value": "[variables('artifactsLocation')]"
           },
           "_artifactsLocationSasToken": {
             "value": "[parameters('_artifactsLocationSasToken')]"
