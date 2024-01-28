@@ -17,6 +17,7 @@ param authenticationType string = 'password'
 @description('Resources Name Prefix. This will be used to name most of the resources and the resource group')
 param basename string = 'sentinel-bootcamp'
 
+@secure()
 param datetime string = utcNow()
 
 param deployAMPLS bool = true
@@ -83,7 +84,7 @@ module bastionDeployment 'Network/Bastion.bicep' = if(deployBastion) {
   dependsOn:[
     networkingDeployment
   ]
-  scope: deployedResourceGroup
+  scope: resourceGroup(deployedResourceGroup.name)
   params: {
     basename: basename
     location: location
@@ -96,7 +97,7 @@ module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
   dependsOn:[
     networkingDeployment
   ]
-  scope: deployedResourceGroup
+  scope: resourceGroup(deployedResourceGroup.name)
   params: {
     basename: basename
     location: location
@@ -106,7 +107,7 @@ module amplsDeployment 'Network/AMPLS.bicep' = if(deployAMPLS){
 
 module sentinelDeployment 'Sentinel/Sentinel.bicep' = if(deploySentinel){
   name: '${datetime}-${basename}-Wksp'
-  scope: deployedResourceGroup
+  scope: resourceGroup(deployedResourceGroup.name)
   params: {
     basename: basename
     location: location
@@ -115,7 +116,7 @@ module sentinelDeployment 'Sentinel/Sentinel.bicep' = if(deploySentinel){
 
 module dataCollectionRuleDeployment 'SentinelDataCollection/DataCollectionRules.bicep' = if(deployDataCollectionRule){
   name: '${datetime}-${basename}-DCR'
-  scope: deployedResourceGroup
+  scope: resourceGroup(deployedResourceGroup.name)
   params: {
     basename: basename
     location: location
@@ -128,7 +129,7 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if(deployLinuxLogS
   dependsOn:[
     networkingDeployment
   ]
-  scope: deployedResourceGroup
+  scope: resourceGroup(deployedResourceGroup.name)
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
     adminUsername: adminUsername
@@ -151,7 +152,7 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinux
   dependsOn:[
     networkingDeployment
   ]
-  scope: deployedResourceGroup
+  scope: resourceGroup(deployedResourceGroup.name)
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
     adminUsername: adminUsername
@@ -175,7 +176,7 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if(deployLinux
 
 module logForwarderPoliciesDeployment 'PolicyAssignment/PolicyAssignment.bicep' = if(deployLogForwarderPolicies){
   name: '${datetime}-${basename}-LF-Policies'
-  scope: deployedResourceGroup
+  scope: resourceGroup(deployedResourceGroup.name)
   params: {
     policyDefinitionID : '/providers/Microsoft.Authorization/policyDefinitions/050a90d5-7cce-483f-8f6c-0df462036dda'
     policyAssignmentName : '${basename}-Configure Log Forwarder with DCR'

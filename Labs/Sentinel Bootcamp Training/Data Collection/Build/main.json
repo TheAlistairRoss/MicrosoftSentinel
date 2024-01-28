@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "18327034873256104874"
+      "templateHash": "8218141290438981031"
     }
   },
   "parameters": {
@@ -39,7 +39,7 @@
       }
     },
     "datetime": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "[utcNow()]"
     },
     "deployAMPLS": {
