@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "5857441037532733627"
+      "templateHash": "5500145660100453163"
     }
   },
   "parameters": {
@@ -130,8 +130,8 @@
       "condition": "[parameters('deployLogForwarderPolicies')]",
       "type": "Microsoft.Authorization/policyAssignments",
       "apiVersion": "2023-04-01",
-      "name": "[format('{0}-{1}-LF-Policies', parameters('datetime'), parameters('basename'))]",
-      "location": "[resourceGroup().location]",
+      "name": "[format('{0}-LF-Policies', parameters('basename'))]",
+      "location": "[parameters('location')]",
       "identity": {
         "type": "SystemAssigned"
       },
@@ -574,7 +574,7 @@
             "value": "[parameters('location')]"
           },
           "subnetResourceId": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('azureBastionSubnetName'))]"
+            "value": "[format('{0}/subnets/{1}', variables('vnetId'), variables('azureBastionSubnetName'))]"
           }
         },
         "template": {
@@ -675,7 +675,7 @@
             "value": "[parameters('location')]"
           },
           "subnetResourceId": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('privateEndpointSubnetName'))]"
+            "value": "[format('{0}/subnets/{1}', variables('vnetId'), variables('privateEndpointSubnetName'))]"
           }
         },
         "template": {
@@ -1056,7 +1056,7 @@
             "value": "TrustedLaunch"
           },
           "subnetResourceId": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('logSourceSubnetName'))]"
+            "value": "[format('{0}/subnets/{1}', variables('vnetId'), variables('logSourceSubnetName'))]"
           },
           "vmName": {
             "value": "[format('{0}-LogSource', parameters('basename'))]"
@@ -1419,7 +1419,7 @@
             "value": "TrustedLaunch"
           },
           "subnetResourceId": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('logForwarderSubnetName'))]"
+            "value": "[format('{0}/subnets/{1}', variables('vnetId'), variables('logForwarderSubnetName'))]"
           },
           "vmssName": {
             "value": "[format('{0}-Log-Forwarder', parameters('basename'))]"
@@ -1441,7 +1441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "6666504840750358070"
+              "templateHash": "17640008594303794917"
             }
           },
           "parameters": {
@@ -1770,7 +1770,14 @@
               "properties": {
                 "singlePlacementGroup": true,
                 "upgradePolicy": {
-                  "mode": "Rolling"
+                  "mode": "Rolling",
+                  "rollingUpgradePolicy": {
+                    "maxBatchInstancePercent": 50,
+                    "maxUnhealthyInstancePercent": 50,
+                    "maxUnhealthyUpgradedInstancePercent": 50,
+                    "pauseTimeBetweenBatches": "PT30S",
+                    "maxSurge": true
+                  }
                 },
                 "virtualMachineProfile": {
                   "osProfile": {
@@ -1994,7 +2001,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-DCR', parameters('datetime'), parameters('basename')))]",
-        "[resourceId('Microsoft.Authorization/policyAssignments', format('{0}-{1}-LF-Policies', parameters('datetime'), parameters('basename')))]",
+        "[resourceId('Microsoft.Authorization/policyAssignments', format('{0}-LF-Policies', parameters('basename')))]",
         "[resourceId('Microsoft.Resources/deployments', format('{0}-{1}-Networking', parameters('datetime'), parameters('basename')))]"
       ]
     }
