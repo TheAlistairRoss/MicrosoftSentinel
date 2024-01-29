@@ -276,68 +276,44 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-05-01' = {
         vnetConfig.addressSpacePrefix
       ]
     }
+    subnets: [
+      {
+        name: vnetConfig.subnets.azureBastionSubnet.name
+        properties: {
+          addressPrefix: vnetConfig.subnets.azureBastionSubnet.addressPrefix
+          networkSecurityGroup: {
+            id: bastionSubnetNSG.id
+          }
+        }
+      }
+      {
+        name: vnetConfig.subnets.logSourceSubnet.name
+        properties: {
+          addressPrefix: vnetConfig.subnets.logSourceSubnet.addressPrefix
+          networkSecurityGroup: {
+            id: logSourceSubnetNSG.id
+          }
+        }
+      }
+      {
+        name: vnetConfig.subnets.logForwarderSubnet.name
+        properties: {
+          addressPrefix: vnetConfig.subnets.logForwarderSubnet.addressPrefix
+          networkSecurityGroup: {
+            id: logForwarderSubnetNSG.id
+          }
+        }
+      }
+      {
+        name: vnetConfig.subnets.privateEndpointSubnet.name
+        properties: {
+          addressPrefix: vnetConfig.subnets.privateEndpointSubnet.addressPrefix
+          networkSecurityGroup: {
+            id: privateEndpointSubnetNSG.id
+          }
+        }
+      }
+    ]
   }
 }
 
-
-
-// Resources - Virtual Network Subnets
-resource vnetBastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
-  name: vnetConfig.subnets.azureBastionSubnet.name
-  properties: {
-    networkSecurityGroup: {
-      id: bastionSubnetNSG.id
-    }
-    addressPrefix: vnetConfig.subnets.azureBastionSubnet.addressPrefix
-  }
-  parent: vnet
-}
-
-resource vnetLogForwarderSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
-  name: vnetConfig.subnets.logForwarderSubnet.name
-  dependsOn:[
-    vnetBastionSubnet
-  ]
-  properties: {
-    networkSecurityGroup: {
-      id: logForwarderSubnetNSG.id
-    }
-    addressPrefix: vnetConfig.subnets.logForwarderSubnet.addressPrefix
-  }
-  parent: vnet
-}
-
-resource vnetLogSourceSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
-  name: vnetConfig.subnets.logSourceSubnet.name
-  dependsOn: [
-    vnetLogForwarderSubnet
-  ]
-  properties: {
-    networkSecurityGroup: {
-      id: logSourceSubnetNSG.id
-    }
-    addressPrefix: vnetConfig.subnets.logSourceSubnet.addressPrefix
-  }
-  parent: vnet
-}
-
-resource vnetPrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
-  name: vnetConfig.subnets.privateEndpointSubnet.name
-  dependsOn: [
-    vnetLogSourceSubnet
-  ]
-  properties: {
-    networkSecurityGroup: {
-      id: logSourceSubnetNSG.id
-    }
-    addressPrefix: vnetConfig.subnets.privateEndpointSubnet.addressPrefix
-  }
-  parent: vnet
-}
-
-// Outputs
-output virtualNetworkId string = vnet.id
-output azureBastionSubnetId string = vnetBastionSubnet.id
-output logForwarderSubnetId string = vnetLogForwarderSubnet.id
-output logSourceSubnetId string = vnetLogSourceSubnet.id
-output privateEndpointSubnetId string = vnetPrivateEndpointSubnet.id

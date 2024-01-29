@@ -81,7 +81,7 @@ module bastionDeployment 'Network/Bastion.bicep' = if (deployBastion) {
   params: {
     basename: basename
     location: location
-    subnetResourceId: '${vnetId}/subnets/${azureBastionSubnetName}'
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, azureBastionSubnetName)
   }
 }
 
@@ -90,10 +90,11 @@ module amplsDeployment 'Network/AMPLS.bicep' = if (deployAMPLS) {
   dependsOn: [
     networkingDeployment
   ]
+
   params: {
     basename: basename
     location: location
-    subnetResourceId: '${vnetId}/subnets/${privateEndpointSubnetName}'
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, privateEndpointSubnetName)
   }
 }
 
@@ -119,6 +120,7 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if (deployLinuxLog
   dependsOn: [
     networkingDeployment
   ]
+
   params: {
     adminPasswordOrKey: adminPasswordOrSSHKey
     adminUsername: adminUsername
@@ -127,7 +129,7 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if (deployLinuxLog
     location: location
     osVersion: 'Ubuntu-2004'
     securityType: 'TrustedLaunch'
-    subnetResourceId: '${vnetId}/subnets/${logSourceSubnetName}'
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, logSourceSubnetName)
     vmName: '${basename}-LogSource'
     vmSize: 'Standard_D2s_v3'
     _artifactsLocation: artifactsLocation
@@ -137,8 +139,8 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if (deployLinuxLog
 }
 
 resource logForwarderPolicyAssignment 'Microsoft.Authorization/policyAssignments@2023-04-01' = if (deployLogForwarderPolicies)  {
-  name: '${basename}-LF-Policies'
-  location: location
+  name: '${datetime}-${basename}-LF-Policies'
+  location: resourceGroup().location
   identity: {
     type: 'SystemAssigned'
   }
@@ -176,7 +178,7 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if (deployLinu
     location: location
     OSVersion: 'Ubuntu-2004'
     securityType: 'TrustedLaunch'
-    subnetResourceId: '${vnetId}/subnets/${logForwarderSubnetName}'
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, logForwarderSubnetName)
     vmssName: '${basename}-Log-Forwarder'
     vmssSize: 'Standard_D2s_v3'
     _artifactsLocation: artifactsLocation

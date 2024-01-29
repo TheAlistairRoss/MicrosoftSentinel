@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "3207289895149521496"
+      "templateHash": "5857441037532733627"
     }
   },
   "parameters": {
@@ -84,6 +84,13 @@
         "description": "Azure Region"
       }
     },
+    "updateLogForwarder": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Deploy the updated version of the log forwarder template"
+      }
+    },
     "vnetAddressIpV4Id": {
       "type": "string",
       "defaultValue": "10.0.0.0",
@@ -112,6 +119,7 @@
     "replaceUriSpaces": "[replace(parameters('_artifactsLocation'), ' ', '%20')]",
     "artifactsLocation": "[format('{0}{1}', variables('replaceUriSpaces'), parameters('_artifactsLocationSasToken'))]",
     "vnetName": "[format('{0}-vnet', parameters('basename'))]",
+    "vnetId": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', subscription().subscriptionId, resourceGroup().name, variables('vnetName'))]",
     "azureBastionSubnetName": "AzureBastionSubnet",
     "logSourceSubnetName": "[format('{0}-LogSource-Subnet', parameters('basename'))]",
     "logForwarderSubnetName": "[format('{0}-LogForwarder-Subnet', parameters('basename'))]",
@@ -190,7 +198,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "15269972360411106507"
+              "templateHash": "2457563915260346955"
             }
           },
           "parameters": {
@@ -497,95 +505,54 @@
                   "addressPrefixes": [
                     "[variables('vnetConfig').addressSpacePrefix]"
                   ]
-                }
-              }
-            },
-            {
-              "type": "Microsoft.Network/virtualNetworks/subnets",
-              "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('vnetName'), variables('vnetConfig').subnets.azureBastionSubnet.name)]",
-              "properties": {
-                "networkSecurityGroup": {
-                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('bastionSubnetNSGName'))]"
                 },
-                "addressPrefix": "[variables('vnetConfig').subnets.azureBastionSubnet.addressPrefix]"
+                "subnets": [
+                  {
+                    "name": "[variables('vnetConfig').subnets.azureBastionSubnet.name]",
+                    "properties": {
+                      "addressPrefix": "[variables('vnetConfig').subnets.azureBastionSubnet.addressPrefix]",
+                      "networkSecurityGroup": {
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('bastionSubnetNSGName'))]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "[variables('vnetConfig').subnets.logSourceSubnet.name]",
+                    "properties": {
+                      "addressPrefix": "[variables('vnetConfig').subnets.logSourceSubnet.addressPrefix]",
+                      "networkSecurityGroup": {
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('logSourceSubnetNSGName'))]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "[variables('vnetConfig').subnets.logForwarderSubnet.name]",
+                    "properties": {
+                      "addressPrefix": "[variables('vnetConfig').subnets.logForwarderSubnet.addressPrefix]",
+                      "networkSecurityGroup": {
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('logForwarderSubnetNSGName'))]"
+                      }
+                    }
+                  },
+                  {
+                    "name": "[variables('vnetConfig').subnets.privateEndpointSubnet.name]",
+                    "properties": {
+                      "addressPrefix": "[variables('vnetConfig').subnets.privateEndpointSubnet.addressPrefix]",
+                      "networkSecurityGroup": {
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('privateEndpointSubnetNSGName'))]"
+                      }
+                    }
+                  }
+                ]
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('bastionSubnetNSGName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Network/virtualNetworks/subnets",
-              "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('vnetName'), variables('vnetConfig').subnets.logForwarderSubnet.name)]",
-              "properties": {
-                "networkSecurityGroup": {
-                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('logForwarderSubnetNSGName'))]"
-                },
-                "addressPrefix": "[variables('vnetConfig').subnets.logForwarderSubnet.addressPrefix]"
-              },
-              "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('logForwarderSubnetNSGName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('vnetConfig').subnets.azureBastionSubnet.name)]"
-              ]
-            },
-            {
-              "type": "Microsoft.Network/virtualNetworks/subnets",
-              "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('vnetName'), variables('vnetConfig').subnets.logSourceSubnet.name)]",
-              "properties": {
-                "networkSecurityGroup": {
-                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('logSourceSubnetNSGName'))]"
-                },
-                "addressPrefix": "[variables('vnetConfig').subnets.logSourceSubnet.addressPrefix]"
-              },
-              "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('logSourceSubnetNSGName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('vnetConfig').subnets.logForwarderSubnet.name)]"
-              ]
-            },
-            {
-              "type": "Microsoft.Network/virtualNetworks/subnets",
-              "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('vnetName'), variables('vnetConfig').subnets.privateEndpointSubnet.name)]",
-              "properties": {
-                "networkSecurityGroup": {
-                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('logSourceSubnetNSGName'))]"
-                },
-                "addressPrefix": "[variables('vnetConfig').subnets.privateEndpointSubnet.addressPrefix]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('logSourceSubnetNSGName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('vnetConfig').subnets.logSourceSubnet.name)]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('privateEndpointSubnetNSGName'))]"
               ]
             }
-          ],
-          "outputs": {
-            "virtualNetworkId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-            },
-            "azureBastionSubnetId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('vnetConfig').subnets.azureBastionSubnet.name)]"
-            },
-            "logForwarderSubnetId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('vnetConfig').subnets.logForwarderSubnet.name)]"
-            },
-            "logSourceSubnetId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('vnetConfig').subnets.logSourceSubnet.name)]"
-            },
-            "privateEndpointSubnetId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('vnetConfig').subnets.privateEndpointSubnet.name)]"
-            }
-          }
+          ]
         }
       }
     },
@@ -1432,7 +1399,7 @@
             "value": 1
           },
           "autoscaleMax": {
-            "value": 3
+            "value": 2
           },
           "basename": {
             "value": "[parameters('basename')]"
