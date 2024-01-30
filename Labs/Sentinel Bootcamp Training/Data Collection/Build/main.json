@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "5500145660100453163"
+      "templateHash": "12661079454255044568"
     }
   },
   "parameters": {
@@ -1441,7 +1441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "17640008594303794917"
+              "templateHash": "12030987280167119320"
             }
           },
           "parameters": {
@@ -1770,14 +1770,7 @@
               "properties": {
                 "singlePlacementGroup": true,
                 "upgradePolicy": {
-                  "mode": "Rolling",
-                  "rollingUpgradePolicy": {
-                    "maxBatchInstancePercent": 50,
-                    "maxUnhealthyInstancePercent": 50,
-                    "maxUnhealthyUpgradedInstancePercent": 50,
-                    "pauseTimeBetweenBatches": "PT30S",
-                    "maxSurge": true
-                  }
+                  "mode": "Automatic"
                 },
                 "virtualMachineProfile": {
                   "osProfile": {

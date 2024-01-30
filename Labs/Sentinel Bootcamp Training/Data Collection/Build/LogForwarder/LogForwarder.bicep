@@ -280,14 +280,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
   properties: {
     singlePlacementGroup: true
     upgradePolicy: {
-      mode: 'Rolling'
-      rollingUpgradePolicy: {
-          maxBatchInstancePercent: 50
-          maxUnhealthyInstancePercent: 50
-          maxUnhealthyUpgradedInstancePercent: 50
-          pauseTimeBetweenBatches: 'PT30S'
-          maxSurge: true   
-         }
+      mode: 'Automatic'
     }
     virtualMachineProfile: {
       osProfile: {
