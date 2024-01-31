@@ -311,9 +311,6 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
                       }
                     ]
                     loadBalancerInboundNatPools: [
-                      {
-                        id: '${loadbalancer.id}/inboundNatPools/natPool'
-                      }
                     ]
                   }
                 }
