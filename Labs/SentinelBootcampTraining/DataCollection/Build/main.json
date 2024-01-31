@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "16351552516628892808"
+      "templateHash": "5301924445311470443"
     }
   },
   "parameters": {
@@ -84,13 +84,6 @@
         "description": "Azure Region"
       }
     },
-    "updateLogForwarder": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Deploy the updated version of the log forwarder template"
-      }
-    },
     "vnetAddressIpV4Id": {
       "type": "string",
       "defaultValue": "10.0.0.0",
@@ -116,8 +109,6 @@
     }
   },
   "variables": {
-    "replaceUriSpaces": "[replace(parameters('_artifactsLocation'), ' ', '%20')]",
-    "artifactsLocation": "[variables('replaceUriSpaces')]",
     "vnetName": "[format('{0}-vnet', parameters('basename'))]",
     "vnetId": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', subscription().subscriptionId, resourceGroup().name, variables('vnetName'))]",
     "azureBastionSubnetName": "AzureBastionSubnet",
@@ -1065,7 +1056,7 @@
             "value": "Standard_D2s_v3"
           },
           "_artifactsLocation": {
-            "value": "[variables('artifactsLocation')]"
+            "value": "[parameters('_artifactsLocation')]"
           },
           "_artifactsLocationSasToken": {
             "value": "[parameters('_artifactsLocationSasToken')]"
@@ -1428,7 +1419,7 @@
             "value": "Standard_D2s_v3"
           },
           "_artifactsLocation": {
-            "value": "[variables('artifactsLocation')]"
+            "value": "[parameters('_artifactsLocation')]"
           },
           "_artifactsLocationSasToken": {
             "value": "[parameters('_artifactsLocationSasToken')]"
@@ -1441,7 +1432,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "7374735695944818500"
+              "templateHash": "7118615607582933154"
             }
           },
           "parameters": {
@@ -1611,11 +1602,11 @@
               "LogForwarder/Config/rsyslog-50-default.conf"
             ],
             "securityProfileJson": {
+              "securityType": "[parameters('securityType')]",
               "uefiSettings": {
                 "secureBootEnabled": true,
                 "vTpmEnabled": true
-              },
-              "securityType": "[parameters('securityType')]"
+              }
             },
             "storageAccountName": "[toLower(replace(format('{0}diag', parameters('basename')), '-', ''))]",
             "extension_CustomScriptExtension": {

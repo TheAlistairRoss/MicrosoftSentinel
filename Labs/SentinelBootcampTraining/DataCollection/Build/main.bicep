@@ -30,9 +30,6 @@ param deploySentinel bool = true
 @description('Azure Region')
 param location string = 'uksouth'
 
-@description('Deploy the updated version of the log forwarder template')
-param updateLogForwarder bool = false
-
 @description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)')
 @minLength(7)
 @maxLength(13)
@@ -46,9 +43,6 @@ param _artifactsLocation string = deployment().properties.templateLink.uri
 param _artifactsLocationSasToken string = ''
 
 // Variables
-
-var replaceUriSpaces = replace(_artifactsLocation, ' ', '%20')
-var artifactsLocation = replaceUriSpaces
 
 var vnetName = '${basename}-vnet'
 var vnetId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${vnetName}'
@@ -130,7 +124,7 @@ module logSourceDeployment 'LinuxLogSource/LogSource.bicep' = if (deployLinuxLog
     subnetResourceId: '${vnetId}/subnets/${logSourceSubnetName}'
     vmName: '${basename}-LogSource'
     vmSize: 'Standard_D2s_v3'
-    _artifactsLocation: artifactsLocation
+    _artifactsLocation: _artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
 
   }
@@ -179,7 +173,7 @@ module logForwarderDeployment 'LogForwarder/LogForwarder.bicep' = if (deployLinu
     subnetResourceId: '${vnetId}/subnets/${logForwarderSubnetName}'
     vmssName: '${basename}-Log-Forwarder'
     vmssSize: 'Standard_D2s_v3'
-    _artifactsLocation: artifactsLocation
+    _artifactsLocation: _artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
   }
 }

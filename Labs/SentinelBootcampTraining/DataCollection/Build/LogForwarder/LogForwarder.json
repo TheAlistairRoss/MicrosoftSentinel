@@ -1,0 +1,519 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.24.24.22086",
+      "templateHash": "14201242681219496029"
+    }
+  },
+  "parameters": {
+    "adminPasswordOrKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Username for the Virtual Machine."
+      }
+    },
+    "authenticationType": {
+      "type": "string",
+      "defaultValue": "password",
+      "allowedValues": [
+        "sshPublicKey",
+        "password"
+      ],
+      "metadata": {
+        "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
+      }
+    },
+    "autoscaleMax": {
+      "type": "int",
+      "defaultValue": 3,
+      "metadata": {
+        "description": "The maximum number of VMs in the scale set"
+      }
+    },
+    "autoscaleMin": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "The minimum number of VMs in the scale set"
+      }
+    },
+    "basename": {
+      "type": "string",
+      "defaultValue": "sentinel-bootcamp",
+      "metadata": {
+        "description": "Resources Name Prefix"
+      }
+    },
+    "dataCollectionRuleResourceIds": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "The data collection rule resource ids to associate with the VM"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location of the resources"
+      }
+    },
+    "OSVersion": {
+      "type": "string",
+      "defaultValue": "Ubuntu-2004",
+      "allowedValues": [
+        "Ubuntu-1804",
+        "Ubuntu-2004",
+        "Ubuntu-2204"
+      ],
+      "metadata": {
+        "description": "The version of the Ubuntu to use for the Virtual Machine Scale Set"
+      }
+    },
+    "securityType": {
+      "type": "string",
+      "defaultValue": "TrustedLaunch",
+      "allowedValues": [
+        "Standard",
+        "TrustedLaunch"
+      ],
+      "metadata": {
+        "description": "Security Type of the Virtual Machine."
+      }
+    },
+    "subnetResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ResourceId of the subnet to use for the virtual machine"
+      }
+    },
+    "vmssName": {
+      "type": "string",
+      "defaultValue": "LinuxLogForwarder",
+      "metadata": {
+        "description": "The name of your Virtual Machine."
+      }
+    },
+    "vmssSize": {
+      "type": "string",
+      "defaultValue": "Standard_D2s_v3",
+      "metadata": {
+        "description": "The size of the VM"
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "defaultValue": "[deployment().properties.templateLink.uri]",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "scriptFilesUris",
+        "count": "[length(variables('scriptFiles'))]",
+        "input": "[uri(parameters('_artifactsLocation'), format('{0}{1}', variables('scriptFiles')[copyIndex('scriptFilesUris')], parameters('_artifactsLocationSasToken')))]"
+      }
+    ],
+    "autoscaleName": "[format('{0}-autoscale', parameters('basename'))]",
+    "imageReference": {
+      "Ubuntu-1804": {
+        "publisher": "Canonical",
+        "offer": "UbuntuServer",
+        "sku": "18_04-lts-gen2",
+        "version": "latest"
+      },
+      "Ubuntu-2004": {
+        "publisher": "Canonical",
+        "offer": "0001-com-ubuntu-server-focal",
+        "sku": "20_04-lts-gen2",
+        "version": "latest"
+      },
+      "Ubuntu-2204": {
+        "publisher": "Canonical",
+        "offer": "0001-com-ubuntu-server-jammy",
+        "sku": "22_04-lts-gen2",
+        "version": "latest"
+      }
+    },
+    "linuxPasswordConfiguration": {
+      "disablePasswordAuthentication": false,
+      "provisionVMAgent": true
+    },
+    "linuxSSHConfiguration": {
+      "disablePasswordAuthentication": true,
+      "provisionVMAgent": true,
+      "ssh": {
+        "publicKeys": [
+          {
+            "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+            "keyData": "[parameters('adminPasswordOrKey')]"
+          }
+        ]
+      }
+    },
+    "loadbalancerName": "[format('{0}-lb', parameters('basename'))]",
+    "scriptFiles": [
+      "LogForwarder/Config/config.sh",
+      "LogForwarder/Config/rsyslog-50-default.conf"
+    ],
+    "securityProfileJson": {
+      "securityType": "[parameters('securityType')]",
+      "uefiSettings": {
+        "secureBootEnabled": true,
+        "vTpmEnabled": true
+      }
+    },
+    "storageAccountName": "[toLower(replace(format('{0}diag', parameters('basename')), '-', ''))]",
+    "extension_CustomScriptExtension": {
+      "name": "CustomScript",
+      "properties": {
+        "provisionAfterExtensions": [
+          "[variables('extension_TrustedLaunch').name]"
+        ],
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.1",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": "[variables('scriptFilesUris')]",
+          "commandToExecute": "./config.sh"
+        }
+      }
+    },
+    "extension_LinuxAzureMonitorAgent": {
+      "name": "AzureMonitorLinuxAgent",
+      "properties": {
+        "provisionAfterExtensions": [
+          "[variables('extension_CustomScriptExtension').name]"
+        ],
+        "autoUpgradeMinorVersion": true,
+        "publisher": "Microsoft.Azure.Monitor",
+        "type": "AzureMonitorLinuxAgent",
+        "typeHandlerVersion": "1.0"
+      }
+    },
+    "extension_TrustedLaunch": {
+      "name": "GuestAttestation",
+      "properties": {
+        "publisher": "Microsoft.Azure.Security.LinuxAttestation",
+        "type": "GuestAttestation",
+        "typeHandlerVersion": "1.0",
+        "autoUpgradeMinorVersion": true,
+        "enableAutomaticUpgrade": true,
+        "settings": {
+          "AttestationConfig": {
+            "MaaSettings": {
+              "maaEndpoint": "[substring('emptystring', 0, 0)]",
+              "maaTenantName": "GuestAttestation"
+            }
+          }
+        }
+      }
+    },
+    "vmssExtensions": [
+      "[variables('extension_TrustedLaunch')]",
+      "[variables('extension_CustomScriptExtension')]",
+      "[variables('extension_LinuxAzureMonitorAgent')]"
+    ],
+    "vmssNICName": "[format('{0}-nic', parameters('vmssName'))]",
+    "vmssOSdiskType": "Standard_LRS"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "supportsHttpsTrafficOnly": true
+      }
+    },
+    {
+      "type": "Microsoft.Network/loadBalancers",
+      "apiVersion": "2023-06-01",
+      "name": "[variables('loadbalancerName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard",
+        "tier": "Regional"
+      },
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "LoadBalancerFrontEnd",
+            "properties": {
+              "privateIPAddressVersion": "IPv4",
+              "privateIPAllocationMethod": "Dynamic",
+              "privateIPAddress": "[format('{0}.100', substring(reference(resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', split(parameters('subnetResourceId'), '/')[8], split(parameters('subnetResourceId'), '/')[10]), '/')[0], split(format('{0}/{1}', split(parameters('subnetResourceId'), '/')[8], split(parameters('subnetResourceId'), '/')[10]), '/')[1]), '2023-05-01').addressPrefix, 0, lastIndexOf(reference(resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', split(parameters('subnetResourceId'), '/')[8], split(parameters('subnetResourceId'), '/')[10]), '/')[0], split(format('{0}/{1}', split(parameters('subnetResourceId'), '/')[8], split(parameters('subnetResourceId'), '/')[10]), '/')[1]), '2023-05-01').addressPrefix, '.')))]",
+              "subnet": {
+                "id": "[parameters('subnetResourceId')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "bepool",
+            "properties": {}
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "LBSyslogTCPRule",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', variables('loadbalancerName'), 'LoadBalancerFrontend')]"
+              },
+              "frontendPort": 514,
+              "backendPort": 514,
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 5,
+              "protocol": "TCP",
+              "enableTcpReset": false,
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadbalancerName'), 'bepool')]"
+              },
+              "probe": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadbalancerName'), 'tcpProbe')]"
+              }
+            }
+          },
+          {
+            "name": "LBSyslogUDPRule",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', variables('loadbalancerName'), 'LoadBalancerFrontend')]"
+              },
+              "frontendPort": 514,
+              "backendPort": 514,
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 5,
+              "protocol": "Udp",
+              "enableTcpReset": false,
+              "loadDistribution": "Default",
+              "disableOutboundSnat": false,
+              "backendAddressPool": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadbalancerName'), 'bepool')]"
+              },
+              "probe": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadbalancerName'), 'tcpProbe')]"
+              }
+            }
+          }
+        ],
+        "probes": [
+          {
+            "name": "tcpProbe",
+            "properties": {
+              "protocol": "Tcp",
+              "port": 514,
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            }
+          }
+        ],
+        "inboundNatRules": [],
+        "outboundRules": [],
+        "inboundNatPools": []
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "apiVersion": "2023-09-01",
+      "name": "[parameters('vmssName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('vmssSize')]",
+        "tier": "Standard",
+        "capacity": "[parameters('autoscaleMin')]"
+      },
+      "properties": {
+        "singlePlacementGroup": true,
+        "upgradePolicy": {
+          "mode": "Automatic"
+        },
+        "virtualMachineProfile": {
+          "osProfile": {
+            "computerNamePrefix": "[parameters('basename')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPasswordOrKey')]",
+            "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), variables('linuxPasswordConfiguration'), variables('linuxSSHConfiguration'))]",
+            "secrets": []
+          },
+          "storageProfile": {
+            "osDisk": {
+              "createOption": "FromImage",
+              "caching": "ReadWrite",
+              "managedDisk": {
+                "storageAccountType": "[variables('vmssOSdiskType')]"
+              },
+              "diskSizeGB": 32
+            },
+            "imageReference": "[variables('imageReference')[parameters('OSVersion')]]"
+          },
+          "networkProfile": {
+            "networkInterfaceConfigurations": [
+              {
+                "name": "[variables('vmssNICName')]",
+                "properties": {
+                  "primary": true,
+                  "enableAcceleratedNetworking": false,
+                  "dnsSettings": {
+                    "dnsServers": []
+                  },
+                  "enableIPForwarding": false,
+                  "ipConfigurations": [
+                    {
+                      "name": "[format('{0}-ipConfig', parameters('basename'))]",
+                      "properties": {
+                        "subnet": {
+                          "id": "[parameters('subnetResourceId')]"
+                        },
+                        "privateIPAddressVersion": "IPv4",
+                        "loadBalancerBackendAddressPools": [
+                          {
+                            "id": "[format('{0}/backendAddressPools/bepool', resourceId('Microsoft.Network/loadBalancers', variables('loadbalancerName')))]"
+                          }
+                        ],
+                        "loadBalancerInboundNatPools": []
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "healthProbe": {
+              "id": "[format('{0}/probes/tcpProbe', resourceId('Microsoft.Network/loadBalancers', variables('loadbalancerName')))]"
+            }
+          },
+          "diagnosticsProfile": {
+            "bootDiagnostics": {
+              "enabled": true,
+              "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-09-01').primaryEndpoints.blob]"
+            }
+          },
+          "extensionProfile": {
+            "extensions": "[variables('vmssExtensions')]"
+          },
+          "securityProfile": "[if(equals(parameters('securityType'), 'TrustedLaunch'), variables('securityProfileJson'), parameters('securityType'))]",
+          "priority": "Regular"
+        },
+        "overprovision": true,
+        "doNotRunExtensionsOnOverprovisionedVMs": false,
+        "platformFaultDomainCount": 5
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/loadBalancers', variables('loadbalancerName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Insights/autoscalesettings",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('autoscaleName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "profiles": [
+          {
+            "name": "CPU Scaling",
+            "capacity": {
+              "minimum": "[format('{0}', parameters('autoscaleMin'))]",
+              "maximum": "[format('{0}', parameters('autoscaleMax'))]",
+              "default": "[format('{0}', parameters('autoscaleMin'))]"
+            },
+            "rules": [
+              {
+                "metricTrigger": {
+                  "metricName": "Percentage CPU",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT5M",
+                  "timeAggregation": "Average",
+                  "operator": "GreaterThan",
+                  "threshold": 75,
+                  "dimensions": [],
+                  "dividePerInstance": false
+                },
+                "scaleAction": {
+                  "direction": "Increase",
+                  "type": "ChangeCount",
+                  "value": "1",
+                  "cooldown": "PT1M"
+                }
+              },
+              {
+                "metricTrigger": {
+                  "metricName": "Percentage CPU",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT5M",
+                  "timeAggregation": "Average",
+                  "operator": "LessThan",
+                  "threshold": 25,
+                  "dimensions": [],
+                  "dividePerInstance": false
+                },
+                "scaleAction": {
+                  "direction": "Decrease",
+                  "type": "ChangeCount",
+                  "value": "1",
+                  "cooldown": "PT1M"
+                }
+              }
+            ]
+          }
+        ],
+        "enabled": true,
+        "name": "[format('{0}-autoscale', parameters('basename'))]",
+        "targetResourceUri": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "dcrAssociation",
+        "count": "[length(parameters('dataCollectionRuleResourceIds'))]"
+      },
+      "type": "Microsoft.Insights/dataCollectionRuleAssociations",
+      "apiVersion": "2022-06-01",
+      "scope": "[format('Microsoft.Compute/virtualMachineScaleSets/{0}', parameters('vmssName'))]",
+      "name": "[format('{0}-dcrassociation', uniqueString(resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName')), parameters('dataCollectionRuleResourceIds')[copyIndex()]))]",
+      "properties": {
+        "dataCollectionRuleId": "[parameters('dataCollectionRuleResourceIds')[copyIndex()]]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]"
+      ]
+    }
+  ]
+}

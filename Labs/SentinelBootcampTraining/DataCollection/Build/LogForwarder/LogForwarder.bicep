@@ -113,11 +113,11 @@ var scriptFiles = [
 var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
 
 var securityProfileJson = {
+  securityType: securityType
   uefiSettings: {
     secureBootEnabled: true
     vTpmEnabled: true
   }
-  securityType: securityType
 }
 
 var storageAccountName = toLower(replace('${basename}diag', '-', ''))
