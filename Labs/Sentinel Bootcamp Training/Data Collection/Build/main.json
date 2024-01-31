@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12661079454255044568"
+      "templateHash": "15176837433003202051"
     }
   },
   "parameters": {
@@ -1441,7 +1441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "12030987280167119320"
+              "templateHash": "8877406493321876744"
             }
           },
           "parameters": {
@@ -1615,8 +1615,8 @@
             "loadbalancerName": "[format('{0}-lb', parameters('basename'))]",
             "maxPortRange": "[if(lessOrEquals(parameters('autoscaleMax'), 9), '5000', '500')]",
             "scriptFiles": [
-              "LinuxLogForwarder/Config/config.sh",
-              "LinuxLogForwarder/Config/rsyslog-50-default.conf"
+              "LogForwarder/Config/config.sh",
+              "LogForwarder/Config/rsyslog-50-default.conf"
             ],
             "securityProfileJson": {
               "uefiSettings": {
@@ -1736,25 +1736,29 @@
                     }
                   }
                 ],
-                "inboundNatRules": [],
-                "outboundRules": [],
-                "inboundNatPools": [
+                "inboundNatRules": [
                   {
-                    "name": "natPool",
+                    "name": "sshNatRule",
                     "properties": {
-                      "frontendPortRangeStart": 50000,
-                      "frontendPortRangeEnd": "[int(format('{0}{1}', variables('maxPortRange'), parameters('autoscaleMax')))]",
+                      "backendAddressPool": {
+                        "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadbalancerName'), 'bepool')]"
+                      },
                       "backendPort": 22,
-                      "protocol": "Tcp",
-                      "idleTimeoutInMinutes": 5,
                       "enableFloatingIP": false,
                       "enableTcpReset": false,
                       "frontendIPConfiguration": {
                         "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', variables('loadbalancerName'), 'LoadBalancerFrontend')]"
-                      }
+                      },
+                      "frontendPort": 22,
+                      "frontendPortRangeEnd": "[int(format('{0}{1}', variables('maxPortRange'), parameters('autoscaleMax')))]",
+                      "frontendPortRangeStart": 50000,
+                      "idleTimeoutInMinutes": 5,
+                      "protocol": "Tcp"
                     }
                   }
-                ]
+                ],
+                "outboundRules": [],
+                "inboundNatPools": []
               }
             },
             {
@@ -1916,21 +1920,6 @@
               ]
             },
             {
-              "condition": "[not(empty(parameters('dataCollectionRuleResourceIds')))]",
-              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2023-09-01",
-              "name": "[format('{0}/{1}', parameters('vmssName'), 'AzureMonitorLinuxAgent')]",
-              "properties": {
-                "autoUpgradeMinorVersion": true,
-                "publisher": "Microsoft.Azure.Monitor",
-                "type": "AzureMonitorLinuxAgent",
-                "typeHandlerVersion": "1.0"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]"
-              ]
-            },
-            {
               "condition": "[and(equals(parameters('securityType'), 'TrustedLaunch'), and(equals(variables('securityProfileJson').uefiSettings.secureBootEnabled, true()), equals(variables('securityProfileJson').uefiSettings.vTpmEnabled, true())))]",
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
               "apiVersion": "2023-09-01",
@@ -1955,6 +1944,22 @@
               ]
             },
             {
+              "condition": "[not(empty(parameters('dataCollectionRuleResourceIds')))]",
+              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('vmssName'), 'AzureMonitorLinuxAgent')]",
+              "properties": {
+                "autoUpgradeMinorVersion": true,
+                "publisher": "Microsoft.Azure.Monitor",
+                "type": "AzureMonitorLinuxAgent",
+                "typeHandlerVersion": "1.0"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]",
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('vmssName'), variables('trustedLaunchExtension').extensionName)]"
+              ]
+            },
+            {
               "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
               "apiVersion": "2023-09-01",
               "name": "[format('{0}/{1}', parameters('vmssName'), variables('customScriptExtension').name)]",
@@ -1970,7 +1975,8 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]",
-                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('vmssName'), 'AzureMonitorLinuxAgent')]"
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('vmssName'), 'AzureMonitorLinuxAgent')]",
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('vmssName'), variables('trustedLaunchExtension').extensionName)]"
               ]
             },
             {

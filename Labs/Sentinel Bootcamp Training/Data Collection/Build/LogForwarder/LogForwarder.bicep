@@ -116,8 +116,8 @@ var loadbalancerName = '${basename}-lb'
 var maxPortRange = ((autoscaleMax <= 9) ? '5000' : '500')
 
 var scriptFiles = [
-  'LinuxLogForwarder/Config/config.sh'
-  'LinuxLogForwarder/Config/rsyslog-50-default.conf'
+  'LogForwarder/Config/config.sh'
+  'LogForwarder/Config/rsyslog-50-default.conf'
 ]
 
 var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
@@ -480,3 +480,5 @@ resource dcrAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2022-
   }
 }
 ]
+
+
