@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "15176837433003202051"
+      "templateHash": "12917860133401178976"
     }
   },
   "parameters": {
@@ -1441,7 +1441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8877406493321876744"
+              "templateHash": "7753665368417822660"
             }
           },
           "parameters": {
@@ -1736,27 +1736,7 @@
                     }
                   }
                 ],
-                "inboundNatRules": [
-                  {
-                    "name": "sshNatRule",
-                    "properties": {
-                      "backendAddressPool": {
-                        "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadbalancerName'), 'bepool')]"
-                      },
-                      "backendPort": 22,
-                      "enableFloatingIP": false,
-                      "enableTcpReset": false,
-                      "frontendIPConfiguration": {
-                        "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', variables('loadbalancerName'), 'LoadBalancerFrontend')]"
-                      },
-                      "frontendPort": 22,
-                      "frontendPortRangeEnd": "[int(format('{0}{1}', variables('maxPortRange'), parameters('autoscaleMax')))]",
-                      "frontendPortRangeStart": 50000,
-                      "idleTimeoutInMinutes": 5,
-                      "protocol": "Tcp"
-                    }
-                  }
-                ],
+                "inboundNatRules": [],
                 "outboundRules": [],
                 "inboundNatPools": []
               }

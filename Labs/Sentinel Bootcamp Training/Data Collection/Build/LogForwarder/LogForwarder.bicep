@@ -248,25 +248,6 @@ resource loadbalancer 'Microsoft.Network/loadBalancers@2023-06-01' = {
       }
     ]
     inboundNatRules: [
-      {
-        name: 'sshNatRule'
-        properties: {
-          backendAddressPool:{
-             id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadbalancerName, 'bepool')
-          }
-          backendPort: 22
-          enableFloatingIP: false
-          enableTcpReset: false
-          frontendIPConfiguration: {
-            id: resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', loadbalancerName, 'LoadBalancerFrontend')
-          }
-          frontendPort: 22
-          frontendPortRangeEnd: int('${maxPortRange}${autoscaleMax}')
-          frontendPortRangeStart: 50000
-          idleTimeoutInMinutes: 5
-          protocol: 'Tcp'
-        }
-      }
     ]
     outboundRules: []
     inboundNatPools: []
