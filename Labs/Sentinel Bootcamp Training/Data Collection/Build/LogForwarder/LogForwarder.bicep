@@ -247,25 +247,29 @@ resource loadbalancer 'Microsoft.Network/loadBalancers@2023-06-01' = {
         }
       }
     ]
-    inboundNatRules: []
-    outboundRules: []
-    inboundNatPools: [
+    inboundNatRules: [
       {
-        name: 'natPool'
+        name: 'sshNatRule'
         properties: {
-          frontendPortRangeStart: 50000
-          frontendPortRangeEnd: int('${maxPortRange}${autoscaleMax}')
+          backendAddressPool:{
+             id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadbalancerName, 'bepool')
+          }
           backendPort: 22
-          protocol: 'Tcp'
-          idleTimeoutInMinutes: 5
           enableFloatingIP: false
           enableTcpReset: false
           frontendIPConfiguration: {
             id: resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', loadbalancerName, 'LoadBalancerFrontend')
           }
+          frontendPort: 22
+          frontendPortRangeEnd: int('${maxPortRange}${autoscaleMax}')
+          frontendPortRangeStart: 50000
+          idleTimeoutInMinutes: 5
+          protocol: 'Tcp'
         }
       }
     ]
+    outboundRules: []
+    inboundNatPools: []
   }
 }
 
@@ -418,17 +422,6 @@ resource autoscale 'Microsoft.Insights/autoscalesettings@2022-10-01' = {
   }
 }
 
-resource vmssLinux_AzureMonitorAgent 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = if (!empty((dataCollectionRuleResourceIds))) {
-  parent: vmss
-  name: 'AzureMonitorLinuxAgent'
-  properties: {
-    autoUpgradeMinorVersion: true
-    publisher: 'Microsoft.Azure.Monitor'
-    type: 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: '1.0'
-  }
-}
-
 resource vmssLinux_TrustedLaunch 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = if ((securityType == 'TrustedLaunch') && ((securityProfileJson.uefiSettings.secureBootEnabled == true) && (securityProfileJson.uefiSettings.vTpmEnabled == true))) {
   parent: vmss
   name: trustedLaunchExtension.extensionName
@@ -449,10 +442,23 @@ resource vmssLinux_TrustedLaunch 'Microsoft.Compute/virtualMachineScaleSets/exte
   }
 }
 
+resource vmssLinux_AzureMonitorAgent 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = if (!empty((dataCollectionRuleResourceIds))) {
+  parent: vmss
+  name: 'AzureMonitorLinuxAgent'
+  dependsOn: [vmssLinux_TrustedLaunch]
+
+  properties: {
+    autoUpgradeMinorVersion: true
+    publisher: 'Microsoft.Azure.Monitor'
+    type: 'AzureMonitorLinuxAgent'
+    typeHandlerVersion: '1.0'
+  }
+}
+
 resource vmssLinux_CustomScript 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = {
   parent: vmss
   name: customScriptExtension.name
-  dependsOn: (!empty((dataCollectionRuleResourceIds))) ? [ vmssLinux_AzureMonitorAgent ] : []
+  dependsOn: (!empty((dataCollectionRuleResourceIds))) ? [vmssLinux_AzureMonitorAgent] : [vmssLinux_TrustedLaunch]
   properties: {
     publisher: customScriptExtension.publisher
     type: customScriptExtension.name
