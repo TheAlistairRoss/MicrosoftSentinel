@@ -64,14 +64,6 @@ param _artifactsLocationSasToken string
 
 var autoscaleName = '${basename}-autoscale'
 
-var customScriptExtension = {
-  name: 'CustomScript'
-  publisher: 'Microsoft.Azure.Extensions'
-  typeHandlerVersion: '2.1'
-  fileUris: scriptFilesUris
-  commandToExecute: './config.sh'
-}
-
 var imageReference = {
   'Ubuntu-1804': {
     publisher: 'Canonical'
@@ -132,13 +124,61 @@ var securityProfileJson = {
 
 var storageAccountName = toLower(replace('${basename}diag', '-', ''))
 
-var trustedLaunchExtension = {
-  extensionName: 'GuestAttestation'
-  extensionPublisher: 'Microsoft.Azure.Security.LinuxAttestation'
-  extensionVersion: '1.0'
-  maaTenantName: 'GuestAttestation'
-  maaEndpoint: substring('emptystring', 0, 0)
+var extension_CustomScriptExtension = {
+  name: 'CustomScript'
+  properties: {
+    provisionAfterExtensions: [
+      extension_TrustedLaunch.name
+    ]
+    publisher: 'Microsoft.Azure.Extensions'
+    type: 'CustomScript'
+    typeHandlerVersion: '2.1'
+    autoUpgradeMinorVersion: true
+    settings: {
+      fileUris: scriptFilesUris
+      commandToExecute: './config.sh'
+    }
+  }
 }
+
+var extension_LinuxAzureMonitorAgent = {
+  name: 'AzureMonitorLinuxAgent'
+  properties: {
+    provisionAfterExtensions: [
+      extension_CustomScriptExtension.name
+    ]
+    autoUpgradeMinorVersion: true
+    publisher: 'Microsoft.Azure.Monitor'
+    type: 'AzureMonitorLinuxAgent'
+    typeHandlerVersion: '1.0'
+  }
+}
+
+var extension_TrustedLaunch = {
+  name: 'GuestAttestation'
+  properties: {
+    publisher: 'Microsoft.Azure.Security.LinuxAttestation'
+    type: 'GuestAttestation'
+    typeHandlerVersion: '1.0'
+    autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
+    settings: {
+      AttestationConfig: {
+        MaaSettings: {
+          maaEndpoint: substring('emptystring', 0, 0)
+          maaTenantName: 'GuestAttestation'
+        }
+      }
+    }
+  }
+
+}
+
+var vmssExtensions = [
+  extension_TrustedLaunch
+  extension_CustomScriptExtension
+  extension_LinuxAzureMonitorAgent
+]
 
 var vmssNICName = '${vmssName}-nic'
 
@@ -328,6 +368,9 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
           storageUri: storageAccount.properties.primaryEndpoints.blob
         }
       }
+      extensionProfile:{
+        extensions: vmssExtensions
+      }
       priority: 'Regular'
     }
     overprovision: true
@@ -400,59 +443,10 @@ resource autoscale 'Microsoft.Insights/autoscalesettings@2022-10-01' = {
   }
 }
 
-resource vmssLinux_TrustedLaunch 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = if ((securityType == 'TrustedLaunch') && ((securityProfileJson.uefiSettings.secureBootEnabled == true) && (securityProfileJson.uefiSettings.vTpmEnabled == true))) {
-  parent: vmss
-  name: trustedLaunchExtension.extensionName
-  properties: {
-    publisher: trustedLaunchExtension.extensionPublisher
-    type: trustedLaunchExtension.extensionName
-    typeHandlerVersion: trustedLaunchExtension.extensionVersion
-    autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: true
-    settings: {
-      AttestationConfig: {
-        MaaSettings: {
-          maaEndpoint: trustedLaunchExtension.maaEndpoint
-          maaTenantName: trustedLaunchExtension.maaTenantName
-        }
-      }
-    }
-  }
-}
-
-resource vmssLinux_AzureMonitorAgent 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = if (!empty((dataCollectionRuleResourceIds))) {
-  parent: vmss
-  name: 'AzureMonitorLinuxAgent'
-  dependsOn: [vmssLinux_TrustedLaunch]
-
-  properties: {
-    autoUpgradeMinorVersion: true
-    publisher: 'Microsoft.Azure.Monitor'
-    type: 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: '1.0'
-  }
-}
-
-resource vmssLinux_CustomScript 'Microsoft.Compute/virtualMachineScaleSets/extensions@2023-09-01' = {
-  parent: vmss
-  name: customScriptExtension.name
-  dependsOn: (!empty((dataCollectionRuleResourceIds))) ? [vmssLinux_AzureMonitorAgent] : [vmssLinux_TrustedLaunch]
-  properties: {
-    publisher: customScriptExtension.publisher
-    type: customScriptExtension.name
-    typeHandlerVersion: customScriptExtension.typeHandlerVersion
-    autoUpgradeMinorVersion: true
-    settings: {
-      commandToExecute: customScriptExtension.commandToExecute
-      fileUris: customScriptExtension.fileUris
-    }
-  }
-}
-
 // If there are any data collection rules to associate with the VM, create the association
 resource dcrAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2022-06-01' = [for (dcrResourceId, i) in dataCollectionRuleResourceIds: {
   scope: vmss
-  name: '${uniqueString(vmss.id, dataCollectionRuleResourceIds[i])}-dcrassociation)}'
+  name: '${uniqueString(vmss.id, dataCollectionRuleResourceIds[i])}-dcrassociation'
   properties: {
     dataCollectionRuleId: dataCollectionRuleResourceIds[i]
   }

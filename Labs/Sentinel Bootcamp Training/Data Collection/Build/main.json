@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "16001843731257400699"
+      "templateHash": "10954725747161653807"
     }
   },
   "parameters": {
@@ -1441,7 +1441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "10780136143928214399"
+              "templateHash": "10825166589060623279"
             }
           },
           "parameters": {
@@ -1569,13 +1569,6 @@
               }
             ],
             "autoscaleName": "[format('{0}-autoscale', parameters('basename'))]",
-            "customScriptExtension": {
-              "name": "CustomScript",
-              "publisher": "Microsoft.Azure.Extensions",
-              "typeHandlerVersion": "2.1",
-              "fileUris": "[variables('scriptFilesUris')]",
-              "commandToExecute": "./config.sh"
-            },
             "imageReference": {
               "Ubuntu-1804": {
                 "publisher": "Canonical",
@@ -1626,13 +1619,57 @@
               "securityType": "[parameters('securityType')]"
             },
             "storageAccountName": "[toLower(replace(format('{0}diag', parameters('basename')), '-', ''))]",
-            "trustedLaunchExtension": {
-              "extensionName": "GuestAttestation",
-              "extensionPublisher": "Microsoft.Azure.Security.LinuxAttestation",
-              "extensionVersion": "1.0",
-              "maaTenantName": "GuestAttestation",
-              "maaEndpoint": "[substring('emptystring', 0, 0)]"
+            "extension_CustomScriptExtension": {
+              "name": "CustomScript",
+              "properties": {
+                "provisionAfterExtensions": [
+                  "[variables('extension_TrustedLaunch').name]"
+                ],
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.1",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                  "fileUris": "[variables('scriptFilesUris')]",
+                  "commandToExecute": "./config.sh"
+                }
+              }
             },
+            "extension_LinuxAzureMonitorAgent": {
+              "name": "AzureMonitorLinuxAgent",
+              "properties": {
+                "provisionAfterExtensions": [
+                  "[variables('extension_CustomScriptExtension').name]"
+                ],
+                "autoUpgradeMinorVersion": true,
+                "publisher": "Microsoft.Azure.Monitor",
+                "type": "AzureMonitorLinuxAgent",
+                "typeHandlerVersion": "1.0"
+              }
+            },
+            "extension_TrustedLaunch": {
+              "name": "GuestAttestation",
+              "properties": {
+                "publisher": "Microsoft.Azure.Security.LinuxAttestation",
+                "type": "GuestAttestation",
+                "typeHandlerVersion": "1.0",
+                "autoUpgradeMinorVersion": true,
+                "enableAutomaticUpgrade": true,
+                "settings": {
+                  "AttestationConfig": {
+                    "MaaSettings": {
+                      "maaEndpoint": "[substring('emptystring', 0, 0)]",
+                      "maaTenantName": "GuestAttestation"
+                    }
+                  }
+                }
+              }
+            },
+            "vmssExtensions": [
+              "[variables('extension_TrustedLaunch')]",
+              "[variables('extension_CustomScriptExtension')]",
+              "[variables('extension_LinuxAzureMonitorAgent')]"
+            ],
             "vmssNICName": "[format('{0}-nic', parameters('vmssName'))]",
             "vmssOSdiskType": "Standard_LRS"
           },
@@ -1816,6 +1853,9 @@
                       "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-09-01').primaryEndpoints.blob]"
                     }
                   },
+                  "extensionProfile": {
+                    "extensions": "[variables('vmssExtensions')]"
+                  },
                   "priority": "Regular"
                 },
                 "overprovision": true,
@@ -1896,66 +1936,6 @@
               ]
             },
             {
-              "condition": "[and(equals(parameters('securityType'), 'TrustedLaunch'), and(equals(variables('securityProfileJson').uefiSettings.secureBootEnabled, true()), equals(variables('securityProfileJson').uefiSettings.vTpmEnabled, true())))]",
-              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2023-09-01",
-              "name": "[format('{0}/{1}', parameters('vmssName'), variables('trustedLaunchExtension').extensionName)]",
-              "properties": {
-                "publisher": "[variables('trustedLaunchExtension').extensionPublisher]",
-                "type": "[variables('trustedLaunchExtension').extensionName]",
-                "typeHandlerVersion": "[variables('trustedLaunchExtension').extensionVersion]",
-                "autoUpgradeMinorVersion": true,
-                "enableAutomaticUpgrade": true,
-                "settings": {
-                  "AttestationConfig": {
-                    "MaaSettings": {
-                      "maaEndpoint": "[variables('trustedLaunchExtension').maaEndpoint]",
-                      "maaTenantName": "[variables('trustedLaunchExtension').maaTenantName]"
-                    }
-                  }
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]"
-              ]
-            },
-            {
-              "condition": "[not(empty(parameters('dataCollectionRuleResourceIds')))]",
-              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2023-09-01",
-              "name": "[format('{0}/{1}', parameters('vmssName'), 'AzureMonitorLinuxAgent')]",
-              "properties": {
-                "autoUpgradeMinorVersion": true,
-                "publisher": "Microsoft.Azure.Monitor",
-                "type": "AzureMonitorLinuxAgent",
-                "typeHandlerVersion": "1.0"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]",
-                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('vmssName'), variables('trustedLaunchExtension').extensionName)]"
-              ]
-            },
-            {
-              "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
-              "apiVersion": "2023-09-01",
-              "name": "[format('{0}/{1}', parameters('vmssName'), variables('customScriptExtension').name)]",
-              "properties": {
-                "publisher": "[variables('customScriptExtension').publisher]",
-                "type": "[variables('customScriptExtension').name]",
-                "typeHandlerVersion": "[variables('customScriptExtension').typeHandlerVersion]",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                  "commandToExecute": "[variables('customScriptExtension').commandToExecute]",
-                  "fileUris": "[variables('customScriptExtension').fileUris]"
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]",
-                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('vmssName'), 'AzureMonitorLinuxAgent')]",
-                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/extensions', parameters('vmssName'), variables('trustedLaunchExtension').extensionName)]"
-              ]
-            },
-            {
               "copy": {
                 "name": "dcrAssociation",
                 "count": "[length(parameters('dataCollectionRuleResourceIds'))]"
@@ -1963,7 +1943,7 @@
               "type": "Microsoft.Insights/dataCollectionRuleAssociations",
               "apiVersion": "2022-06-01",
               "scope": "[format('Microsoft.Compute/virtualMachineScaleSets/{0}', parameters('vmssName'))]",
-              "name": "[format('{0}-dcrassociation)}}', uniqueString(resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName')), parameters('dataCollectionRuleResourceIds')[copyIndex()]))]",
+              "name": "[format('{0}-dcrassociation', uniqueString(resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName')), parameters('dataCollectionRuleResourceIds')[copyIndex()]))]",
               "properties": {
                 "dataCollectionRuleId": "[parameters('dataCollectionRuleResourceIds')[copyIndex()]]"
               },
