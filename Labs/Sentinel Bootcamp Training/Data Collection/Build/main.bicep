@@ -48,7 +48,7 @@ param _artifactsLocationSasToken string = ''
 // Variables
 
 var replaceUriSpaces = replace(_artifactsLocation, ' ', '%20')
-var artifactsLocation = '${replaceUriSpaces}${_artifactsLocationSasToken}'
+var artifactsLocation = replaceUriSpaces
 
 var vnetName = '${basename}-vnet'
 var vnetId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${vnetName}'

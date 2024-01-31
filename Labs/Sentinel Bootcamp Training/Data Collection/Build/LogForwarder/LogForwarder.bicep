@@ -105,8 +105,6 @@ var linuxSSHConfiguration = {
 
 var loadbalancerName = '${basename}-lb'
 
-var maxPortRange = ((autoscaleMax <= 9) ? '5000' : '500')
-
 var scriptFiles = [
   'LogForwarder/Config/config.sh'
   'LogForwarder/Config/rsyslog-50-default.conf'
@@ -371,6 +369,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2023-09-01' = {
       extensionProfile:{
         extensions: vmssExtensions
       }
+      securityProfile: ((securityType == 'TrustedLaunch') ? securityProfileJson : null)
       priority: 'Regular'
     }
     overprovision: true

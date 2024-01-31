@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "10954725747161653807"
+      "templateHash": "16351552516628892808"
     }
   },
   "parameters": {
@@ -117,7 +117,7 @@
   },
   "variables": {
     "replaceUriSpaces": "[replace(parameters('_artifactsLocation'), ' ', '%20')]",
-    "artifactsLocation": "[format('{0}{1}', variables('replaceUriSpaces'), parameters('_artifactsLocationSasToken'))]",
+    "artifactsLocation": "[variables('replaceUriSpaces')]",
     "vnetName": "[format('{0}-vnet', parameters('basename'))]",
     "vnetId": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', subscription().subscriptionId, resourceGroup().name, variables('vnetName'))]",
     "azureBastionSubnetName": "AzureBastionSubnet",
@@ -1441,7 +1441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "10825166589060623279"
+              "templateHash": "7374735695944818500"
             }
           },
           "parameters": {
@@ -1606,7 +1606,6 @@
               }
             },
             "loadbalancerName": "[format('{0}-lb', parameters('basename'))]",
-            "maxPortRange": "[if(lessOrEquals(parameters('autoscaleMax'), 9), '5000', '500')]",
             "scriptFiles": [
               "LogForwarder/Config/config.sh",
               "LogForwarder/Config/rsyslog-50-default.conf"
@@ -1856,6 +1855,7 @@
                   "extensionProfile": {
                     "extensions": "[variables('vmssExtensions')]"
                   },
+                  "securityProfile": "[if(equals(parameters('securityType'), 'TrustedLaunch'), variables('securityProfileJson'), null())]",
                   "priority": "Regular"
                 },
                 "overprovision": true,
