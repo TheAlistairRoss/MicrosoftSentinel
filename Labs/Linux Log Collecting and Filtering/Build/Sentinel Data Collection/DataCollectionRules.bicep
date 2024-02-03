@@ -1,12 +1,12 @@
+@minLength(5)
+@maxLength(40)
+param basename string = 'sentinel-workshop'
+
 @description('Location of the resources')
 param location string = resourceGroup().location
 
 @description('Log Analytics Workspace Resource Id')
 param workspaceResourceId string
-
-@minLength(5)
-@maxLength(40)
-param basename string = 'sent-adv-logging-workshop'
 
 resource syslogDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: '${basename}-syslog-dcr'
