@@ -55,4 +55,4 @@ Deployment will take up to about 15 minutes for this due to Azure Bastion. Once 
 
 ## Continue with the next lab
 
-[Lab01 - ](../Labs/LAB01/README.md)
+[Lab01 - ](../LAB01/README.md)
