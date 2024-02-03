@@ -55,4 +55,4 @@ Deployment will take up to about 15 minutes for this due to Azure Bastion. Once 
 
 ## Continue with the next lab
 
-<a href="../LAB01/README.MD" target="_blank">Lab 01: </a>
+[Lab01 - ](./Labs/LAB01/README.md)

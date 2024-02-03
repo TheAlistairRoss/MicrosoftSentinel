@@ -28,4 +28,4 @@ This lab has been created by **[Alistair Ross](https://github.com/TheAlistairRos
 
 ## Get Started
 
-<a href="./Labs/LAB00/README.md" target="_blank">Lab00 - Setup</a>
+[Lab00 - Setup](./Labs/LAB00/README.md)
