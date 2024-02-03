@@ -38,6 +38,7 @@
 1. Copy the following PowerShell script to an editor of your choosing.
 
 ```powershell
+
 $CustomDataIngestionScriptParams = @{
       DataCollectionEndpointUri = "<Your_Data_Collection_Endpoint_URI>"
       DataCollectionRuleImmutableId = "<Your_Data_Collection_Rule_Immutable_Id>"
@@ -46,10 +47,12 @@ $CustomDataIngestionScriptParams = @{
       AppRegistrationSecret = "<Your_App_Registration_Secret>"
       SourceFile = "CustomSigninLogs.csv"
 }
-$DataSetUri = "https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Labs/Analysts%20Introduction%20Workshop/Build/CustomData/CustomSigninLogs.csv"
+$WorkshopUri ="https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Labs/Analysts%20Introduction%20Workshop"
+
+$DataSetUri = "$WorkshopUri/Build/CustomData/CustomSigninLogs.csv"
 Invoke-RestMethod -Method Get -Uri $DataSetUri -OutFile "CustomSigninLogs.csv"
 
-$scriptUri = "https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Labs/Analysts%20Introduction%20Workshop/Build/Scripts/CustomDataIngestionScript.ps1"
+$scriptUri = "$WorkshopUri/Build/Scripts/CustomDataIngestionScript.ps1"
 Invoke-RestMethod -Uri $scriptUri | Out-File "CustomDataIngestionScript.ps1"
 
 .\CustomDataIngestionScript.ps1 @CustomDataIngestionScriptParams 
