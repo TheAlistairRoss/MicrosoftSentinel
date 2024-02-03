@@ -1,5 +1,17 @@
-# This is converting existing logs from the contoso hotels demo into enriched logs with pre approved fictious names. 
-# All locations specified are Microsoft offices at the time of writing.
+// This is converting existing logs from the contoso hotels demo into enriched logs with pre approved fictious names. 
+// All locations specified are Microsoft offices at the time of writing.
+let TimeRangeStart = startofday(ago(12d));
+let TimeRangeEnd = endofday(ago(1d));
+let MaxQuantity = 1369;
+// Change the GUIDs to reflect at least 6 different policies in the logs
+let fakeConditionalAccessPolicies = datatable(oldId:string, displayName:string, id:string,)[
+    "GUID1", "Contoso partners and vendors MFA",
+    "GUID2", "Cloud Apps Proxy",
+    "GUID3", "Test Policy",
+    "GUID4", "Block Untrusted Locations-DO NOT DELETE",
+    "GUID5", "Microsoft Purview",
+    "GUID6", "Block Access",
+];
 let FakeData = datatable (
     Index: int,
     Identity: string,
@@ -38,13 +50,46 @@ let FakeData = datatable (
     23, "Brigitte Otto", "brigitte.otto@contoso.com", "192.168.2.53", "Munich", "GR", "48.177862", "11.593635", "Bavaria",
     24, "Riley Johnson", "riley.johnson@contoso.com", "192.168.3.47", "Redmond", "US", "47.643316", "-122.137269", "Washington"
 ]
-| extend LocationDetails = pack_dictionary("city", city, "countryOrRegion", countryOrRegion, "geoCoordinates", pack_dictionary("latitude", latitude, "longitude", longitude), "state", ['state'])
-| project Index, Identity, UserPrincipalName, IPAddress, Location = countryOrRegion, LocationDetails;
+    | extend LocationDetails = pack_dictionary("city", city, "countryOrRegion", countryOrRegion, "geoCoordinates", pack_dictionary("latitude", latitude, "longitude", longitude), "state", ['state'])
+    | project
+        Index,
+        Identity,
+        UserPrincipalName,
+        IPAddress,
+        Location = countryOrRegion,
+        LocationDetails;
+let fakeConditionalAccessPolicies = datatable(oldId:string, displayName:string, id:string,)[
+    "1b76d56f-c71c-45f4-bfc3-71da162526ba", "Contoso partners and vendors MFA",
+    "8872f6fb-da88-4b63-bcc7-17247669596b", "Cloud Apps Proxy",
+    "235bec94-f744-48ac-8314-5675953d2def", "Test Policy",
+    "10a2aae3-ed18-4da1-b134-4dbe3c309073", "Block Untrusted Locations-DO NOT DELETE",
+    "7115628f-b760-4ad7-8cb4-fd1fef701b41", "Microsoft Purview",
+    "ba36f0a4-6d73-4ba4-9282-3b3c14575e36", "Block Access",
+];
 let LogsRaw = SigninLogs
-    | where TimeGenerated between (startofday(ago(1d)) .. endofday(ago(1d)))
+    | where TimeGenerated between (startofday(ago(5d)) .. endofday(ago(1d)))
     | where UserType == "Member"
     | where isempty(DeviceDetail.deviceId) or DeviceDetail.deviceId == "{PII Removed}"
-    | where AppDisplayName <> "Microsoft Azure Active Directory Connect";
+    | where AppDisplayName <> "Microsoft Azure Active Directory Connect"
+    | take MaxQuantity
+    | order by TimeGenerated desc 
+    | extend RowNumber = row_number()
+;
+let CAPoliciesTransformed = 
+    LogsRaw
+    | project  RowNumber, ConditionalAccessPolicies
+    | mv-expand ConditionalAccessPolicies
+    | evaluate bag_unpack(ConditionalAccessPolicies)
+    | extend id = tostring(id)
+    | join kind=inner (
+        fakeConditionalAccessPolicies
+    )
+    on $left.id == $right.oldId
+    | extend id = id1,
+        displayName = displayName1
+    | project-away id1, oldId, displayName1
+    | extend ConditionalAccessPolicies = bag_pack("conditionsNotSatisfied", conditionsNotSatisfied, "conditionsSatisfied", conditionsSatisfied, "displayName", displayName, "enforcedGrantControls", enforcedGrantControls, "id", id, "result", result)
+    | summarize ConditionalAccessPolicies = make_list(ConditionalAccessPolicies) by RowNumber;
 let LogsTransformed = LogsRaw
     | summarize Count = count() by UserPrincipalName
     | order by Count desc 
@@ -64,8 +109,30 @@ let LogsTransformed = LogsRaw
 LogsTransformed
 | join kind=inner (
     LogsRaw
-) on UserPrincipalName
+    )
+    on UserPrincipalName
 | extend UserPrincipalName = UserPrincipalName1
-| project TimeGenerated = tostring(TimeGenerated), OperationName, Category, ResultType, ResultDescription, CorrelationId, Identity, Level, Location, AppDisplayName, AppId, ClientAppUsed, ConditionalAccessStatus, DeviceDetail, IPAddress, LocationDetails, ResourceDisplayName, UserPrincipalName, UserType
-
-
+| join kind = inner (
+    CAPoliciesTransformed
+) on RowNumber
+| project
+    TimeGenerated = tostring(TimeGenerated),
+    OperationName,
+    Category,
+    ResultType,
+    ResultDescription,
+    CorrelationId,
+    Identity,
+    Level,
+    Location,
+    AppDisplayName,
+    AppId,
+    ClientAppUsed,
+    ConditionalAccessPolicies = ConditionalAccessPolicies1,
+    ConditionalAccessStatus,
+    DeviceDetail,
+    IPAddress,
+    LocationDetails,
+    ResourceDisplayName,
+    UserPrincipalName,
+    UserType
