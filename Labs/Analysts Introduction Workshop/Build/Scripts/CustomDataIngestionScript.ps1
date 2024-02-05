@@ -4,7 +4,8 @@ param(
     $AppRegistrationId,
     $AppRegistrationTenantId,
     $AppRegistrationSecret,
-    $SourceFile = "..\CustomData\CustomSigninLogs.csv"
+    $SourceFile = "..\CustomData\CustomSigninLogs.csv",
+    $DaysAgoToSetDate = 1
 )
 
 function Send-AzMonitorCustomLogs {
@@ -239,7 +240,7 @@ function Send-AzMonitorCustomLogs {
             $json_array_proposed_size += $message.Length
 
             # Getting proposed and current JSON array size # WTAF
-            #  $json_array_current_size = ([System.Text.Encoding]::UTF8.GetBytes(@($json_records | Convertfrom-json | ConvertTo-Json))).Length
+            # $json_array_current_size = ([System.Text.Encoding]::UTF8.GetBytes(@($json_records | Convertfrom-json | ConvertTo-Json))).Length
             # $json_array_proposed_size = ([System.Text.Encoding]::UTF8.GetBytes(@(($json_records + $message) | Convertfrom-json | ConvertTo-Json))).Length
             $json_array_current_size = @($json_records).Length
             $json_array_proposed_size = @($json_records + $message).Length
@@ -283,7 +284,7 @@ function Update-SampleData {
 
     
     $Content = Import-Csv -Path $FilePath
-    $YesterdaysDate = (Get-Date).AddDays(-1).ToString("yyyy-MM-dd")
+    $YesterdaysDate = (Get-Date).AddDays(-$DaysAgoToSetDate).ToString("yyyy-MM-dd")
     foreach ($Row in $Content){
             $RowTime = (Get-Date -Date $Row.TimeGenerated).ToString("HH:mm:ss.fffffffZ")
             # Get the parse yesterdays date with row time

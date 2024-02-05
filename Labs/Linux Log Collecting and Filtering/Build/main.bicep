@@ -1,18 +1,12 @@
-targetScope = 'subscription'
 
-@description('Azure Region')
-param location string = 'uksouth'
 
-@minLength(5)
-@maxLength(40)
-param basename string = 'sent-chatsnhacks-workshop'
+@description('SSH Key or password for the Virtual Machine.')
+@secure()
+param adminPasswordOrSSHKey string = 'WorkshopPassword1234'
 
-@description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)') 
-@minLength(7)
-@maxLength(13)
-param vnetAddressIpV4Id string = '10.0.0.0'
-
+@description('Username for the Virtual Machine.')
 param adminUsername string = 'workshopadmin'
+
 @description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
 @allowed([
   'sshPublicKey'
@@ -20,9 +14,28 @@ param adminUsername string = 'workshopadmin'
 ])
 param authenticationType string = 'password'
 
-@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
-@secure()
-param adminPasswordOrSSHKey string
+@minLength(5)
+@maxLength(40)
+param basename string = 'sentinel-workshop'
+
+
+@description('Current UTC Datetime in the format YYYYMMDDhhmmss')
+param datetime string = utcNow()
+
+param deployBastion bool = true
+param deployDataCollectionRule bool = true
+param deployLinuxLogSource bool = true
+param deployNetworking bool = true
+param deploySentinel bool = true
+
+@description('Azure Region')
+param location string = resourceGroup().location
+
+@description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)') 
+@minLength(7)
+@maxLength(13)
+param vnetAddressIpV4Id string = '10.0.0.0'
+
 
 @description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
 param _artifactsLocation string = deployment().properties.templateLink.uri
@@ -31,65 +44,78 @@ param _artifactsLocation string = deployment().properties.templateLink.uri
 @secure()
 param _artifactsLocationSasToken string = ''
 
+// Variables
+var azureBastionSubnetName = 'AzureBastionSubnet'
+var logSourceSubnetName = '${basename}-LogSource-Subnet'
+var vmName = '${basename}-LogSource'
+var vnetId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${vnetName}'
+var vnetName = '${basename}-vnet'
+var workspaceId = '${resourceGroup().id}/providers/Microsoft.OperationalInsights/workspaces/${workspaceName}'
+var workspaceName = '${basename}-wksp'
 
-var resourceGroupName = '${basename}-sentinel-rg'
+module networkingDeployment 'Network/Networking.bicep' = if (deployNetworking) {
+  name: '${datetime}-${basename}-Networking'
 
-resource SentinelResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
-  name: resourceGroupName
-  location: location
-}
-
-module NetworkingDeployment 'Network/Networking.bicep' = {
-  name: '${basename}-Networking-Deployment'
-  scope: SentinelResourceGroup
   params: {
     basename: basename
     location: location
-    vnetName: '${basename}-vnet'
+    logSourceSubnetName: logSourceSubnetName
     vnetAddressIpV4Id: vnetAddressIpV4Id
+    vnetName: vnetName
   }
 }
 
-module SentinelDeployment 'Sentinel/Sentinel.bicep' = {
-  name: '${basename}-Sentinel-Deployment'
-  scope: SentinelResourceGroup
-  params: {
-    basename: basename
-    location: location
-  }
-}
-
-module DataCollectionRuleDeployment 'Sentinel Data Collection/DataCollectionRules.bicep' = {
-  name: '${basename}-Data-Collection-Rule-Deployment'
-  scope: SentinelResourceGroup
-  params: {
-    basename: basename
-    location: location
-    workspaceResourceId: SentinelDeployment.outputs.workspaceId
-  }
-}
-
-module LogSourceDeployment 'LinuxLogSource/LogSource.bicep' = {
-  name: '${basename}-Log-Source-Deployment'
-  scope: SentinelResourceGroup
+module bastionDeployment 'Network/Bastion.bicep' = if (deployBastion) {
+  name: '${datetime}-${basename}-Bastion'
   dependsOn: [
-    NetworkingDeployment
+    networkingDeployment
   ]
   params: {
+    basename: basename
     location: location
-    vmName: basename
+    subnetResourceId: '${vnetId}/subnets/${azureBastionSubnetName}'
+  }
+}
+module sentinelDeployment 'Sentinel/Sentinel.bicep' = if (deploySentinel) {
+  name: '${datetime}-${basename}-Wksp'
+  params: {
+    location: location
+    workspaceName: workspaceName
+  }
+}
+
+module DataCollectionRuleDeployment 'Sentinel Data Collection/DataCollectionRules.bicep' = if (deployDataCollectionRule) {
+  name: '${datetime}-${basename}-DCR'
+  dependsOn: [
+    sentinelDeployment
+  ]
+  params: {
+    basename: basename
+    location: location
+    workspaceResourceId: workspaceId
+  }
+}
+
+module logSourceDeployment2 'LinuxLogSource/LogSource.bicep' = if (deployLinuxLogSource) {
+  name: '${datetime}-${basename}-Log-Source'
+  dependsOn: [
+    networkingDeployment
+  ]
+  params: {
+    adminPasswordOrKey: adminPasswordOrSSHKey
     adminUsername: adminUsername
     authenticationType: authenticationType
-    adminPasswordOrKey: adminPasswordOrSSHKey
-    ubuntuOSVersion: 'Ubuntu-2004'
+    location: location
+    osVersion: 'Ubuntu-2004'
     securityType: 'TrustedLaunch'
+    subnetResourceId: '${vnetId}/subnets/${logSourceSubnetName}'
+    vmName: vmName
     vmSize: 'Standard_D2s_v3'
-    subnetResourceId: NetworkingDeployment.outputs.LogSourceSubnetResourceId
-    dataCollectionRuleResourceId: [
+    dataCollectionRuleResourceIds: [
       DataCollectionRuleDeployment.outputs.syslogDcrResourceId
     ]
+    deployAMA: true
     _artifactsLocation: _artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
-
   }
 }

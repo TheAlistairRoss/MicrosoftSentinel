@@ -1,8 +1,8 @@
-@description('Location of the resources')
-param location string = resourceGroup().location
-
-@description('The name of your Virtual Machine.')
-param vmName string = 'LinuxLogSource'
+// Template for deploying a Linux Virtual Machine with a custom script extension to configure the VM as a Log Source for Microsoft Sentinel
+// Parameters
+@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
+@secure()
+param adminPasswordOrKey string
 
 @description('Username for the Virtual Machine.')
 param adminUsername string
@@ -14,22 +14,16 @@ param adminUsername string
 ])
 param authenticationType string = 'password'
 
-@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
-@secure()
-param adminPasswordOrKey string
+@description('Location of the resources')
+param location string = resourceGroup().location
 
 @allowed([
   'Ubuntu-1804'
   'Ubuntu-2004'
   'Ubuntu-2204'
 ])
-param ubuntuOSVersion string = 'Ubuntu-2004'
-
-@description('The size of the VM')
-param vmSize string = 'Standard_D2s_v3'
-
-@description('Name of the subnet in the virtual network')
-param subnetResourceId string
+@description('The version of the Ubuntu to use for the Virtual Machine.')
+param osVersion string = 'Ubuntu-2004'
 
 @description('Security Type of the Virtual Machine.')
 @allowed([
@@ -38,9 +32,14 @@ param subnetResourceId string
 ])
 param securityType string = 'TrustedLaunch'
 
-param deployAMA bool = true
+@description('The Resource Id of the subnet to use for the virtual machine')
+param subnetResourceId string
 
-param dataCollectionRuleResourceId array = []
+@description('The name of your Virtual Machine.')
+param vmName string = 'LinuxLogSource'
+
+@description('The size of the VM')
+param vmSize string = 'Standard_D2s_v3'
 
 @description('The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated.')
 param _artifactsLocation string = deployment().properties.templateLink.uri
@@ -48,6 +47,25 @@ param _artifactsLocation string = deployment().properties.templateLink.uri
 @description('The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated.')
 @secure()
 param _artifactsLocationSasToken string
+
+param deployAMA bool = true
+
+param dataCollectionRuleResourceIds array = []
+
+// Variables
+var customScriptExtension = {
+  name: 'CustomScript'
+  properties: {
+    publisher: 'Microsoft.Azure.Extensions'
+    type: 'CustomScript'
+    typeHandlerVersion:  '2.1'
+    autoUpgradeMinorVersion: true
+    settings: {
+      commandToExecute: './config.sh'
+      fileUris: scriptFilesUris
+    }
+  }
+}
 
 var imageReference = {
   'Ubuntu-1804': {
@@ -70,10 +88,6 @@ var imageReference = {
   }
 }
 
-var networkInterfaceName = '${vmName}NetInt'
-
-var osDiskType = 'Standard_LRS'
-
 var linuxConfiguration = {
   disablePasswordAuthentication: true
   ssh: {
@@ -86,6 +100,16 @@ var linuxConfiguration = {
   }
 }
 
+var networkInterfaceName = '${vmName}NetInt'
+
+var osDiskType = 'Standard_LRS'
+
+var scriptFiles = [
+  'LinuxLogSource/Config/config.sh'
+  'LinuxLogSource/Config/rsyslog-50-default.conf'
+]
+var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
+
 var securityProfileJson = {
   uefiSettings: {
     secureBootEnabled: true
@@ -96,33 +120,43 @@ var securityProfileJson = {
 
 var trustedLaunchExtension = {
   extensionName: 'GuestAttestation'
-  extensionPublisher: 'Microsoft.Azure.Security.LinuxAttestation'
-  extensionVersion: '1.0'
-  maaTenantName: 'GuestAttestation'
-  maaEndpoint: substring('emptystring', 0, 0)
+  properties: {
+    publisher: 'Microsoft.Azure.Security.LinuxAttestation'
+    type: 'GuestAttestation'
+    typeHandlerVersion: '1.0'
+    autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
+    settings: {
+      AttestationConfig: {
+        MaaSettings: {
+          maaEndpoint: substring('emptystring', 0, 0)
+          maaTenantName: 'GuestAttestation'
+        }
+      }
+    }
+  }
+
 }
 
-var dcrResourceAssociations = [for dcrResourceId in dataCollectionRuleResourceId: {
+var dcrResourceAssociations = [for dcrResourceId in dataCollectionRuleResourceIds: {
   dataCollectionRuleName: '${guid(dcrResourceId)}-dcrassociation'
   dataCollectionRuleId: dcrResourceId
 }]
 
-var scriptFiles = [
-  'LinuxLogSource/Config/config.sh'
-  'LinuxLogSource/Config/rsyslog-50-default.conf'
-]
-var scriptFilesUris = [for scriptFile in scriptFiles: uri(_artifactsLocation, '${scriptFile}${_artifactsLocationSasToken}')]
-
-output scriptFiles array = scriptFilesUris
-
-var customScriptExtension = {
-  name: 'CustomScript'
-  publisher: 'Microsoft.Azure.Extensions'
-  typeHandlerVersion: '2.1'
-  fileUris: scriptFilesUris
-  commandToExecute: './config.sh'
+var azureMonitorAgentLinuxExtension = {
+  extensionName: 'AzureMonitorLinuxAgent'
+  properties: {
+    publisher: 'Microsoft.Azure.Monitor'
+    type: 'AzureMonitorLinuxAgent'
+    typeHandlerVersion: '1.27'
+    autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
+  }
 }
 
+
+
+// Resources
 resource networkInterface 'Microsoft.Network/networkInterfaces@2023-05-01' = {
   name: networkInterfaceName
   location: location
@@ -159,7 +193,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
           storageAccountType: osDiskType
         }
       }
-      imageReference: imageReference[ubuntuOSVersion]
+      imageReference: imageReference[osVersion]
     }
     networkProfile: {
       networkInterfaces: [
@@ -182,51 +216,23 @@ resource vmExtension_TrustedLaunch 'Microsoft.Compute/virtualMachines/extensions
   parent: vm
   name: trustedLaunchExtension.extensionName
   location: location
-  properties: {
-    publisher: trustedLaunchExtension.extensionPublisher
-    type: trustedLaunchExtension.extensionName
-    typeHandlerVersion: trustedLaunchExtension.extensionVersion
-    autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: true
-    settings: {
-      AttestationConfig: {
-        MaaSettings: {
-          maaEndpoint: trustedLaunchExtension.maaEndpoint
-          maaTenantName: trustedLaunchExtension.maaTenantName
-        }
-      }
-    }
-  }
+  properties: trustedLaunchExtension.properties
 }
 
 resource vmExtension_AMA 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = if (deployAMA) {
   parent: vm
-  name: 'AzureMonitorLinuxAgent'
+  dependsOn: [vmExtension_TrustedLaunch]
+  name: azureMonitorAgentLinuxExtension.extensionName
   location: location
-  properties: {
-    publisher: 'Microsoft.Azure.Monitor'
-    type: 'AzureMonitorLinuxAgent'
-    typeHandlerVersion: '1.27'
-    autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: true
-  }
+  properties: azureMonitorAgentLinuxExtension.properties
 }
 
 resource vmExtension_CustomScript 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = {
   parent: vm
   name: customScriptExtension.name
   location: location
-  dependsOn: deployAMA ? [ vmExtension_AMA ] : []
-  properties: {
-    publisher: customScriptExtension.publisher
-    type: customScriptExtension.name
-    typeHandlerVersion: customScriptExtension.typeHandlerVersion
-    autoUpgradeMinorVersion: true
-    settings: {
-      commandToExecute: customScriptExtension.commandToExecute
-      fileUris: customScriptExtension.fileUris
-    }
-  }
+  dependsOn: [vmExtension_AMA]
+  properties: customScriptExtension.properties
 }
 
 resource dcrAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2021-04-01' = [for dcrResourceId in dcrResourceAssociations: {

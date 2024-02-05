@@ -1,39 +1,45 @@
+// Parameters
+@description('Resources Name Prefix. This will be used to name most of the resources')
+param basename string = 'sentinel-workshop'
+
 @description('Location of the resources')
 param location string = resourceGroup().location
 
-param basename string = 'sent-adv-logging-workshop'
+@description('Name for the Log Source Subnet')
+param logSourceSubnetName string = 'logSourceSubnet'
 
-@description('Name for Log Source and Log Forwarder Vnets')
-param vnetName string = '${basename}-logging-vnet'
-
-@description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)') 
+@description('Start of the Ip Address range for the Vnet. It must end with a .0 as this is using a /24 subnet mask (e.g. 10.0.0.0)')
 param vnetAddressIpV4Id string = '10.0.0.0'
 
-// Remove the last octet from the IP address
-//var vnetAddressIPv4 = vnetAddressIpV4Id.split('.').slice(0,3).join('.')
+@description('Name for the virtual network')
+param vnetName string = '${basename}-vnet'
 
-var vnetAddressIPv4 = substring(vnetAddressIpV4Id,0, lastIndexOf(vnetAddressIpV4Id, '.'))
+// Variables
+
+var bastionSubnetNSGName = '${basename}-AzureBastionSubnet-nsg'
+
+var logSourceSubnetNSGName = '${basename}-${logSourceSubnetName}-nsg'
+
+var vnetAddressIPv4 = substring(vnetAddressIpV4Id, 0, lastIndexOf(vnetAddressIpV4Id, '.'))
 
 var vnetConfig = {
   addressSpacePrefix: '${vnetAddressIPv4}.0/24'
-  subnets: [
-    {
+  subnets: {
+    azureBastionSubnet: {
       name: 'AzureBastionSubnet'
-      addressPrefix: '${vnetAddressIPv4}.0/25'
+      addressPrefix: '${vnetAddressIPv4}.0/26'
     }
-    {
-      name: 'logSource'
-      addressPrefix: '${vnetAddressIPv4}.128/25'
+    logSourceSubnet: {
+      name: logSourceSubnetName
+      addressPrefix: '${vnetAddressIPv4}.64/27'
     }
-  ]
+  }
 }
 
-var bastionHostName = '${basename}-bastion'
-var bastionSubnetNSGName = '${bastionHostName}-nsg'
-var publicIpAddressName = '${bastionHostName}-pip'
+// Resources
+// Resources - Network Security Groups
 
-
-resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' =  {
+resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   name: bastionSubnetNSGName
   location: location
   properties: {
@@ -184,70 +190,43 @@ resource bastionSubnetNSG 'Microsoft.Network/networkSecurityGroups@2022-07-01' =
   }
 }
 
+resource logSourceSubnetNSG 'Microsoft.Network/networkSecurityGroups@2023-06-01' = {
+  name: logSourceSubnetNSGName
+  location: location
+  properties: {
+    securityRules: []
+  }
+}
+
+// Resources - Virtual Network
 resource vnet 'Microsoft.Network/virtualNetworks@2023-05-01' = {
   name: vnetName
   location: location
-  dependsOn: [
-    bastionSubnetNSG
-  ]
   properties: {
     addressSpace: {
       addressPrefixes: [
         vnetConfig.addressSpacePrefix
       ]
     }
-  }
-}
-
-resource vnetBastionSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' = {
-  name: vnetConfig.subnets[0].name
-  properties: {
-    networkSecurityGroup: {
-      id: bastionSubnetNSG.id
-    }
-    addressPrefix: vnetConfig.subnets[0].addressPrefix
-  }
-  parent: vnet
-}
-
-resource vnetLogSourceSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-05-01' =  {
-  name: vnetConfig.subnets[1].name
-  properties: {
-    addressPrefix: vnetConfig.subnets[1].addressPrefix
-  }
-  parent: vnet
-}
-
-
-resource publicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' =  {
-  name: publicIpAddressName
-  location: location
-  sku: {
-    name: 'Standard'
-  }
-  properties: {
-    publicIPAllocationMethod: 'Static'
-  }
-}
-
-resource bastionHost 'Microsoft.Network/bastionHosts@2022-07-01' = {
-  name: bastionHostName
-  location: location
-  properties: {
-    ipConfigurations: [
+    subnets: [
       {
-        name: 'IpConf'
+        name: vnetConfig.subnets.azureBastionSubnet.name
         properties: {
-          subnet: {
-            id: vnetBastionSubnet.id 
+          addressPrefix: vnetConfig.subnets.azureBastionSubnet.addressPrefix
+          networkSecurityGroup: {
+            id: bastionSubnetNSG.id
           }
-          publicIPAddress: {
-            id: publicIp.id
+        }
+      }
+      {
+        name: vnetConfig.subnets.logSourceSubnet.name
+        properties: {
+          addressPrefix: vnetConfig.subnets.logSourceSubnet.addressPrefix
+          networkSecurityGroup: {
+            id: logSourceSubnetNSG.id
           }
         }
       }
     ]
   }
 }
-
-output LogSourceSubnetResourceId string = vnetLogSourceSubnet.id

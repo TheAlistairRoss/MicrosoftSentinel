@@ -1,8 +1,9 @@
+
+@description('Name of the Log Analytics Workspace. This will be used to name the Log Analytics Workspace and the Sentinel Solution.')
+param workspaceName string 
+
 @description('Location of the resources')
 param location string = resourceGroup().location
-param basename string = 'sent-adv-logging-workshop'
-var workspaceName = '${basename}-wksp'
-
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
 name: workspaceName
@@ -22,6 +23,3 @@ resource sentinel 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' 
     workspaceResourceId: logAnalyticsWorkspace.id
   }
 }
-
-
-output workspaceId string = logAnalyticsWorkspace.id
