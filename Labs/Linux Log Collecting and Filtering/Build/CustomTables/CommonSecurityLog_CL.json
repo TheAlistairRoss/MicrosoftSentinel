@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "451090281140542770"
+      "templateHash": "6264757838091923898"
     }
   },
   "parameters": {
@@ -23,7 +23,7 @@
       "name": "[format('{0}/{1}', parameters('workspaceName'), variables('CommonSecurityLog_CL_Name'))]",
       "properties": {
         "totalRetentionInDays": -1,
-        "plan": "Analytics",
+        "plan": "Basic",
         "schema": {
           "name": "[variables('CommonSecurityLog_CL_Name')]",
           "columns": [

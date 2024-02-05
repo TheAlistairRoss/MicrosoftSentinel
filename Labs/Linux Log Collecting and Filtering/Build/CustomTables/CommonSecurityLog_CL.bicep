@@ -11,7 +11,7 @@ resource CommonSecurityLog_CL_Table 'Microsoft.OperationalInsights/workspaces/ta
   name: CommonSecurityLog_CL_Name
   properties: {
     totalRetentionInDays: -1
-    plan: 'Analytics'
+    plan: 'Basic'
     schema: {
       name: CommonSecurityLog_CL_Name
       columns: [
