@@ -7,3 +7,53 @@ CommonSecurityLog Custom Table Deployment
 
 
 
+## Useful Queries
+
+```kusto
+//Analytics Table KQL Transformation
+source | project-away SourceIP, SourcePort
+
+```
+```kusto
+//Basic Table KQL Transformation
+
+source | project TimeGenerated, Computer, DeviceEventClassID, SourceIP, SourcePort
+
+```
+
+```kusto
+// Review the Splitting
+CommonSecurityLog
+| project TimeGenerated, SourceIP
+| extend Test = iff(isempty(SourceIP), "NoSourceIP","SourceIP")
+| summarize count() by bin(TimeGenerated, 1m), Test
+| render timechart
+```
+
+```kusto
+// Get a Split Event
+CommonSecurityLog
+| where isempty(SourceIP)
+| take 1
+```
+
+```kusto
+// Basic Logs Query - Run it as a search job
+CommonSecurityLog_CL
+| where TimeGenerated == todatetime()
+| where Computer == ""
+| where DeviceEventClassID == ""
+```
+
+
+```kusto
+// Join it all together
+CommonSecurityLog_CL
+| where TimeGenerated == todatetime()
+| where Computer == ""
+| where DeviceEventClassID == ""
+| join (
+    Incident1234_SRCH
+)
+on $left.TimeGenerated == $right._OriginalTimeGenerated, Computer, DeviceClassEventID
+
