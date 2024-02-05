@@ -29,9 +29,6 @@ Double check you have the following
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2Fmain%2FLabs%2FLinux%2520Log%2520Collecting%2520and%2520Filtering%2FBuild%2Fmain.json)
 
-2. Branch Deploy 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FTheAlistairRoss%2FMicrosoftSentinel%2FWorkshopUpdating%2FLabs%2FLinux%2520Log%2520Collecting%2520and%2520Filtering%2FBuild%2Fmain.json)
-
 1. Set the Parameters
    1. **Subscription** - Select the subscription where the resoruces will be deployed
    1. **Resource Group** - Select an existing or create a new resource group (recommended) for the workshop resources.    

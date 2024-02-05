@@ -46,6 +46,7 @@ $CustomDataIngestionScriptParams = @{
       AppRegistrationTenantId = "<Your_Tenant_Id>"
       AppRegistrationSecret = "<Your_App_Registration_Secret>"
       SourceFile = "CustomSigninLogs.csv"
+      DaysAgoToSetDate = 3
 }
 $WorkshopUri ="https://raw.githubusercontent.com/TheAlistairRoss/MicrosoftSentinel/main/Labs/Analysts%20Introduction%20Workshop"
 
@@ -82,3 +83,4 @@ Once the lab is complete, depending on how you have deployed, will depend on wha
    4. Data Collection Rule -  **&lt;SentinelWorkspaceName&gt;-analyst-hunting-dcr**
    5. Data Collection Endpoint - **&lt;SentinelWorkspaceName&gt;-analyst-hunting-dce**
    6. Delete the App Registration - [How to: Remove a registered app from the Microsoft identity platform - Microsoft Entra | Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-remove-app#remove-an-application-authored-by-you-or-your-organization)
+ 

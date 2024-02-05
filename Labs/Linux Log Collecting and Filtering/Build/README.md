@@ -2,8 +2,8 @@
 ### Table Creation PowerShell Script
 
 ```powershell
-$resourceGroupName = "sent-chats-and-hacks-workshop-sentinel-rg"
-$workspaceName = "sent-chats-and-hacks-workshop-wksp"
+$resourceGroupName = "<Your-Resource-Group-Name>"
+$workspaceName = "sentinel-workshop-wksp"
 $oldTableName = "CommonSecurityLog"
 $newTableName = "CommonSecurityLog_CL"
 $baseUrl = "https://management.azure.com"
@@ -18,7 +18,7 @@ $TableProperties = @{
             name = $newTableName
             columns = $TableSchemaColumns
         }
-        plan = "Basic"
+        plan = "Analytics"
     }
 } | ConvertTo-Json -Depth 10
 
