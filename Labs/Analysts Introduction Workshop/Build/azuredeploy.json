@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "12611734292105497327"
+      "version": "0.26.170.59819",
+      "templateHash": "4924536575449777250"
     }
   },
   "parameters": {
@@ -290,7 +290,7 @@
       "kind": "Scheduled",
       "properties": {
         "alertDetailsOverride": {
-          "alertDisplayNameFormat": "[format('{0} | User {{{{alertNumber}}}}', variables('contosoBreakGlassAlertName'))]",
+          "alertDisplayNameFormat": "[format('User {{{{alertNumber}}}} | {0} ', variables('contosoBreakGlassAlertName'))]",
           "alertDescriptionFormat": "The break glass account has been logged into from IPAddress: {{IPAddress}}"
         },
         "description": "This alert triggers any time that a break glass is used",

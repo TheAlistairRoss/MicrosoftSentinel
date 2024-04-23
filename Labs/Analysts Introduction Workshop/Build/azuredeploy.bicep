@@ -251,7 +251,7 @@ resource analyticRuleContosoBreakGlass 'Microsoft.SecurityInsights/alertRules@20
   kind: 'Scheduled'
   properties: {
     alertDetailsOverride: {
-      alertDisplayNameFormat: '${contosoBreakGlassAlertName} | User {{alertNumber}}'
+      alertDisplayNameFormat: 'User {{alertNumber}} | ${contosoBreakGlassAlertName} '
       alertDescriptionFormat: 'The break glass account has been logged into from IPAddress: {{IPAddress}}'
     }
     description: 'This alert triggers any time that a break glass is used'
