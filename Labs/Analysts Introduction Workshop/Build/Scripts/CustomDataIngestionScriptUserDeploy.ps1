@@ -141,7 +141,7 @@ function Send-AzMonitorCustomLogs {
     #$headers = @{"Content-Type" = "application/x-www-form-urlencoded" };
     #$uri = "https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token"
     #$bearerToken = (Invoke-RestMethod -Uri $uri -Method "Post" -Body $body -Headers $headers).access_token
-    $bearerToken = (Get-AzAccessToken).Token
+    $bearerToken = (Get-AzAccessToken -ResourceUrl https://management.azure.com/).Token
     Write-Debug $bearerToken
 
     Function Send-DataToDCE($payload, $size) {
@@ -198,7 +198,7 @@ function Send-AzMonitorCustomLogs {
                 $body = "client_id=$appId&scope=$scope&client_secret=$appSecret&grant_type=client_credentials";
                 $headers = @{"Content-Type" = "application/x-www-form-urlencoded" };
                 $uri = "https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token"
- #>                $bearerToken = (Get-AzAccessToken).Token
+ #>             $bearerToken = (Get-AzAccessToken -ResourceUrl https://management.azure.com/).Token
                 $currentTime = Get-Date
                 Write-Host "Completed" -ForegroundColor White -BackgroundColor Green
             }
