@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "5279008599053876489"
+      "version": "0.29.47.4906",
+      "templateHash": "3102875769820566202"
     }
   },
   "parameters": {
@@ -41,7 +41,6 @@
   "variables": {
     "dataCollectionEndpointName": "[format('{0}-{1}-dce', parameters('sentinelWorkspaceName'), parameters('labName'))]",
     "dataCollectionRuleName": "[format('{0}-{1}-dcr', parameters('sentinelWorkspaceName'), parameters('labName'))]",
-    "sentinelSolutionName": "[format('SecurityInsights({0})', parameters('sentinelWorkspaceName'))]",
     "signInLogsTableName": "SigninLogs_CL",
     "signInLogsFunctionAlias": "fSigninLogs",
     "CustomSigninLogsSchema": [
@@ -152,19 +151,11 @@
       "location": "[parameters('location')]"
     },
     {
-      "type": "Microsoft.OperationsManagement/solutions",
-      "apiVersion": "2015-11-01-preview",
-      "name": "[variables('sentinelSolutionName')]",
-      "location": "[parameters('location')]",
-      "plan": {
-        "name": "[variables('sentinelSolutionName')]",
-        "publisher": "Microsoft",
-        "promotionCode": "",
-        "product": "OMSGallery/SecurityInsights"
-      },
-      "properties": {
-        "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('sentinelWorkspaceName'))]"
-      },
+      "type": "Microsoft.SecurityInsights/onboardingStates",
+      "apiVersion": "2023-02-01-preview",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('sentinelWorkspaceName'))]",
+      "name": "default",
+      "properties": {},
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('sentinelWorkspaceName'))]"
       ]
@@ -267,22 +258,6 @@
       ]
     },
     {
-      "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2020-10-01",
-      "name": "waitForSentinel",
-      "kind": "AzurePowerShell",
-      "location": "[parameters('location')]",
-      "properties": {
-        "azPowerShellVersion": "3.0",
-        "scriptContent": "start-sleep -Seconds 30",
-        "cleanupPreference": "Always",
-        "retentionInterval": "PT1H"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.OperationsManagement/solutions', variables('sentinelSolutionName'))]"
-      ]
-    },
-    {
       "type": "Microsoft.SecurityInsights/alertRules",
       "apiVersion": "2023-02-01-preview",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('sentinelWorkspaceName'))]",
@@ -355,8 +330,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('sentinelWorkspaceName'))]",
-        "[resourceId('Microsoft.OperationsManagement/solutions', variables('sentinelSolutionName'))]",
-        "[resourceId('Microsoft.Resources/deploymentScripts', 'waitForSentinel')]"
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('sentinelWorkspaceName')), 'Microsoft.SecurityInsights/onboardingStates', 'default')]"
       ]
     },
     {

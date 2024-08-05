@@ -14,7 +14,6 @@ param applicationObjectId string
 
 var dataCollectionEndpointName = '${sentinelWorkspaceName}-${labName}-dce'
 var dataCollectionRuleName = '${sentinelWorkspaceName}-${labName}-dcr'
-var sentinelSolutionName = 'SecurityInsights(${sentinelWorkspaceName})'
 
 var signInLogsTableName = 'SigninLogs_CL'
 var signInLogsFunctionAlias = 'fSigninLogs'
@@ -125,24 +124,15 @@ var microsoftLogicAppContributorRoleId = '87a39d53-fc1b-424a-814c-f7e04687dc9e'
 var azureSecurityInsightsObjectId = '0afe49b8-0930-494a-a17e-2ac3402ec098'
 
 
-
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: sentinelWorkspaceName
   location: location
 }
 
-resource sentinelSolution 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = {
-  name: sentinelSolutionName
-  location: location
-  plan: {
-    name: sentinelSolutionName
-    publisher: 'Microsoft'
-    promotionCode: ''
-    product: 'OMSGallery/SecurityInsights'
-  }
-  properties: {
-    workspaceResourceId: logAnalyticsWorkspace.id
-  }
+resource sentinel 'Microsoft.SecurityInsights/onboardingStates@2023-02-01-preview' = {
+  name: 'default'
+  scope: logAnalyticsWorkspace
+  properties: {}
 }
 
 resource customSigninLogsTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10-01' = {
@@ -226,26 +216,11 @@ resource azureAdSigninWorkbook 'microsoft.insights/workbooks@2022-04-01' = {
   }
 }
 
-resource waitForSentinel 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  kind: 'AzurePowerShell'
-  name: 'waitForSentinel'
-  location: location
-  dependsOn: [
-    sentinelSolution
-  ]
-  properties: {
-    azPowerShellVersion: '3.0'
-    scriptContent: 'start-sleep -Seconds 30'
-    cleanupPreference: 'Always'
-    retentionInterval: 'PT1H'
-  }
-}
 
 resource analyticRuleContosoBreakGlass 'Microsoft.SecurityInsights/alertRules@2023-02-01-preview' = {
   scope: logAnalyticsWorkspace
   dependsOn: [
-    sentinelSolution
-    waitForSentinel
+    sentinel
   ]
   name: contosoBreakGlassAlertId
   kind: 'Scheduled'
