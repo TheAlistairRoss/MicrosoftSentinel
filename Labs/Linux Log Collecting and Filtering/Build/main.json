@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "5290200725288511036"
+      "version": "0.30.23.60470",
+      "templateHash": "10945546165548371685"
     }
   },
   "parameters": {
@@ -141,8 +141,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "12416438584589517361"
+              "version": "0.30.23.60470",
+              "templateHash": "9167223894187823769"
             }
           },
           "parameters": {
@@ -430,8 +430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "3919700818230845825"
+              "version": "0.30.23.60470",
+              "templateHash": "13088266977422195075"
             }
           },
           "parameters": {
@@ -528,8 +528,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "12058674033004071607"
+              "version": "0.30.23.60470",
+              "templateHash": "6991203726516237702"
             }
           },
           "parameters": {
@@ -555,19 +555,11 @@
               "location": "[parameters('location')]"
             },
             {
-              "type": "Microsoft.OperationsManagement/solutions",
-              "apiVersion": "2015-11-01-preview",
-              "name": "[format('SecurityInsights({0})', parameters('workspaceName'))]",
-              "location": "[parameters('location')]",
-              "plan": {
-                "name": "[format('SecurityInsights({0})', parameters('workspaceName'))]",
-                "promotionCode": "",
-                "product": "OMSGallery/SecurityInsights",
-                "publisher": "Microsoft"
-              },
-              "properties": {
-                "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
-              },
+              "type": "Microsoft.SecurityInsights/onboardingStates",
+              "apiVersion": "2023-02-01-preview",
+              "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('workspaceName'))]",
+              "name": "default",
+              "properties": {},
               "dependsOn": [
                 "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
               ]
@@ -603,8 +595,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "3750211227146150220"
+              "version": "0.30.23.60470",
+              "templateHash": "17616753463247394705"
             }
           },
           "parameters": {
@@ -752,8 +744,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "13687696810711580786"
+              "version": "0.30.23.60470",
+              "templateHash": "6085074932805696482"
             }
           },
           "parameters": {

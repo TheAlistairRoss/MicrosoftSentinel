@@ -10,16 +10,9 @@ name: workspaceName
 location: location
 }
 
-resource sentinel 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = {
-  name: 'SecurityInsights(${workspaceName})'
-  location: location
-  plan: {
-    name: 'SecurityInsights(${workspaceName})'
-    promotionCode: ''
-    product: 'OMSGallery/SecurityInsights'
-    publisher: 'Microsoft'
-  }
-  properties: {
-    workspaceResourceId: logAnalyticsWorkspace.id
-  }
+resource sentinel 'Microsoft.SecurityInsights/onboardingStates@2023-02-01-preview' = {
+  name: 'default'
+  scope: logAnalyticsWorkspace
+  properties: {}
 }
+
